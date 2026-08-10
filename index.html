@@ -7,17 +7,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Kurum Finans" />
-  <title>Kurum Finans Asistanım</title>
-  <link rel="manifest" href="manifest.webmanifest?v=122" />
-  <link rel="icon" href="icon.svg?v=122" />
-  <link rel="stylesheet" href="styles.css?v=125" />
+  <title>Borç ve Gelir Asistanım</title>
+  <link rel="manifest" href="manifest.webmanifest?v=130" />
+  <link rel="icon" href="icon.svg?v=130" />
+  <link rel="stylesheet" href="styles.css?v=130" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <div>
         <p class="eyebrow" id="orgEyebrow">ORTAK FİNANS</p>
-        <h1 id="appTitle">Kurum Finans Asistanım</h1>
+        <h1 id="appTitle">Borç ve Gelir Asistanım</h1>
       </div>
       <div class="top-actions">
         <span id="syncBadge" class="status-badge offline">Yerel</span>
@@ -34,23 +34,23 @@
       <section id="dashboard" class="view active">
         <div class="hero-card">
           <div>
-            <span>Toplam Kalan Borç</span>
+            <span>Bu Ay Beklenen Gelir</span>
             <strong id="totalDebt">₺0</strong>
-            <small id="debtInfo">Aktif kurum borcu bulunmuyor.</small>
+            <small id="debtInfo">Maaş + planlı özel ders gelirleri</small>
           </div>
-          <div class="hero-side"><span>Bu Ay Çıkış</span><strong id="monthOut">₺0</strong></div>
+          <div class="hero-side"><span>Aylık Borç Ödemesi</span><strong id="monthOut">₺0</strong></div>
         </div>
         <div class="kpi-grid">
           <article class="kpi"><span>Bu Ay Harcama</span><strong id="monthExpense">₺0</strong><small>kaydedilen gider</small></article>
           <article class="kpi"><span>7 Gün</span><strong id="next7">₺0</strong><small>yaklaşan borç ödemesi</small></article>
           <article class="kpi danger"><span>Geciken</span><strong id="overdueCount">0</strong><small>ödeme</small></article>
-          <article class="kpi"><span>Aylık Kapasite</span><strong id="capacity">₺0</strong><small>serbest nakit</small></article>
+          <article class="kpi"><span>Ay Sonu Tahmini</span><strong id="capacity">₺0</strong><small>gelir - borç - harcama</small></article>
         </div>
         <div class="section-head"><h2>Finans Asistanı</h2><button class="link-btn" data-open="settings">Bütçe</button></div>
         <article id="assistantCard" class="assistant-card"></article>
         <div class="section-head"><h2>Yaklaşan Ödemeler</h2><button class="link-btn" data-open="calendar">Tümü</button></div>
         <div id="upcomingMini" class="list"></div>
-        <div class="section-head"><h2>Son Harcamalar</h2><button class="link-btn" data-open="expenses">Tümü</button></div>
+        <div class="section-head"><h2>Gelir Planı</h2><button class="link-btn" data-open="incomes">Tümü</button></div>
         <div id="recentExpenses" class="list"></div>
       </section>
 
@@ -58,6 +58,16 @@
         <div class="page-title"><div><p class="eyebrow">BORÇ YÖNETİMİ</p><h2 id="debtsPageTitle">Borçlar</h2></div><button id="addDebtBtn" class="primary small">＋ Borç</button></div>
         <div class="toolbar"><input id="debtSearch" placeholder="Borç ara…" /><select id="debtFilter"><option value="active">Aktif</option><option value="all">Tümü</option><option value="closed">Kapanan</option></select></div>
         <div id="debtList" class="list"></div>
+      </section>
+
+
+      <section id="incomes" class="view">
+        <div class="page-title"><div><p class="eyebrow">GELİR PLANI</p><h2 id="incomesPageTitle">Gelirler</h2></div><button id="addIncomeBtn" class="primary small">＋ Gelir</button></div>
+        <div class="kpi-grid">
+          <article class="kpi"><span>Bu Ay Beklenen</span><strong id="incomeMonthlyTotal">₺0</strong><small>takvimdeki günlere göre</small></article>
+          <article class="kpi"><span>Haftalık Özel Ders</span><strong id="incomeWeeklyTotal">₺0</strong><small>haftalık toplam</small></article>
+        </div>
+        <div id="incomeList" class="list"></div>
       </section>
 
       <section id="expenses" class="view">
@@ -80,9 +90,8 @@
         <div class="page-title"><div><p class="eyebrow">AYARLAR</p><h2 id="settingsPageTitle">Uygulama Ayarları</h2></div></div>
 
         <form id="budgetForm" class="panel form-grid">
-          <h3>Kurum ve Bütçe</h3>
+          <h3>Bütçe</h3>
           <label>Kurum adı<input name="orgName" placeholder="Örn. BS Ofis" /></label>
-          <label>Aylık ortalama gelir<input name="income" inputmode="decimal" type="number" min="0" step="0.01" /></label>
           <label>Aylık sabit gider<input name="fixedExpenses" inputmode="decimal" type="number" min="0" step="0.01" /></label>
           <label>Korunacak nakit rezervi<input name="reserve" inputmode="decimal" type="number" min="0" step="0.01" /></label>
           <button class="primary" type="submit">Kaydet</button>
@@ -90,7 +99,7 @@
 
         <div class="panel stack">
           <div class="setting-head"><div><h3>Uygulama Görünümü</h3><p class="muted">İsimler ve menüler iki telefonda ortak güncellenir.</p></div></div>
-          <label>Uygulama başlığı<input id="applicationName" maxlength="40" placeholder="Kurum Finans Asistanım" /></label>
+          <label>Uygulama başlığı<input id="applicationName" maxlength="40" placeholder="Borç ve Gelir Asistanım" /></label>
           <button id="saveApplicationName" class="secondary">Başlığı Kaydet</button>
         </div>
 
@@ -139,7 +148,6 @@
       </section>
     </main>
 
-    <button id="fab" class="fab" aria-label="Hızlı harcama ekle">＋</button>
     <nav id="bottomNav" class="bottom-nav"></nav>
   </div>
 
@@ -164,6 +172,23 @@
       <label id="customOptionsWrap" class="hidden">Seçenekler<textarea name="options" rows="4" placeholder="Her satıra bir seçenek"></textarea></label>
       <label class="check-row"><input type="checkbox" name="required" /> Zorunlu alan</label>
       <button class="primary" type="submit">Alanı Kaydet</button>
+    </form>
+  </dialog>
+
+
+  <dialog id="incomeDialog">
+    <form id="incomeForm" class="dialog-form">
+      <div class="dialog-head"><h3 id="incomeDialogTitle">Yeni Gelir</h3><button type="button" class="icon-btn close-dialog">×</button></div>
+      <input type="hidden" name="id" />
+      <label>Gelir adı<input name="name" required maxlength="60" placeholder="Örn. Süleyman Maaş" /></label>
+      <label>Kime ait<select name="owner"><option>Süleyman</option><option>Başak</option><option>Ortak</option></select></label>
+      <label>Tutar<input name="amount" required type="number" min="0" step="0.01" inputmode="decimal" /></label>
+      <label>Tekrar<select name="recurrence"><option value="monthly">Aylık</option><option value="weekly">Haftalık</option></select></label>
+      <label id="incomeWeekdayWrap" class="hidden">Haftanın günü<select name="weekday"><option value="1">Pazartesi</option><option value="2">Salı</option><option value="3">Çarşamba</option><option value="4">Perşembe</option><option value="5">Cuma</option><option value="6">Cumartesi</option><option value="0">Pazar</option></select></label>
+      <label>Not<textarea name="notes" rows="2"></textarea></label>
+      <label class="check-row"><input type="checkbox" name="active" checked /> Aktif</label>
+      <button class="primary" type="submit">Kaydet</button>
+      <button id="deleteIncomeBtn" class="danger-btn" type="button">Gelir Planını Sil</button>
     </form>
   </dialog>
 
@@ -194,6 +219,6 @@
 
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=125"></script>
+  <script src="app.js?v=130"></script>
 </body>
 </html>

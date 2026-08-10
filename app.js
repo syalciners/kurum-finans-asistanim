@@ -4,11 +4,37 @@ const DEVICE_KEY='kurumFinansAsistanim.deviceName';
 const APP_CONFIG_KEY='kurumFinansAsistanim.appConfig.v12';
 
 const defaultState={debts:[],expenses:[],payments:[],budget:{orgName:'',income:0,fixedExpenses:0,reserve:0},updatedAt:null};
+const defaultIncomePlans=[
+  {id:'gelir-suleyman-maas',name:'Süleyman Maaş',owner:'Süleyman',amount:96000,recurrence:'monthly',weekday:'',active:true,notes:''},
+  {id:'gelir-basak-maas',name:'Başak Maaş',owner:'Başak',amount:85000,recurrence:'monthly',weekday:'',active:true,notes:''},
+  {id:'gelir-pazartesi',name:'Özel Ders - Pazartesi',owner:'Ortak',amount:10000,recurrence:'weekly',weekday:'1',active:true,notes:'Her pazartesi'},
+  {id:'gelir-sali',name:'Özel Ders - Salı',owner:'Ortak',amount:24000,recurrence:'weekly',weekday:'2',active:true,notes:'Her salı'},
+  {id:'gelir-carsamba',name:'Özel Ders - Çarşamba',owner:'Ortak',amount:1000,recurrence:'weekly',weekday:'3',active:true,notes:'Her çarşamba'},
+  {id:'gelir-cuma',name:'Özel Ders - Cuma',owner:'Ortak',amount:12000,recurrence:'weekly',weekday:'5',active:true,notes:'Her cuma'},
+  {id:'gelir-cumartesi',name:'Özel Ders - Cumartesi',owner:'Ortak',amount:4000,recurrence:'weekly',weekday:'6',active:true,notes:'Her cumartesi'}
+];
+const PERSONAL_DEBT_SEED=[
+  {id:'fb5603c3-0c03-5b8a-8a84-b6f5e0fca46b',name:'İşbank Kredi-1',type:'Kredi',minimum:38417,dueDate:'2026-06-15',notes:'15.06.2026 tarihli eski ödeme. Yüklenen ödeme planına göre toplam 36 taksitin 5’i ödenmiş; 31 taksit kalıyor. Bu eski ödeme kapandıktan sonra düzenli taksit yaklaşık 37.380,67 TL.',custom:{debt_owner:'Süleyman',remaining_installments:31,next_payment_after_current:37380.67}},
+  {id:'00e1641c-fdff-5c46-86da-5f6a0e682d69',name:'İşbank Kredi-2',type:'Kredi',minimum:13292,dueDate:'2026-06-15',notes:'15.06.2026 tarihli eski ödeme. Kalan taksit sayısı belirtilmedi.',custom:{debt_owner:'Süleyman'}},
+  {id:'8cc3cf8d-bed8-518c-8375-88aec5355e46',name:'İşbank Kredi Kartı',type:'Kredi Kartı',minimum:25000,dueDate:'2026-08-15',notes:'Aylık ortalama asgari ödeme yaklaşık 25.000 TL.',custom:{debt_owner:'Süleyman'}},
+  {id:'8fd36741-ab55-56f8-83b0-a6b1c3fec6a9',name:'Yapı Kredi Bankası Kredi',type:'Kredi',minimum:25613.19,dueDate:'2026-07-30',notes:'30.07.2026 tarihli ödeme. Yüklenen Yapı Kredi ödeme planında 12 taksit bulunuyor.',custom:{debt_owner:'Süleyman',remaining_installments:12}},
+  {id:'ed929815-bbbf-5eb0-8676-f3a25ab00135',name:'Yapı Kredi Bankası Kredi Kartı',type:'Kredi Kartı',minimum:5715,dueDate:'',notes:'Nisan 2027’ye kadar aylık 5.715 TL; sonraki dönemde Temmuz 2029’a kadar aylık 3.896 TL. Son ödeme günü belirtilmedi.',custom:{debt_owner:'Süleyman',plan_change_amount:3896,plan_change_note:'Nisan 2027 sonrası 3.896 TL/ay; Temmuz 2029 sonuna kadar.'}},
+  {id:'aa18e7e5-349b-5fbd-b103-0d81f2a2f06c',name:'Ziraat Bankası Kredi Kartı',type:'Kredi Kartı',minimum:70000,dueDate:'2026-08-15',notes:'Aylık ortalama asgari ödeme yaklaşık 70.000 TL.',custom:{debt_owner:'Süleyman'}},
+  {id:'2e8a700b-7f7a-5477-9bd9-7a7b00689f68',name:'Vakıfbank Kredi',type:'Kredi',minimum:12000,dueDate:'2026-07-22',notes:'22.07.2026 tarihli ödeme.',custom:{debt_owner:'Süleyman',remaining_installments:16}},
+  {id:'6a239d5f-43fc-5900-a375-344285194778',name:'Vakıfbank Kredi Kartı',type:'Kredi Kartı',minimum:20326,dueDate:'2026-08-10',notes:'Mevcut ödeme 20.326 TL; sonraki aylarda 6.500 TL.',custom:{debt_owner:'Süleyman',remaining_installments:20,next_payment_after_current:6500}},
+  {id:'ef8913ab-93d8-5c65-90eb-cf86c8a0cca5',name:'Raasim Bey Elden Borç',type:'Elden Borç',minimum:15500,dueDate:'',notes:'Aylık 15.500 TL. Ödeme günü belirtilmedi.',custom:{debt_owner:'Süleyman',remaining_installments:6}},
+  {id:'870fd21a-a916-5919-8880-d17dc92be2f3',name:'QNB Kredi Kartı Yapılandırma',type:'Kredi Kartı Yapılandırma',minimum:0,dueDate:'2026-08-20',notes:'20.08.2026 tarihli ödeme. Taksit tutarı henüz belirtilmedi; bilindiğinde kaydı düzenleyin.',custom:{debt_owner:'Başak',remaining_installments:60}},
+  {id:'03fe9992-2fdb-5d65-a9da-fe3edd68cead',name:'QNB Kredi',type:'Kredi',minimum:12379,dueDate:'2026-08-17',notes:'17.08.2026 tarihli ödeme.',custom:{debt_owner:'Başak',remaining_installments:20}},
+  {id:'db8af0ac-14ee-5cbc-a60e-c32b16115dc1',name:'Yapı Kredi Bankası Kredi - Başak',type:'Kredi',minimum:6556,dueDate:'2026-08-28',notes:'28.08.2026 tarihli ödeme.',custom:{debt_owner:'Başak',remaining_installments:10}}
+].map(x=>({original:0,balance:0,rate:0,frequency:'monthly',status:'active',...x,createdAt:'2026-08-11T00:00:00.000Z',updatedAt:'2026-08-11T00:00:00.000Z',addedBy:'Hazır veri'}));
 const defaultAppConfig={
-  applicationName:'Kurum Finans Asistanım',
+  schemaVersion:13,
+  seededPersonalDebtsV13:false,
+  applicationName:'Borç ve Gelir Asistanım',
   menus:[
     {view:'dashboard',label:'Özet',icon:'⌂',visible:true,locked:false},
     {view:'debts',label:'Borçlar',icon:'▤',visible:true,locked:false},
+    {view:'incomes',label:'Gelirler',icon:'＋₺',visible:true,locked:false},
     {view:'expenses',label:'Harcamalar',icon:'₺',visible:true,locked:false},
     {view:'payments',label:'Ödemeler',icon:'⇄',visible:false,locked:false},
     {view:'calendar',label:'Takvim',icon:'◷',visible:true,locked:false},
@@ -16,16 +42,20 @@ const defaultAppConfig={
   ],
   fields:{
     debts:{builtIns:[
-      {id:'name',label:'Borç / kurum adı',visible:true,locked:true},
+      {id:'name',label:'Borç adı',visible:true,locked:true},
       {id:'type',label:'Tür',visible:true,locked:false},
-      {id:'original',label:'İlk borç',visible:true,locked:false},
-      {id:'balance',label:'Kalan borç',visible:true,locked:true},
-      {id:'rate',label:'Yıllık faiz %',visible:true,locked:false},
-      {id:'minimum',label:'Aylık asgari / taksit',visible:true,locked:false},
-      {id:'dueDate',label:'Son ödeme tarihi',visible:true,locked:false},
-      {id:'frequency',label:'Tekrar',visible:true,locked:false},
-      {id:'notes',label:'Not',visible:true,locked:false}
-    ],custom:[]},
+      {id:'minimum',label:'Aylık / mevcut ödeme',visible:true,locked:false},
+      {id:'dueDate',label:'Sıradaki ödeme tarihi',visible:true,locked:false},
+      {id:'notes',label:'Not',visible:true,locked:false},
+      {id:'original',label:'İlk borç',visible:false,locked:false},
+      {id:'balance',label:'Kalan toplam borç',visible:false,locked:false},
+      {id:'rate',label:'Faiz oranı',visible:false,locked:false},
+      {id:'frequency',label:'Tekrar',visible:false,locked:false}
+    ],custom:[
+      {id:'debt_owner',label:'Borç sahibi',type:'select',options:['Süleyman','Başak'],required:true,visible:true},
+      {id:'remaining_installments',label:'Kalan taksit',type:'number',options:[],required:false,visible:true},
+      {id:'next_payment_after_current',label:'Sonraki aylardaki ödeme',type:'number',options:[],required:false,visible:false}
+    ]},
     expenses:{builtIns:[
       {id:'date',label:'Tarih',visible:true,locked:true},
       {id:'category',label:'Kategori',visible:true,locked:false},
@@ -41,6 +71,7 @@ const defaultAppConfig={
       {id:'notes',label:'Not',visible:true,locked:false}
     ],custom:[]}
   },
+  incomePlans:defaultIncomePlans,
   lists:{
     expenseCategories:['Kira','Personel','Öğretmen / Uzman Ödemesi','Vergi','Elektrik / Su / Doğalgaz','Telefon / İnternet','Malzeme','Yazılım / Abonelik','Ulaşım','Bakım / Onarım','Reklam','Yemek','Diğer'],
     paymentMethods:['Banka','Kredi Kartı','Nakit','Havale / EFT','Diğer']
@@ -50,9 +81,9 @@ const defaultAppConfig={
 const fieldDefs={
   debts:{
     name:{type:'text',required:true,placeholder:'Örn. İşletme Kredi Kartı'},
-    type:{type:'select',options:()=>['Kredi Kartı','İşletme Kredisi','KMH / Ek Hesap','Vergi / Kamu','Tedarikçi','Kira / Sözleşme','Kişisel Alacaklı','Diğer']},
+    type:{type:'select',options:()=>['Kredi','Kredi Kartı','Kredi Kartı Yapılandırma','Elden Borç','KMH / Ek Hesap','Diğer']},
     original:{type:'number',min:0,step:'0.01'},
-    balance:{type:'number',required:true,min:0,step:'0.01'},
+    balance:{type:'number',min:0,step:'0.01'},
     rate:{type:'number',min:0,step:'0.01'},
     minimum:{type:'number',min:0,step:'0.01'},
     dueDate:{type:'date'},
@@ -68,7 +99,7 @@ const fieldDefs={
     notes:{type:'textarea'}
   },
   payments:{
-    debtId:{type:'select',required:true,options:()=>activeDebts().map(d=>({value:d.id,label:`${d.name} — ${money(d.balance)}`}))},
+    debtId:{type:'select',required:true,options:()=>activeDebts().map(d=>({value:d.id,label:`${d.name} — ${d.minimum>0?money(d.minimum):'Tutar girilecek'}`}))},
     date:{type:'date',required:true},
     amount:{type:'number',required:true,min:.01,step:'0.01'},
     notes:{type:'textarea'}
@@ -92,25 +123,42 @@ let appConfig=loadAppConfig();
 let cloud=loadCloud();
 
 function mergeAppConfig(raw={}){
-  const base=clone(defaultAppConfig);
+  const base=clone(defaultAppConfig),oldSchema=+(raw.schemaVersion||0);
+  base.schemaVersion=13;
+  base.seededPersonalDebtsV13=!!raw.seededPersonalDebtsV13;
   if(raw.applicationName)base.applicationName=raw.applicationName;
   if(Array.isArray(raw.menus)){
     const byView=new Map(raw.menus.map(x=>[x.view,x]));
     base.menus=base.menus.map(x=>({...x,...(byView.get(x.view)||{}),locked:x.view==='settings'}));
     const order=raw.menus.map(x=>x.view);
     base.menus.sort((a,b)=>{const ia=order.indexOf(a.view),ib=order.indexOf(b.view);return (ia<0?999:ia)-(ib<0?999:ib)});
+    if(!order.includes('incomes')){const income=base.menus.find(x=>x.view==='incomes');base.menus=base.menus.filter(x=>x.view!=='incomes');const di=base.menus.findIndex(x=>x.view==='debts');base.menus.splice(di+1,0,income)}
   }
   for(const module of ['debts','expenses','payments']){
     const r=raw.fields?.[module];
     if(!r)continue;
     if(Array.isArray(r.builtIns)){
       const map=new Map(r.builtIns.map(x=>[x.id,x]));
-      base.fields[module].builtIns=base.fields[module].builtIns.map(x=>({...x,...(map.get(x.id)||{}),locked:x.locked}));
-      const order=r.builtIns.map(x=>x.id);
-      base.fields[module].builtIns.sort((a,b)=>{const ia=order.indexOf(a.id),ib=order.indexOf(b.id);return (ia<0?999:ia)-(ib<0?999:ib)});
+      base.fields[module].builtIns=base.fields[module].builtIns.map(x=>{
+        const incoming=map.get(x.id)||{};
+        if(module==='debts'&&oldSchema<13)return x;
+        return {...x,...incoming,locked:x.locked};
+      });
+      if(!(module==='debts'&&oldSchema<13)){
+        const order=r.builtIns.map(x=>x.id);
+        base.fields[module].builtIns.sort((a,b)=>{const ia=order.indexOf(a.id),ib=order.indexOf(b.id);return (ia<0?999:ia)-(ib<0?999:ib)});
+      }
     }
-    if(Array.isArray(r.custom))base.fields[module].custom=r.custom.map(x=>({id:x.id||uid(),label:x.label||'Özel Alan',type:x.type||'text',options:Array.isArray(x.options)?x.options:[],required:!!x.required,visible:x.visible!==false}));
+    if(Array.isArray(r.custom)){
+      const custom=r.custom.map(x=>({id:x.id||uid(),label:x.label||'Özel Alan',type:x.type||'text',options:Array.isArray(x.options)?x.options:[],required:!!x.required,visible:x.visible!==false}));
+      if(module==='debts'&&oldSchema<13){
+        const known=new Set(custom.map(x=>x.id));
+        for(const f of defaultAppConfig.fields.debts.custom)if(!known.has(f.id))custom.push(clone(f));
+      }
+      base.fields[module].custom=custom;
+    }
   }
+  if(Array.isArray(raw.incomePlans))base.incomePlans=raw.incomePlans.map(x=>({...x,amount:+x.amount||0,active:x.active!==false}));
   if(Array.isArray(raw.lists?.expenseCategories)&&raw.lists.expenseCategories.length)base.lists.expenseCategories=raw.lists.expenseCategories;
   if(Array.isArray(raw.lists?.paymentMethods)&&raw.lists.paymentMethods.length)base.lists.paymentMethods=raw.lists.paymentMethods;
   return base;
@@ -125,9 +173,9 @@ function addMonths(date,n=1){const d=new Date(date);const day=d.getDate();d.setD
 function normalizeDebt(d){return {id:d.id||uid(),name:d.name||d.ad||'',type:d.type||d.tur||'Diğer',original:+(d.original??d.ilk_tutar)||0,balance:+(d.balance??d.kalan_tutar)||0,rate:+(d.rate??d.faiz_orani)||0,minimum:+(d.minimum??d.aylik_odeme)||0,dueDate:d.dueDate??d.vade_tarihi??'',frequency:d.frequency||d.tekrar||'monthly',notes:d.notes??d.notlar??'',custom:d.custom??d.ozel_alanlar??{},status:d.status||d.durum||((+(d.balance??d.kalan_tutar)||0)<=0?'closed':'active'),addedBy:d.addedBy??d.ekleyen??'',createdAt:d.createdAt??d.olusturma_zamani??new Date().toISOString(),updatedAt:d.updatedAt??d.guncelleme_zamani??new Date().toISOString()}}
 function normalizeExpense(x){return {id:x.id||uid(),date:x.date||x.tarih||todayISO(),category:x.category||x.kategori||'Diğer',description:x.description||x.aciklama||'',amount:+(x.amount??x.tutar)||0,method:x.method||x.odeme_yontemi||'Banka',notes:x.notes??x.notlar??'',custom:x.custom??x.ozel_alanlar??{},addedBy:x.addedBy??x.ekleyen??'',createdAt:x.createdAt??x.olusturma_zamani??new Date().toISOString(),updatedAt:x.updatedAt??x.guncelleme_zamani??new Date().toISOString()}}
 function normalizePayment(p){return {id:p.id||uid(),debtId:p.debtId||p.borc_id,date:p.date||p.tarih||todayISO(),amount:+(p.amount??p.tutar)||0,notes:p.notes??p.notlar??'',custom:p.custom??p.ozel_alanlar??{},addedBy:p.addedBy??p.ekleyen??'',createdAt:p.createdAt??p.olusturma_zamani??new Date().toISOString()}}
-function activeDebts(){return state.debts.map(normalizeDebt).filter(d=>d.status==='active'&&d.balance>0)}
+function activeDebts(){return state.debts.map(normalizeDebt).filter(d=>d.status==='active')}
 function daysBetween(a,b){return Math.ceil((b-a)/86400000)}
-function dueItems(){const now=parseDate(todayISO());return activeDebts().filter(d=>d.dueDate&&d.minimum>0).map(d=>{const date=parseDate(d.dueDate);return {...d,date,days:daysBetween(now,date),amount:Math.min(d.balance,d.minimum||d.balance)}}).sort((a,b)=>a.date-b.date)}
+function dueItems(){const now=parseDate(todayISO());return activeDebts().filter(d=>d.dueDate).map(d=>{const date=parseDate(d.dueDate);return {...d,date,days:daysBetween(now,date),amount:+d.minimum||0}}).sort((a,b)=>a.date-b.date)}
 function monthKey(s=todayISO()){return s.slice(0,7)}
 function currentMonthExpenses(){const m=monthKey();return state.expenses.map(normalizeExpense).filter(x=>x.date?.startsWith(m))}
 function currentMonthPayments(){const m=monthKey();return state.payments.map(normalizePayment).filter(x=>x.date?.startsWith(m))}
@@ -137,25 +185,34 @@ function menuItem(view){return appConfig.menus.find(x=>x.view===view)}
 function fieldConfig(module,id){return appConfig.fields[module].builtIns.find(x=>x.id===id)}
 function fieldLabel(module,id){return fieldConfig(module,id)?.label||id}
 
-function assistantTip(){const debts=activeDebts(),expenses=currentMonthExpenses().reduce((s,x)=>s+x.amount,0),due=dueItems(),overdue=due.filter(x=>x.days<0);if(overdue.length)return {title:'Gecikmiş ödeme var',body:`${overdue.length} borç ödemesi geçmiş durumda. Toplam ${money(overdue.reduce((s,x)=>s+x.amount,0))} için önce gecikmeyi kapatın.`};const in7=due.filter(x=>x.days>=0&&x.days<=7);if(in7.length)return {title:'Önümüzdeki 7 güne hazırlık',body:`${money(in7.reduce((s,x)=>s+x.amount,0))} yaklaşan borç ödemesi var. Bu tutarı işletme hesabında ayırın.`};if(debts.length){const high=[...debts].sort((a,b)=>b.rate-a.rate)[0];return {title:'Faiz yükünü kontrol edin',body:`En yüksek faizli aktif borç “${high.name}” (%${fmt(high.rate)}). Nakit fazlası varsa öncelikli kapatma adayı bu borç.`}}if(expenses>0)return {title:'Harcama kaydı güncel',body:`Bu ay ${money(expenses)} kurum harcaması kaydedildi. Borç bulunmadığı için nakit rezervini koruyabilirsiniz.`};return {title:'Kayıt ekleyerek başlayın',body:'Kurum borçlarını ve günlük harcamaları eklediğinizde ödeme takvimi ve aylık finans özeti otomatik oluşur.'}}
-function dueCard(d){const badge=d.days<0?`<span class="badge red">${Math.abs(d.days)} gün gecikti</span>`:d.days===0?'<span class="badge orange">Bugün</span>':`<span class="badge">${d.days} gün</span>`;return `<article class="list-card clickable" data-debt="${d.id}"><div class="main"><strong>${esc(d.name)}</strong><small>${d.date.toLocaleDateString('tr-TR')} · ${badge}</small></div><div class="amount">${money(d.amount)}<small>${esc(d.type)}</small></div></article>`}
-function debtCard(d){const p=d.original>0?Math.round((1-d.balance/d.original)*100):0;return `<article class="list-card clickable" data-debt="${d.id}"><div class="main"><strong>${esc(d.name)}</strong><small>${esc(d.type)} · ${d.status==='closed'?'<span class="badge green">Kapandı</span>':`%${Math.max(0,p)} ödendi`}</small></div><div class="amount">${money(d.balance)}<small>${d.dueDate?parseDate(d.dueDate).toLocaleDateString('tr-TR'):'Vade yok'}</small></div></article>`}
+function weekdayCountInMonth(year,month,weekday){let c=0;const last=new Date(year,month+1,0).getDate();for(let d=1;d<=last;d++)if(new Date(year,month,d).getDay()===+weekday)c++;return c}
+function monthlyIncomeTotal(date=todayISO()){const d=parseDate(date),y=d.getFullYear(),m=d.getMonth();return (appConfig.incomePlans||[]).filter(x=>x.active!==false).reduce((sum,x)=>{if(x.recurrence==='weekly')return sum+(+x.amount||0)*weekdayCountInMonth(y,m,x.weekday);return sum+(+x.amount||0)},0)}
+function weeklyIncomeBase(){return (appConfig.incomePlans||[]).filter(x=>x.active!==false&&x.recurrence==='weekly').reduce((s,x)=>s+(+x.amount||0),0)}
+function monthlyDebtLoad(){return activeDebts().reduce((s,d)=>s+(+d.minimum||0),0)}
+function incomeCard(x){const recur=x.recurrence==='weekly'?`Her ${['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'][+x.weekday]}`:'Aylık';return `<article class="list-card clickable" data-income="${esc(x.id)}"><div class="main"><strong>${esc(x.name)}</strong><small>${esc(x.owner||'Ortak')} · ${esc(recur)}</small></div><div class="amount">${money(x.amount)}<small>${x.active===false?'Pasif':'Aktif'}</small></div></article>`}
+function renderIncomes(){const list=(appConfig.incomePlans||[]).filter(x=>x.active!==false);$('#incomeMonthlyTotal').textContent=money(monthlyIncomeTotal());$('#incomeWeeklyTotal').textContent=money(weeklyIncomeBase());$('#incomeList').innerHTML=list.length?list.map(incomeCard).join(''):empty('Gelir planı bulunmuyor.')}
+function openIncomeDialog(plan={}){const f=$('#incomeForm');f.reset();f.querySelector('[name="id"]').value=plan.id||'';f.querySelector('[name="name"]').value=plan.name||'';f.querySelector('[name="owner"]').value=plan.owner||'Ortak';f.querySelector('[name="amount"]').value=plan.amount||'';f.querySelector('[name="recurrence"]').value=plan.recurrence||'monthly';f.querySelector('[name="weekday"]').value=plan.weekday??'1';f.querySelector('[name="notes"]').value=plan.notes||'';f.querySelector('[name="active"]').checked=plan.active!==false;$('#incomeDialogTitle').textContent=plan.id?'Geliri Düzenle':'Yeni Gelir';toggleIncomeWeekday();$('#incomeDialog').showModal()}
+function toggleIncomeWeekday(){$('#incomeWeekdayWrap').classList.toggle('hidden',$('#incomeForm [name="recurrence"]').value!=='weekly')}
+
+function assistantTip(){const due=dueItems(),overdue=due.filter(x=>x.days<0),income=monthlyIncomeTotal(),debtLoad=monthlyDebtLoad(),knownDue=due.reduce((s,x)=>s+x.amount,0);if(overdue.length)return {title:'Gecikmiş ödemeleri öne alın',body:`${overdue.length} gecikmiş ödeme var. Bilinen gecikmiş tutar ${money(overdue.reduce((s,x)=>s+x.amount,0))}. Önce bunları sıraya koyun.`};const in7=due.filter(x=>x.days>=0&&x.days<=7);if(in7.length)return {title:'Önümüzdeki 7 gün',body:`Yaklaşan bilinen ödeme ${money(in7.reduce((s,x)=>s+x.amount,0))}. Bu tutarı diğer harcamalardan önce ayırın.`};if(debtLoad>income&&income>0)return {title:'Aylık ödeme yükü geliri aşıyor',body:`Planlanan aylık borç ödemeleri ${money(debtLoad)}, bu ay beklenen gelir ${money(income)}. Esnek ödemeleri yeniden planlamak gerekebilir.`};if(income>0)return {title:'Bu ayın ödeme payı',body:`Bu ay beklenen gelir ${money(income)}. Bilinen aylık borç yükü ${money(debtLoad)}; ödeme sonrası yaklaşık ${money(income-debtLoad)} kalıyor.`};return {title:'Gelir planını kontrol edin',body:'Gelirler ve borç ödeme tarihleri güncel olduğunda asistan aylık ödeme baskısını otomatik hesaplar.'}}
+function dueCard(d){const badge=d.days<0?`<span class="badge red">${Math.abs(d.days)} gün gecikti</span>`:d.days===0?'<span class="badge orange">Bugün</span>':`<span class="badge">${d.days} gün</span>`;const owner=d.custom?.debt_owner||'';return `<article class="list-card clickable" data-debt="${d.id}"><div class="main"><strong>${esc(d.name)}</strong><small>${d.date.toLocaleDateString('tr-TR')} · ${badge}${owner?` · ${esc(owner)}`:''}</small></div><div class="amount">${d.amount>0?money(d.amount):'Tutar girilecek'}<small>${esc(d.type)}</small></div></article>`}
+function debtCard(d){const owner=d.custom?.debt_owner||'',rem=d.custom?.remaining_installments;const left=rem!==''&&rem!=null?`${fmt(rem)} taksit`:'';return `<article class="list-card clickable" data-debt="${d.id}"><div class="main"><strong>${esc(d.name)}</strong><small>${owner?`${esc(owner)} · `:''}${esc(d.type)}${left?` · ${esc(left)}`:''}${d.status==='closed'?' · <span class="badge green">Kapandı</span>':''}</small></div><div class="amount">${d.minimum>0?money(d.minimum):'Tutar girilecek'}<small>${d.dueDate?parseDate(d.dueDate).toLocaleDateString('tr-TR'):'Tarih girilmedi'}</small></div></article>`}
 function expenseCard(x){return `<article class="list-card clickable" data-expense="${x.id}"><div class="main"><strong>${esc(x.description)}</strong><small>${parseDate(x.date).toLocaleDateString('tr-TR')} · ${esc(x.category)}${x.addedBy?` · ${esc(x.addedBy)}`:''}</small></div><div class="amount">${money(x.amount)}<small>${esc(x.method)}</small></div></article>`}
 function paymentCard(p){const d=state.debts.map(normalizeDebt).find(x=>x.id===p.debtId);return `<article class="list-card clickable" data-payment="${p.id}"><div class="main"><strong>${esc(d?.name||'Silinmiş borç')}</strong><small>${parseDate(p.date).toLocaleDateString('tr-TR')}${p.addedBy?` · ${esc(p.addedBy)}`:''}</small></div><div class="amount">${money(p.amount)}</div></article>`}
 
-function renderDashboard(){const debts=activeDebts(),total=debts.reduce((s,d)=>s+d.balance,0),exp=currentMonthExpenses().reduce((s,x)=>s+x.amount,0),pays=currentMonthPayments().reduce((s,x)=>s+x.amount,0),due=dueItems(),in7=due.filter(x=>x.days>=0&&x.days<=7).reduce((s,x)=>s+x.amount,0),overdue=due.filter(x=>x.days<0);$('#totalDebt').textContent=money(total);$('#debtInfo').textContent=debts.length?`${debts.length} aktif borç kaydı`:'Aktif kurum borcu bulunmuyor.';$('#monthExpense').textContent=money(exp);$('#monthOut').textContent=money(exp+pays);$('#next7').textContent=money(in7);$('#overdueCount').textContent=overdue.length;$('#capacity').textContent=money(calcCapacity());const tip=assistantTip();$('#assistantCard').innerHTML=`<strong>${esc(tip.title)}</strong><p class="muted">${esc(tip.body)}</p>`;$('#upcomingMini').innerHTML=due.length?due.slice(0,3).map(dueCard).join(''):empty('Yaklaşan borç ödemesi yok.');const rec=[...state.expenses].map(normalizeExpense).sort((a,b)=>`${b.date}${b.createdAt}`.localeCompare(`${a.date}${a.createdAt}`)).slice(0,3);$('#recentExpenses').innerHTML=rec.length?rec.map(expenseCard).join(''):empty('Henüz kurum harcaması girilmedi.')}
+function renderDashboard(){const income=monthlyIncomeTotal(),debtLoad=monthlyDebtLoad(),exp=currentMonthExpenses().reduce((s,x)=>s+x.amount,0),due=dueItems(),in7=due.filter(x=>x.days>=0&&x.days<=7).reduce((s,x)=>s+x.amount,0),overdue=due.filter(x=>x.days<0);$('#totalDebt').textContent=money(income);$('#debtInfo').textContent=`Maaş + planlı özel ders gelirleri`;$('#monthOut').textContent=money(debtLoad);$('#monthExpense').textContent=money(exp);$('#next7').textContent=money(in7);$('#overdueCount').textContent=overdue.length;$('#capacity').textContent=money(income-debtLoad-exp);const tip=assistantTip();$('#assistantCard').innerHTML=`<strong>${esc(tip.title)}</strong><p class="muted">${esc(tip.body)}</p>`;$('#upcomingMini').innerHTML=due.length?due.slice(0,4).map(dueCard).join(''):empty('Yaklaşan borç ödemesi yok.');const inc=(appConfig.incomePlans||[]).filter(x=>x.active!==false).slice(0,4);$('#recentExpenses').innerHTML=inc.length?inc.map(incomeCard).join(''):empty('Gelir planı yok.')}
 function renderDebts(){const q=$('#debtSearch').value.trim().toLocaleLowerCase('tr-TR'),filter=$('#debtFilter').value;const list=state.debts.map(normalizeDebt).filter(d=>(filter==='all'||(filter==='active'&&d.status==='active')||(filter==='closed'&&d.status==='closed'))&&(!q||`${d.name} ${d.type} ${d.notes} ${JSON.stringify(d.custom)}`.toLocaleLowerCase('tr-TR').includes(q))).sort((a,b)=>(a.status===b.status?b.createdAt.localeCompare(a.createdAt):a.status==='active'?-1:1));$('#debtList').innerHTML=list.length?list.map(debtCard).join(''):empty(filter==='active'?'Aktif borç bulunmuyor.':'Borç kaydı bulunmuyor.')}
 function populateMonths(){const select=$('#expenseMonth'),current=monthKey();const months=new Set([current,...state.expenses.map(x=>normalizeExpense(x).date.slice(0,7)).filter(Boolean)]),sorted=[...months].sort().reverse(),old=select.value||current;select.innerHTML=sorted.map(m=>{const [y,mo]=m.split('-');const label=new Date(+y,+mo-1,1).toLocaleDateString('tr-TR',{month:'long',year:'numeric'});return `<option value="${m}">${label}</option>`}).join('');select.value=sorted.includes(old)?old:current}
 function renderExpenses(){populateMonths();const q=$('#expenseSearch').value.trim().toLocaleLowerCase('tr-TR'),m=$('#expenseMonth').value;const list=state.expenses.map(normalizeExpense).filter(x=>x.date.startsWith(m)&&(!q||`${x.description} ${x.category} ${x.method} ${x.notes} ${JSON.stringify(x.custom)}`.toLocaleLowerCase('tr-TR').includes(q))).sort((a,b)=>`${b.date}${b.createdAt}`.localeCompare(`${a.date}${a.createdAt}`));const total=list.reduce((s,x)=>s+x.amount,0);$('#expenseList').innerHTML=`<div class="expense-total"><span>Seçili dönem toplamı</span><strong>${money(total)}</strong></div>${list.length?list.map(expenseCard).join(''):empty('Bu dönemde harcama yok.')}`}
 function renderPayments(){const list=[...state.payments].map(normalizePayment).sort((a,b)=>`${b.date}${b.createdAt}`.localeCompare(`${a.date}${a.createdAt}`));$('#paymentList').innerHTML=list.length?list.map(paymentCard).join(''):empty('Henüz borç ödemesi yok.')}
 function renderCalendar(){const due=dueItems();$('#calendarList').innerHTML=due.length?due.map(dueCard).join(''):empty('Takvimde yaklaşan ödeme yok.')}
 function renderBottomNav(){const visible=appConfig.menus.filter(x=>x.visible||x.locked);$('#bottomNav').innerHTML=visible.map(x=>`<button class="nav-btn ${x.view===activeView?'active':''}" data-view="${x.view}"><span>${esc(x.icon)}</span><small>${esc(x.label)}</small></button>`).join('');if(!visible.some(x=>x.view===activeView)){activeView=visible[0]?.view||'settings'};$$('.view').forEach(v=>v.classList.toggle('active',v.id===activeView));$$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===activeView))}
-function renderTitles(){document.title=appConfig.applicationName||'Kurum Finans Asistanım';$('#appTitle').textContent=appConfig.applicationName||'Kurum Finans Asistanım';$('#orgEyebrow').textContent=(state.budget.orgName||'ORTAK FİNANS').toLocaleUpperCase('tr-TR');for(const [view,id] of [['debts','debtsPageTitle'],['expenses','expensesPageTitle'],['calendar','calendarPageTitle'],['payments','paymentsPageTitle'],['settings','settingsPageTitle']]){const m=menuItem(view);if(m)$('#'+id).textContent=m.label}}
-function renderBudget(){const f=$('#budgetForm');f.orgName.value=state.budget.orgName||'';f.income.value=state.budget.income||'';f.fixedExpenses.value=state.budget.fixedExpenses||'';f.reserve.value=state.budget.reserve||'';$('#deviceName').value=deviceName()==='Bu telefon'?'':deviceName();$('#applicationName').value=appConfig.applicationName;$('#expenseCategories').value=appConfig.lists.expenseCategories.join('\n');$('#paymentMethods').value=appConfig.lists.paymentMethods.join('\n')}
+function renderTitles(){document.title=appConfig.applicationName||'Borç ve Gelir Asistanım';$('#appTitle').textContent=appConfig.applicationName||'Borç ve Gelir Asistanım';$('#orgEyebrow').textContent=(state.budget.orgName||'ORTAK FİNANS').toLocaleUpperCase('tr-TR');for(const [view,id] of [['debts','debtsPageTitle'],['incomes','incomesPageTitle'],['expenses','expensesPageTitle'],['calendar','calendarPageTitle'],['payments','paymentsPageTitle'],['settings','settingsPageTitle']]){const m=menuItem(view);if(m)$('#'+id).textContent=m.label}}
+function renderBudget(){const f=$('#budgetForm');f.orgName.value=state.budget.orgName||'';f.fixedExpenses.value=state.budget.fixedExpenses||'';f.reserve.value=state.budget.reserve||'';$('#deviceName').value=deviceName()==='Bu telefon'?'':deviceName();$('#applicationName').value=appConfig.applicationName;$('#expenseCategories').value=appConfig.lists.expenseCategories.join('\n');$('#paymentMethods').value=appConfig.lists.paymentMethods.join('\n')}
 function renderMenuManager(){$('#menuManager').innerHTML=appConfig.menus.map((m,i)=>`<div class="config-row" data-menu-index="${i}"><div>${m.locked?'<span class="tiny" aria-label="Zorunlu menü">🔒 Zorunlu</span>':`<button type="button" class="tiny" data-menu-toggle>${m.visible?'✓ Gösteriliyor':'Göster'}</button>`}</div><div class="field-meta"><input type="text" data-menu-label value="${esc(m.label)}" maxlength="18"><small>${m.locked?'Sistem için zorunlu; gizlenemez':(m.visible?'Menü görünür':'Menü gizli')}</small></div><div class="drag-actions"><button type="button" class="tiny" data-menu-up ${i===0?'disabled':''}>↑</button><button type="button" class="tiny" data-menu-down ${i===appConfig.menus.length-1?'disabled':''}>↓</button></div></div>`).join('')}
 function renderFieldManager(){const module=$('#fieldModuleSelect').value,cfg=appConfig.fields[module];$('#builtInFieldManager').innerHTML=cfg.builtIns.map((f,i)=>`<div class="config-row" data-built-index="${i}"><div>${f.locked?'<span class="tiny" aria-label="Zorunlu alan">🔒 Zorunlu</span>':`<button type="button" class="tiny" data-built-toggle>${f.visible?'✓ Gösteriliyor':'Göster'}</button>`}</div><div class="field-meta"><input type="text" data-built-label value="${esc(f.label)}" maxlength="40"><small>${f.locked?'Sistem için zorunlu; gizlenemez':(f.visible?'Standart alan · görünür':'Standart alan · gizli')}</small></div><div class="drag-actions"><button type="button" class="tiny" data-built-up ${i===0?'disabled':''}>↑</button><button type="button" class="tiny" data-built-down ${i===cfg.builtIns.length-1?'disabled':''}>↓</button></div></div>`).join('');$('#customFieldManager').innerHTML=cfg.custom.length?cfg.custom.map((f,i)=>`<div class="config-row" data-custom-index="${i}"><button type="button" class="tiny" data-custom-toggle>${f.visible!==false?'✓ Gösteriliyor':'Göster'}</button><div class="field-meta"><strong>${esc(f.label)}</strong><small>${customTypeLabel(f.type)}${f.required?' · zorunlu':''}${f.visible===false?' · gizli':''}</small></div><div class="drag-actions"><button type="button" class="tiny" data-custom-edit>Düzenle</button><button type="button" class="tiny" data-custom-delete>Sil</button><button type="button" class="tiny" data-custom-up ${i===0?'disabled':''}>↑</button><button type="button" class="tiny" data-custom-down ${i===cfg.custom.length-1?'disabled':''}>↓</button></div></div>`).join(''):empty('Henüz özel alan yok.')}
 function customTypeLabel(t){return ({text:'Metin',number:'Sayı / Tutar',date:'Tarih',select:'Seçim listesi',checkbox:'Evet / Hayır',textarea:'Uzun metin'})[t]||t}
-function renderAll(){renderTitles();renderBottomNav();renderDashboard();renderDebts();renderExpenses();renderPayments();renderCalendar();renderBudget();renderMenuManager();renderFieldManager();renderCloud()}
+function renderAll(){renderTitles();renderBottomNav();renderDashboard();renderDebts();renderIncomes();renderExpenses();renderPayments();renderCalendar();renderBudget();renderMenuManager();renderFieldManager();renderCloud()}
 function openView(view){const m=menuItem(view);if(m&&!m.visible&&!m.locked)view='settings';activeView=view;$$('.view').forEach(v=>v.classList.toggle('active',v.id===view));renderBottomNav();window.scrollTo({top:0,behavior:'smooth'})}
 
 function buildOptions(options,value){const arr=typeof options==='function'?options():options||[];return arr.map(o=>{const obj=typeof o==='string'?{value:o,label:o}:o;return `<option value="${esc(obj.value)}" ${String(value??'')===String(obj.value)?'selected':''}>${esc(obj.label)}</option>`}).join('')}
@@ -173,11 +230,14 @@ async function persistAppConfig(){saveAppConfig();if(session){try{await cloudUps
 function swap(arr,a,b){if(b<0||b>=arr.length)return;[arr[a],arr[b]]=[arr[b],arr[a]]}
 
 function renderCloud(){const configured=!!(cloud.url&&cloud.key);$('#cloudStepConfig').classList.toggle('hidden',configured);$('#cloudStepAuth').classList.toggle('hidden',!configured);$('#loggedOutAuth').classList.toggle('hidden',!!session);$('#loggedInAuth').classList.toggle('hidden',!session);$('#authBanner').classList.toggle('hidden',!!session);$('#logoutBtn').classList.toggle('hidden',!session);$('#syncBadge').textContent=session?(syncing?'Senkron…':'Bulut'):(configured?'Giriş yok':'Yerel');$('#syncBadge').className=`status-badge ${session?'online':'offline'}`;$('#cloudSummary').textContent=session?`Bağlı hesap: ${session.user.email}`:configured?'Bulut ayarlı, kurum hesabına giriş yapılmadı.':'Bulut bağlantısı yapılmadı.';if(session){$('#cloudUserEmail').textContent=session.user.email}}
-async function initSupabase(){if(!cloud.url||!cloud.key||!window.supabase){renderCloud();return}try{sb=window.supabase.createClient(cloud.url,cloud.key);const {data}=await sb.auth.getSession();session=data.session;sb.auth.onAuthStateChange((_e,s)=>{session=s;renderCloud()});if(session)await pullCloud()}catch(e){console.error(e);toast('Bulut bağlantısı başlatılamadı.')}renderCloud()}
-async function login(){if(!sb)return toast('Önce bağlantı bilgilerini kaydedin.');const email=$('#authEmail').value.trim(),password=$('#authPassword').value;const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return alert(error.message);session=data.session;$('#cloudDialog').close();toast('Kurum hesabına giriş yapıldı.');await pullCloud()}
+async function initSupabase(){if(!cloud.url||!cloud.key||!window.supabase){renderCloud();return}try{sb=window.supabase.createClient(cloud.url,cloud.key);const {data}=await sb.auth.getSession();session=data.session;sb.auth.onAuthStateChange((_e,s)=>{session=s;renderCloud()});if(session){await pullCloud();await maybeSeedPersonalDebts()}}catch(e){console.error(e);toast('Bulut bağlantısı başlatılamadı.')}renderCloud()}
+async function login(){if(!sb)return toast('Önce bağlantı bilgilerini kaydedin.');const email=$('#authEmail').value.trim(),password=$('#authPassword').value;const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return alert(error.message);session=data.session;$('#cloudDialog').close();toast('Kurum hesabına giriş yapıldı.');await pullCloud();await maybeSeedPersonalDebts()}
 async function register(){if(!sb)return;const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(password.length<6)return toast('Şifre en az 6 karakter olmalı.');const {data,error}=await sb.auth.signUp({email,password});if(error)return alert(error.message);session=data.session;if(session){toast('Kurum hesabı oluşturuldu.');await pushLocalToCloud()}else alert('Hesap oluşturuldu. E-posta doğrulaması açıksa gelen bağlantıyı onaylayın, sonra Giriş Yapın.')}
 async function logout(){if(sb)await sb.auth.signOut();session=null;renderCloud();toast('Kurum hesabından çıkıldı.')}
 const checkErr=(r,label)=>{if(r.error)throw new Error(`${label}: ${r.error.message}`);return r};
+function applyPaymentPlan(raw,paymentDate){const d=normalizeDebt(raw),custom={...(raw.custom||raw.ozel_alanlar||{})};let rem=custom.remaining_installments;if(rem!==''&&rem!=null&&!Number.isNaN(+rem)){rem=Math.max(0,+rem-1);custom.remaining_installments=rem;if(rem===0)raw.status='closed';else raw.status='active'}else raw.status='active';const next=+custom.next_payment_after_current||0;if(next>0){raw.minimum=next;delete custom.next_payment_after_current}if(d.frequency==='monthly'&&d.dueDate&&parseDate(paymentDate)>=new Date(parseDate(d.dueDate).getTime()-7*86400000))raw.dueDate=addMonths(parseDate(d.dueDate),1).toISOString().slice(0,10);raw.custom=custom;raw.updatedAt=new Date().toISOString();return raw}
+async function maybeSeedPersonalDebts(){if(!session||appConfig.seededPersonalDebtsV13)return;const existingNames=new Set(state.debts.map(normalizeDebt).map(x=>x.name.toLocaleLowerCase('tr-TR')));for(const seed of PERSONAL_DEBT_SEED){if(existingNames.has(seed.name.toLocaleLowerCase('tr-TR')))continue;await cloudUpsertDebt(normalizeDebt(seed))}appConfig.seededPersonalDebtsV13=true;appConfig.schemaVersion=13;await cloudUpsertAppConfig();await pullCloud();toast('Hazır borç ve gelir planı yüklendi.')}
+
 async function cloudUpsertDebt(d){return checkErr(await sb.from('borclar').upsert({id:d.id,user_id:session.user.id,ad:d.name,tur:d.type,ilk_tutar:d.original,kalan_tutar:d.balance,faiz_orani:d.rate,aylik_odeme:d.minimum,vade_tarihi:d.dueDate||null,tekrar:d.frequency,notlar:d.notes,durum:d.status,ekleyen:d.addedBy||deviceName(),ozel_alanlar:d.custom||{},olusturma_zamani:d.createdAt,guncelleme_zamani:d.updatedAt},{onConflict:'id'}),'Borç')}
 async function cloudUpsertExpense(x){return checkErr(await sb.from('harcamalar').upsert({id:x.id,user_id:session.user.id,tarih:x.date,kategori:x.category,aciklama:x.description,tutar:x.amount,odeme_yontemi:x.method,notlar:x.notes,ekleyen:x.addedBy||deviceName(),ozel_alanlar:x.custom||{},olusturma_zamani:x.createdAt,guncelleme_zamani:x.updatedAt},{onConflict:'id'}),'Harcama')}
 async function cloudUpsertPayment(p){return checkErr(await sb.from('odemeler').upsert({id:p.id,user_id:session.user.id,borc_id:p.debtId,tarih:p.date,tutar:p.amount,notlar:p.notes,ekleyen:p.addedBy||deviceName(),ozel_alanlar:p.custom||{},olusturma_zamani:p.createdAt},{onConflict:'id'}),'Ödeme')}
@@ -189,19 +249,25 @@ async function pushLocalToCloud(){if(!session||syncing)return;syncing=true;try{f
 async function saveDebtCloud(d){if(session){try{await cloudUpsertDebt(d);await pullCloud()}catch(e){alert(`Bulut kayıt hatası: ${e.message}`)}}}
 async function saveExpenseCloud(x){if(session){try{await cloudUpsertExpense(x);await pullCloud()}catch(e){alert(`Bulut kayıt hatası: ${e.message}`)}}}
 async function saveBudgetCloud(){if(session){try{await cloudUpsertSettings();await pullCloud()}catch(e){alert(`Bulut kayıt hatası: ${e.message}`)}}}
-async function payCloud(debtId,amount,date,notes,custom){if(!session)return false;const {error}=await sb.rpc('borc_odeme_kaydet',{p_borc_id:debtId,p_tutar:amount,p_tarih:date,p_notlar:notes||'',p_ekleyen:deviceName(),p_ozel_alanlar:custom||{}});if(error){alert(`Ödeme kaydedilemedi: ${error.message}`);return true}await pullCloud();return true}
+async function payCloud(debtId,amount,date,notes,custom){if(!session)return false;const d0=state.debts.find(x=>normalizeDebt(x).id===debtId);if(!d0)return false;const payment=normalizePayment({id:uid(),debtId,amount,date,notes:notes||'',custom:custom||{},addedBy:deviceName(),createdAt:new Date().toISOString()});await cloudUpsertPayment(payment);applyPaymentPlan(d0,date);await cloudUpsertDebt(normalizeDebt(d0));await pullCloud();return true}
 
 $('#bottomNav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)openView(b.dataset.view)});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(b)openView(b.dataset.open)});
-$('#addDebtBtn').onclick=()=>openRecordDialog('debts');$('#addExpenseBtn').onclick=()=>openRecordDialog('expenses');$('#fab').onclick=()=>openRecordDialog('expenses');$('#addPaymentBtn').onclick=()=>openRecordDialog('payments');
+$('#addDebtBtn').onclick=()=>openRecordDialog('debts');$('#addExpenseBtn').onclick=()=>openRecordDialog('expenses');$('#addPaymentBtn').onclick=()=>openRecordDialog('payments');
 $$('.close-dialog').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('#debtSearch').oninput=renderDebts;$('#debtFilter').onchange=renderDebts;$('#expenseSearch').oninput=renderExpenses;$('#expenseMonth').onchange=renderExpenses;
 
-$('#recordForm').addEventListener('submit',async e=>{e.preventDefault();const fd=Object.fromEntries(new FormData(e.target)),module=fd.module,id=fd.id||uid();if(module==='debts'){const old=state.debts.map(normalizeDebt).find(x=>x.id===id),base=formDefaults(module,old||{}),custom=parseCustomValues(fd,module,old?.custom||{}),d=normalizeDebt({...base,...fd,id,custom,original:fd.original!==undefined?+fd.original:(old?.original||+fd.balance||0),balance:+fd.balance,rate:fd.rate!==undefined?+fd.rate:(old?.rate||0),minimum:fd.minimum!==undefined?+fd.minimum:(old?.minimum||0),status:+fd.balance<=0?'closed':'active',addedBy:old?.addedBy||deviceName(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()});if(!fieldConfig('debts','original').visible&&!old)d.original=d.balance;const i=state.debts.findIndex(x=>x.id===id);if(i>=0)state.debts[i]=d;else state.debts.push(d);saveState();$('#recordDialog').close();toast(i>=0?'Borç güncellendi.':'Borç eklendi.');await saveDebtCloud(d)}else if(module==='expenses'){const old=state.expenses.map(normalizeExpense).find(x=>x.id===id),base=formDefaults(module,old||{}),custom=parseCustomValues(fd,module,old?.custom||{}),x=normalizeExpense({...base,...fd,id,custom,amount:+fd.amount,addedBy:old?.addedBy||deviceName(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()});const i=state.expenses.findIndex(v=>v.id===id);if(i>=0)state.expenses[i]=x;else state.expenses.push(x);saveState();$('#recordDialog').close();toast(i>=0?'Harcama güncellendi.':'Harcama eklendi.');await saveExpenseCloud(x)}else if(module==='payments'){const amount=+fd.amount,d=state.debts.map(normalizeDebt).find(x=>x.id===fd.debtId);if(!d||amount<=0)return;if(amount>d.balance&&!confirm(`Ödeme kalan borçtan ${money(amount-d.balance)} fazla. Yine de kaydedilsin mi?`))return;const custom=parseCustomValues(fd,module,{});if(await payCloud(d.id,amount,fd.date,fd.notes,custom)){e.target.closest('dialog').close();toast('Ödeme buluta kaydedildi.');return}state.payments.push(normalizePayment({id,debtId:d.id,amount,date:fd.date,notes:fd.notes||'',custom,addedBy:deviceName()}));const raw=state.debts.find(x=>x.id===d.id);raw.balance=Math.max(0,d.balance-amount);raw.status=raw.balance<=0?'closed':'active';if(d.frequency==='monthly'&&d.dueDate&&parseDate(fd.date)>=new Date(parseDate(d.dueDate).getTime()-7*86400000))raw.dueDate=addMonths(parseDate(d.dueDate),1).toISOString().slice(0,10);saveState();$('#recordDialog').close();toast(raw.balance<=0?'Borç kapandı.':'Ödeme kaydedildi.')}});
+$('#recordForm').addEventListener('submit',async e=>{e.preventDefault();const fd=Object.fromEntries(new FormData(e.target)),module=fd.module,id=fd.id||uid();if(module==='debts'){const old=state.debts.map(normalizeDebt).find(x=>x.id===id),base=formDefaults(module,old||{}),custom=parseCustomValues(fd,module,old?.custom||{}),d=normalizeDebt({...base,...fd,id,custom,original:fd.original!==undefined?+fd.original:(old?.original||+fd.balance||0),balance:+fd.balance,rate:fd.rate!==undefined?+fd.rate:(old?.rate||0),minimum:fd.minimum!==undefined?+fd.minimum:(old?.minimum||0),status:old?.status||'active',addedBy:old?.addedBy||deviceName(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()});if(!fieldConfig('debts','original').visible&&!old)d.original=0;if(!fieldConfig('debts','balance').visible&&!old)d.balance=0;const i=state.debts.findIndex(x=>x.id===id);if(i>=0)state.debts[i]=d;else state.debts.push(d);saveState();$('#recordDialog').close();toast(i>=0?'Borç güncellendi.':'Borç eklendi.');await saveDebtCloud(d)}else if(module==='expenses'){const old=state.expenses.map(normalizeExpense).find(x=>x.id===id),base=formDefaults(module,old||{}),custom=parseCustomValues(fd,module,old?.custom||{}),x=normalizeExpense({...base,...fd,id,custom,amount:+fd.amount,addedBy:old?.addedBy||deviceName(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()});const i=state.expenses.findIndex(v=>v.id===id);if(i>=0)state.expenses[i]=x;else state.expenses.push(x);saveState();$('#recordDialog').close();toast(i>=0?'Harcama güncellendi.':'Harcama eklendi.');await saveExpenseCloud(x)}else if(module==='payments'){const amount=+fd.amount,d=state.debts.map(normalizeDebt).find(x=>x.id===fd.debtId);if(!d||amount<=0)return;const custom=parseCustomValues(fd,module,{});if(await payCloud(d.id,amount,fd.date,fd.notes,custom)){e.target.closest('dialog').close();toast('Ödeme buluta kaydedildi.');return}state.payments.push(normalizePayment({id,debtId:d.id,amount,date:fd.date,notes:fd.notes||'',custom,addedBy:deviceName()}));const raw=state.debts.find(x=>x.id===d.id);applyPaymentPlan(raw,fd.date);saveState();$('#recordDialog').close();toast(raw.status==='closed'?'Borç planı tamamlandı.':'Ödeme kaydedildi.')}});
+
+$('#addIncomeBtn').onclick=()=>openIncomeDialog();
+$('#incomeForm [name="recurrence"]').onchange=toggleIncomeWeekday;
+$('#incomeForm').addEventListener('submit',async e=>{e.preventDefault();const fd=Object.fromEntries(new FormData(e.target)),id=fd.id||uid(),obj={id,name:fd.name.trim(),owner:fd.owner||'Ortak',amount:+fd.amount||0,recurrence:fd.recurrence||'monthly',weekday:fd.recurrence==='weekly'?fd.weekday:'',active:fd.active==='on',notes:fd.notes||''},arr=appConfig.incomePlans||(appConfig.incomePlans=[]),i=arr.findIndex(x=>x.id===id);if(i>=0)arr[i]=obj;else arr.push(obj);$('#incomeDialog').close();await persistAppConfig()});
+$('#incomeList').addEventListener('click',e=>{const row=e.target.closest('[data-income]');if(!row)return;const plan=(appConfig.incomePlans||[]).find(x=>x.id===row.dataset.income);if(plan)openIncomeDialog(plan)});
+$('#deleteIncomeBtn').onclick=async()=>{const id=$('#incomeForm [name="id"]').value;if(!id)return;if(!confirm('Bu gelir planı silinsin mi?'))return;appConfig.incomePlans=(appConfig.incomePlans||[]).filter(x=>x.id!==id);$('#incomeDialog').close();await persistAppConfig()};
 
 $('#budgetForm').addEventListener('submit',async e=>{e.preventDefault();const fd=Object.fromEntries(new FormData(e.target));state.budget={orgName:fd.orgName||'',income:+fd.income||0,fixedExpenses:+fd.fixedExpenses||0,reserve:+fd.reserve||0};saveState();toast('Bütçe kaydedildi.');await saveBudgetCloud()});
 $('#saveDeviceName').onclick=()=>{const name=$('#deviceName').value.trim();localStorage.setItem(DEVICE_KEY,name||'Bu telefon');toast('Telefon adı kaydedildi.')};
-$('#saveApplicationName').onclick=async()=>{appConfig.applicationName=$('#applicationName').value.trim()||'Kurum Finans Asistanım';await persistAppConfig()};
+$('#saveApplicationName').onclick=async()=>{appConfig.applicationName=$('#applicationName').value.trim()||'Borç ve Gelir Asistanım';await persistAppConfig()};
 $('#saveListsBtn').onclick=async()=>{const cats=$('#expenseCategories').value.split('\n').map(x=>x.trim()).filter(Boolean),methods=$('#paymentMethods').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!cats.length||!methods.length)return toast('Listeler boş bırakılamaz.');appConfig.lists.expenseCategories=[...new Set(cats)];appConfig.lists.paymentMethods=[...new Set(methods)];await persistAppConfig()};
 
 $('#menuManager').addEventListener('change',async e=>{const row=e.target.closest('[data-menu-index]');if(!row||!e.target.matches('[data-menu-label]'))return;const i=+row.dataset.menuIndex,m=appConfig.menus[i];m.label=e.target.value.trim()||defaultAppConfig.menus.find(x=>x.view===m.view)?.label||m.view;await persistAppConfig()});
@@ -229,5 +295,5 @@ $('#loginBtn').onclick=login;$('#registerBtn').onclick=register;$('#logoutBtn').
 window.addEventListener('focus',()=>{if(session)pullCloud()});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&session)pullCloud()});setInterval(()=>{if(session&&document.visibilityState==='visible')pullCloud()},20000);
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').classList.add('hidden')};
 if(location.search.includes('error_code=')||location.hash.includes('error_code='))history.replaceState({},document.title,location.pathname);
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js?v=125',{updateViaCache:'none'}).then(reg=>reg.update()).catch(console.error);
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js?v=130',{updateViaCache:'none'}).then(reg=>reg.update()).catch(console.error);
 renderAll();initSupabase();
