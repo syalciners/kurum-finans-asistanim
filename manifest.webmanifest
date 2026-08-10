@@ -1,0 +1,10 @@
+{
+  "name":"Kurum Finans Asistanım",
+  "short_name":"Kurum Finans",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f3f6fb",
+  "theme_color":"#14213d",
+  "lang":"tr",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
