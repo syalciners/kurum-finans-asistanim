@@ -17,7 +17,7 @@
     <header class="topbar">
       <div>
         <p class="eyebrow" id="orgEyebrow">ORTAK FİNANS</p>
-        <h1>Kurum Finans Asistanım</h1>
+        <h1 id="appTitle">Kurum Finans Asistanım</h1>
       </div>
       <div class="top-actions">
         <span id="syncBadge" class="status-badge offline">Yerel</span>
@@ -40,50 +40,47 @@
           </div>
           <div class="hero-side"><span>Bu Ay Çıkış</span><strong id="monthOut">₺0</strong></div>
         </div>
-
         <div class="kpi-grid">
           <article class="kpi"><span>Bu Ay Harcama</span><strong id="monthExpense">₺0</strong><small>kaydedilen gider</small></article>
           <article class="kpi"><span>7 Gün</span><strong id="next7">₺0</strong><small>yaklaşan borç ödemesi</small></article>
           <article class="kpi danger"><span>Geciken</span><strong id="overdueCount">0</strong><small>ödeme</small></article>
           <article class="kpi"><span>Aylık Kapasite</span><strong id="capacity">₺0</strong><small>serbest nakit</small></article>
         </div>
-
         <div class="section-head"><h2>Finans Asistanı</h2><button class="link-btn" data-open="settings">Bütçe</button></div>
         <article id="assistantCard" class="assistant-card"></article>
-
         <div class="section-head"><h2>Yaklaşan Ödemeler</h2><button class="link-btn" data-open="calendar">Tümü</button></div>
         <div id="upcomingMini" class="list"></div>
-
         <div class="section-head"><h2>Son Harcamalar</h2><button class="link-btn" data-open="expenses">Tümü</button></div>
         <div id="recentExpenses" class="list"></div>
       </section>
 
       <section id="debts" class="view">
-        <div class="page-title"><div><p class="eyebrow">BORÇ YÖNETİMİ</p><h2>Borçlar</h2></div><button id="addDebtBtn" class="primary small">＋ Borç</button></div>
+        <div class="page-title"><div><p class="eyebrow">BORÇ YÖNETİMİ</p><h2 id="debtsPageTitle">Borçlar</h2></div><button id="addDebtBtn" class="primary small">＋ Borç</button></div>
         <div class="toolbar"><input id="debtSearch" placeholder="Borç ara…" /><select id="debtFilter"><option value="active">Aktif</option><option value="all">Tümü</option><option value="closed">Kapanan</option></select></div>
         <div id="debtList" class="list"></div>
       </section>
 
       <section id="expenses" class="view">
-        <div class="page-title"><div><p class="eyebrow">KURUM GİDERLERİ</p><h2>Harcamalar</h2></div><button id="addExpenseBtn" class="primary small">＋ Harcama</button></div>
+        <div class="page-title"><div><p class="eyebrow">KURUM GİDERLERİ</p><h2 id="expensesPageTitle">Harcamalar</h2></div><button id="addExpenseBtn" class="primary small">＋ Harcama</button></div>
         <div class="toolbar"><input id="expenseSearch" placeholder="Harcama ara…" /><select id="expenseMonth"></select></div>
         <div id="expenseList" class="list"></div>
       </section>
 
       <section id="calendar" class="view">
-        <div class="page-title"><div><p class="eyebrow">ÖDEME TAKVİMİ</p><h2>Yaklaşanlar</h2></div></div>
+        <div class="page-title"><div><p class="eyebrow">ÖDEME TAKVİMİ</p><h2 id="calendarPageTitle">Yaklaşanlar</h2></div></div>
         <div id="calendarList" class="list"></div>
       </section>
 
       <section id="payments" class="view">
-        <div class="page-title"><div><p class="eyebrow">BORÇ ÖDEMELERİ</p><h2>Ödemeler</h2></div><button id="addPaymentBtn" class="primary small">＋ Ödeme</button></div>
+        <div class="page-title"><div><p class="eyebrow">BORÇ ÖDEMELERİ</p><h2 id="paymentsPageTitle">Ödemeler</h2></div><button id="addPaymentBtn" class="primary small">＋ Ödeme</button></div>
         <div id="paymentList" class="list"></div>
       </section>
 
       <section id="settings" class="view">
-        <div class="page-title"><div><p class="eyebrow">AYARLAR</p><h2>Kurum ve Bütçe</h2></div></div>
+        <div class="page-title"><div><p class="eyebrow">AYARLAR</p><h2 id="settingsPageTitle">Uygulama Ayarları</h2></div></div>
+
         <form id="budgetForm" class="panel form-grid">
-          <h3>Kurum Bütçesi</h3>
+          <h3>Kurum ve Bütçe</h3>
           <label>Kurum adı<input name="orgName" placeholder="Örn. BS Ofis" /></label>
           <label>Aylık ortalama gelir<input name="income" inputmode="decimal" type="number" min="0" step="0.01" /></label>
           <label>Aylık sabit gider<input name="fixedExpenses" inputmode="decimal" type="number" min="0" step="0.01" /></label>
@@ -92,10 +89,36 @@
         </form>
 
         <div class="panel stack">
+          <div class="setting-head"><div><h3>Uygulama Görünümü</h3><p class="muted">İsimler ve menüler iki telefonda ortak güncellenir.</p></div></div>
+          <label>Uygulama başlığı<input id="applicationName" maxlength="40" placeholder="Kurum Finans Asistanım" /></label>
+          <button id="saveApplicationName" class="secondary">Başlığı Kaydet</button>
+        </div>
+
+        <div class="panel stack">
+          <div class="setting-head"><div><h3>Menü Düzeni</h3><p class="muted">Menü adını değiştir, göster/gizle ve sırasını ayarla. Ayarlar menüsü güvenlik için gizlenemez.</p></div></div>
+          <div id="menuManager" class="config-list"></div>
+        </div>
+
+        <div class="panel stack">
+          <div class="setting-head"><div><h3>Form Alanları</h3><p class="muted">Gereksiz alanları gizle; yeni özel alanlar ekle. Sistem için zorunlu alanlar silinemez.</p></div></div>
+          <label>Düzenlenecek bölüm<select id="fieldModuleSelect"><option value="debts">Borçlar</option><option value="expenses">Harcamalar</option><option value="payments">Ödemeler</option></select></label>
+          <div id="builtInFieldManager" class="config-list"></div>
+          <div class="subsection-title"><strong>Özel Alanlar</strong><button id="addCustomFieldBtn" class="secondary small">＋ Yeni Alan</button></div>
+          <div id="customFieldManager" class="config-list"></div>
+        </div>
+
+        <div class="panel stack">
+          <div class="setting-head"><div><h3>Liste Seçenekleri</h3><p class="muted">Harcama kategorilerini ve ödeme yöntemlerini satır satır düzenleyebilirsin.</p></div></div>
+          <label>Harcama kategorileri<textarea id="expenseCategories" rows="7"></textarea></label>
+          <label>Ödeme yöntemleri<textarea id="paymentMethods" rows="5"></textarea></label>
+          <button id="saveListsBtn" class="secondary">Liste Seçeneklerini Kaydet</button>
+        </div>
+
+        <div class="panel stack">
           <h3>Bu Telefon</h3>
           <label>İşlemleri yapan kişi<input id="deviceName" placeholder="Örn. Süleyman" /></label>
           <button id="saveDeviceName" class="secondary">Telefon adını kaydet</button>
-          <p class="muted">Bu ad yalnız işlem geçmişinde “ekleyen” bilgisini göstermek için kullanılır.</p>
+          <p class="muted">Bu ad yalnız işlem geçmişinde “ekleyen” bilgisini göstermek için bu cihazda tutulur.</p>
         </div>
 
         <div class="panel stack">
@@ -110,64 +133,39 @@
           <h3>Veri Yedeği</h3>
           <button id="exportBtn" class="secondary">JSON Yedeği İndir</button>
           <label class="secondary file-btn">JSON Yedeği Yükle<input id="importInput" type="file" accept="application/json" hidden /></label>
-          <button id="demoBtn" class="secondary">Demo Verisi Yükle</button>
           <button id="resetBtn" class="danger-btn">Yerel Veriyi Temizle</button>
         </div>
-        <p class="privacy-note">Bulut bağlanmadan önce kayıtlar yalnız bu cihazda tutulur. Ortak kullanım için Ayarlar → Ortak Bulut bölümünü tamamlayın.</p>
+        <p class="privacy-note">Menü ve alan ayarları ortak kurum hesabına kaydedilir. Bir telefonda yaptığın değişiklik diğer telefona da gelir.</p>
       </section>
     </main>
 
     <button id="fab" class="fab" aria-label="Hızlı harcama ekle">＋</button>
-
-    <nav class="bottom-nav">
-      <button class="nav-btn active" data-view="dashboard"><span>⌂</span><small>Özet</small></button>
-      <button class="nav-btn" data-view="debts"><span>▤</span><small>Borçlar</small></button>
-      <button class="nav-btn" data-view="expenses"><span>₺</span><small>Harcamalar</small></button>
-      <button class="nav-btn" data-view="calendar"><span>◷</span><small>Takvim</small></button>
-      <button class="nav-btn" data-view="settings"><span>⚙</span><small>Ayarlar</small></button>
-    </nav>
+    <nav id="bottomNav" class="bottom-nav"></nav>
   </div>
 
-  <dialog id="debtDialog">
-    <form id="debtForm" method="dialog" class="dialog-form">
-      <div class="dialog-head"><h3 id="debtDialogTitle">Yeni Borç</h3><button type="button" class="icon-btn close-dialog">×</button></div>
+  <dialog id="recordDialog">
+    <form id="recordForm" method="dialog" class="dialog-form">
+      <div class="dialog-head"><h3 id="recordDialogTitle">Yeni Kayıt</h3><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" name="id" />
-      <label>Borç / kurum adı<input name="name" required placeholder="Örn. İşletme Kredi Kartı" /></label>
-      <label>Tür<select name="type"><option>Kredi Kartı</option><option>İşletme Kredisi</option><option>KMH / Ek Hesap</option><option>Vergi / Kamu</option><option>Tedarikçi</option><option>Kira / Sözleşme</option><option>Kişisel Alacaklı</option><option>Diğer</option></select></label>
-      <div class="two-col"><label>İlk borç<input name="original" required type="number" min="0" step="0.01" inputmode="decimal" /></label><label>Kalan borç<input name="balance" required type="number" min="0" step="0.01" inputmode="decimal" /></label></div>
-      <div class="two-col"><label>Yıllık faiz %<input name="rate" type="number" min="0" step="0.01" inputmode="decimal" /></label><label>Aylık asgari/taksit<input name="minimum" type="number" min="0" step="0.01" inputmode="decimal" /></label></div>
-      <div class="two-col"><label>Son ödeme tarihi<input name="dueDate" type="date" /></label><label>Tekrar<select name="frequency"><option value="monthly">Aylık</option><option value="oneoff">Tek sefer</option></select></label></div>
-      <label>Not<textarea name="notes" rows="2"></textarea></label>
+      <input type="hidden" name="module" />
+      <div id="recordFields" class="stack"></div>
       <button class="primary" value="save" type="submit">Kaydet</button>
     </form>
   </dialog>
 
-  <dialog id="expenseDialog">
-    <form id="expenseForm" method="dialog" class="dialog-form">
-      <div class="dialog-head"><h3 id="expenseDialogTitle">Yeni Harcama</h3><button type="button" class="icon-btn close-dialog">×</button></div>
-      <input type="hidden" name="id" />
-      <label>Tarih<input name="date" required type="date" /></label>
-      <label>Kategori<select name="category"><option>Kira</option><option>Personel</option><option>Öğretmen / Uzman Ödemesi</option><option>Vergi</option><option>Elektrik / Su / Doğalgaz</option><option>Telefon / İnternet</option><option>Malzeme</option><option>Yazılım / Abonelik</option><option>Ulaşım</option><option>Bakım / Onarım</option><option>Reklam</option><option>Yemek</option><option>Diğer</option></select></label>
-      <label>Açıklama<input name="description" required placeholder="Örn. Ağustos internet faturası" /></label>
-      <label>Tutar<input name="amount" required type="number" min="0.01" step="0.01" inputmode="decimal" /></label>
-      <label>Ödeme yöntemi<select name="method"><option>Banka</option><option>Kredi Kartı</option><option>Nakit</option><option>Havale / EFT</option><option>Diğer</option></select></label>
-      <label>Not<textarea name="notes" rows="2"></textarea></label>
-      <button class="primary" value="save" type="submit">Kaydet</button>
+  <dialog id="detailDialog"><div class="dialog-form" id="detailContent"></div></dialog>
+
+  <dialog id="customFieldDialog">
+    <form id="customFieldForm" class="dialog-form">
+      <div class="dialog-head"><h3>Özel Alan</h3><button type="button" class="icon-btn close-dialog">×</button></div>
+      <input type="hidden" name="fieldId" />
+      <label>Alan adı<input name="label" required maxlength="40" placeholder="Örn. Fatura No" /></label>
+      <label>Alan türü<select name="type"><option value="text">Metin</option><option value="number">Sayı / Tutar</option><option value="date">Tarih</option><option value="select">Seçim listesi</option><option value="checkbox">Evet / Hayır</option><option value="textarea">Uzun metin</option></select></label>
+      <label id="customOptionsWrap" class="hidden">Seçenekler<textarea name="options" rows="4" placeholder="Her satıra bir seçenek"></textarea></label>
+      <label class="check-row"><input type="checkbox" name="required" /> Zorunlu alan</label>
+      <button class="primary" type="submit">Alanı Kaydet</button>
     </form>
   </dialog>
-
-  <dialog id="paymentDialog">
-    <form id="paymentForm" method="dialog" class="dialog-form">
-      <div class="dialog-head"><h3>Borç Ödemesi</h3><button type="button" class="icon-btn close-dialog">×</button></div>
-      <label>Borç<select name="debtId" required></select></label>
-      <label>Ödeme tutarı<input name="amount" required type="number" min="0.01" step="0.01" inputmode="decimal" /></label>
-      <label>Ödeme tarihi<input name="date" required type="date" /></label>
-      <label>Not<textarea name="notes" rows="2"></textarea></label>
-      <button class="primary" value="save" type="submit">Ödemeyi Kaydet</button>
-    </form>
-  </dialog>
-
-  <dialog id="debtDetailDialog"><div class="dialog-form" id="debtDetailContent"></div></dialog>
 
   <dialog id="cloudDialog">
     <div class="dialog-form">
@@ -177,7 +175,6 @@
         <label>Supabase Project URL<input id="supabaseUrl" placeholder="https://xxxx.supabase.co" /></label>
         <label>Publishable / anon key<textarea id="supabaseKey" rows="3" placeholder="sb_publishable_... veya anon key"></textarea></label>
         <button id="saveCloudConfig" class="primary">Bağlantıyı Kaydet</button>
-        <p class="muted">İlk kullanımda paketteki <strong>kurulum.sql</strong> dosyasını Supabase SQL Editor'de bir kez çalıştırın.</p>
       </div>
       <div id="cloudStepAuth" class="stack hidden">
         <div id="loggedOutAuth" class="stack">
@@ -185,7 +182,6 @@
           <label>Şifre<input id="authPassword" type="password" autocomplete="current-password" minlength="6" /></label>
           <button id="loginBtn" class="primary">Giriş Yap</button>
           <button id="registerBtn" class="secondary">İlk Kez Kurum Hesabı Oluştur</button>
-          <p class="muted">İki telefonda da aynı kurum e-posta ve şifresiyle giriş yapın. Her telefonda “işlemleri yapan kişi” adını farklı belirleyebilirsiniz.</p>
         </div>
         <div id="loggedInAuth" class="stack hidden">
           <div class="success-box"><strong>Bulut hesabı bağlı</strong><span id="cloudUserEmail"></span></div>
