@@ -75,9 +75,6 @@ const fieldDefs={
   }
 };
 
-let state=loadState();
-let appConfig=loadAppConfig();
-let cloud=loadCloud();
 let sb=null,session=null,deferredPrompt=null,syncing=false,activeView='dashboard';
 const $=s=>document.querySelector(s);const $$=s=>[...document.querySelectorAll(s)];
 const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n)||0);
@@ -85,9 +82,14 @@ const fmt=n=>new Intl.NumberFormat('tr-TR',{maximumFractionDigits:2}).format(Num
 const todayISO=()=>{const d=new Date();const z=d.getTimezoneOffset()*60000;return new Date(d-z).toISOString().slice(0,10)};
 const parseDate=s=>s?new Date(`${s}T12:00:00`):null;
 const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const uid=()=>crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
+const uid=()=>globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
 const clone=v=>JSON.parse(JSON.stringify(v));
 const deviceName=()=>localStorage.getItem(DEVICE_KEY)||'Bu telefon';
+
+// Durum yükleme helper'lar hazırlandıktan sonra yapılmalı.
+let state=loadState();
+let appConfig=loadAppConfig();
+let cloud=loadCloud();
 
 function mergeAppConfig(raw={}){
   const base=clone(defaultAppConfig);
