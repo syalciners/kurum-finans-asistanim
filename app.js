@@ -228,5 +228,5 @@ $('#loginBtn').onclick=login;$('#registerBtn').onclick=register;$('#logoutBtn').
 window.addEventListener('focus',()=>{if(session)pullCloud()});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&session)pullCloud()});setInterval(()=>{if(session&&document.visibilityState==='visible')pullCloud()},20000);
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').classList.add('hidden')};
 if(location.search.includes('error_code=')||location.hash.includes('error_code='))history.replaceState({},document.title,location.pathname);
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(console.error);
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js?v=121').catch(console.error);
 renderAll();initSupabase();
