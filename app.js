@@ -567,3 +567,1776 @@ function fieldConfig(module,id){
 function fieldLabel(module,id){
   return fieldConfig(module,id)?.label||id;
 }
+function monthlyIncomeTotal(date=todayISO()){
+  const m=monthKey(date);
+  return state.incomes
+    .map(normalizeIncome)
+    .filter(x=>x.date?.startsWith(m))
+    .reduce((s,x)=>s+x.amount,0);
+}
+
+function monthlyDebtLoad(){
+  return activeDebts().reduce((s,d)=>s+(+d.minimum||0),0);
+}
+
+function populateIncomeMonths(){
+  const select=$('#incomeMonth');
+  const current=monthKey();
+
+  const months=new Set([
+    current,
+    ...state.incomes
+      .map(x=>normalizeIncome(x).date?.slice(0,7))
+      .filter(Boolean)
+  ]);
+
+  const sorted=[...months].sort().reverse();
+  const old=select.value||current;
+
+  select.innerHTML=sorted.map(m=>{
+    const [y,mo]=m.split('-');
+
+    const label=new Date(+y,+mo-1,1)
+      .toLocaleDateString('tr-TR',{
+        month:'long',
+        year:'numeric'
+      });
+
+    return `<option value="${m}">${label}</option>`;
+  }).join('');
+
+  select.value=sorted.includes(old)?old:current;
+}
+
+function incomeCard(x){
+  const lesson=
+    x.type==='Özel Ders'&&x.student
+      ?` · ${x.student}`
+      :'';
+
+  const source=
+    x.automatic||x.source
+      ?` · BS Ofis`
+      :'';
+
+  return `
+    <article class="list-card clickable" data-income="${esc(x.id)}">
+      <div class="main">
+        <strong>${esc(x.type)}${esc(lesson)}</strong>
+        <small>
+          ${esc(x.owner)} ·
+          ${parseDate(x.date).toLocaleDateString('tr-TR')}
+          ${source}
+          ${x.addedBy&&!source?` · ${esc(x.addedBy)}`:''}
+        </small>
+      </div>
+
+      <div class="amount">
+        ${money(x.amount)}
+      </div>
+    </article>
+  `;
+}
+
+function renderIncomes(){
+  populateIncomeMonths();
+
+  const month=$('#incomeMonth').value||monthKey();
+  const owner=$('#incomeOwnerFilter').value||'all';
+  const type=$('#incomeTypeFilter').value||'all';
+
+  const monthList=state.incomes
+    .map(normalizeIncome)
+    .filter(x=>x.date?.startsWith(month));
+
+  const list=monthList
+    .filter(x=>
+      (owner==='all'||x.owner===owner)
+      &&
+      (type==='all'||x.type===type)
+    )
+    .sort((a,b)=>
+      `${b.date}${b.createdAt}`
+        .localeCompare(`${a.date}${a.createdAt}`)
+    );
+
+  $('#incomeMonthlyTotal').textContent=
+    money(
+      monthList.reduce(
+        (s,x)=>s+x.amount,
+        0
+      )
+    );
+
+  $('#incomeLessonTotal').textContent=
+    money(
+      monthList
+        .filter(x=>x.type==='Özel Ders')
+        .reduce((s,x)=>s+x.amount,0)
+    );
+
+  $('#incomeList').innerHTML=
+    list.length
+      ?list.map(incomeCard).join('')
+      :empty('Bu filtrede gelir kaydı yok.');
+}
+
+function populateIncomeStudentSelect(selected=''){
+  const sel=$('#incomeForm [name="student"]');
+  const students=[
+    ...(appConfig.lists.incomeStudents||[])
+  ];
+
+  if(selected&&!students.includes(selected)){
+    students.push(selected);
+  }
+
+  sel.innerHTML=
+    students.length
+      ?`
+        <option value="">Öğrenci seçin</option>
+        ${students.map(
+          x=>`<option value="${esc(x)}">${esc(x)}</option>`
+        ).join('')}
+      `
+      :'<option value="">Önce Ayarlar’dan öğrenci ekleyin</option>';
+
+  sel.value=selected||'';
+}
+
+function toggleIncomeStudent(){
+  const special=
+    $('#incomeForm [name="type"]').value==='Özel Ders';
+
+  const wrap=$('#incomeStudentWrap');
+  const sel=$('#incomeForm [name="student"]');
+
+  wrap.classList.toggle('hidden',!special);
+  sel.required=special;
+
+  if(special){
+    populateIncomeStudentSelect(sel.value);
+  }
+}
+
+function openIncomeDialog(income={}){
+  const f=$('#incomeForm');
+
+  f.reset();
+
+  f.querySelector('[name="id"]').value=
+    income.id||'';
+
+  const owner=
+    income.owner
+    ||(
+      ['Başak','Süleyman'].includes(deviceName())
+        ?deviceName()
+        :'Başak'
+    );
+
+  f.querySelector('[name="owner"]').value=owner;
+  f.querySelector('[name="type"]').value=income.type||'Maaş';
+  f.querySelector('[name="date"]').value=income.date||todayISO();
+  f.querySelector('[name="amount"]').value=income.amount||'';
+
+  populateIncomeStudentSelect(income.student||'');
+
+  $('#incomeDialogTitle').textContent=
+    income.id
+      ?'Geliri Düzenle'
+      :'Yeni Gelir';
+
+  toggleIncomeStudent();
+
+  $('#deleteIncomeBtn')
+    .classList
+    .toggle('hidden',!income.id);
+
+  $('#incomeDialog').showModal();
+}
+
+function assistantTip(){
+  const due=dueItems();
+  const overdue=due.filter(x=>x.days<0);
+  const income=monthlyIncomeTotal();
+  const debtLoad=monthlyDebtLoad();
+
+  const paid=currentMonthPayments()
+    .reduce((sum,p)=>sum+p.amount,0);
+
+  const exp=currentMonthExpenses()
+    .reduce((sum,x)=>sum+x.amount,0);
+
+  const remaining=Math.max(0,debtLoad-paid);
+  const projection=income-debtLoad-exp;
+
+  if(overdue.length){
+    return {
+      title:'Gecikmiş ödemeleri öne alın',
+      body:
+        `${overdue.length} gecikmiş ödeme var. `+
+        `Bilinen gecikmiş tutar ${
+          money(
+            overdue.reduce((s,x)=>s+x.amount,0)
+          )
+        }. `+
+        `Bu ay ${money(paid)} ödeme kaydedildi; `+
+        `planlanan aylık ödemeden ${money(remaining)} kaldı.`
+    };
+  }
+
+  const in7=due.filter(
+    x=>x.days>=0&&x.days<=7
+  );
+
+  if(in7.length){
+    return {
+      title:'Önümüzdeki 7 gün',
+      body:
+        `Yaklaşan bilinen ödeme ${
+          money(
+            in7.reduce((s,x)=>s+x.amount,0)
+          )
+        }. `+
+        `Bu ay şimdiye kadar ${money(paid)} ödendi. `+
+        `Ay sonu tahmini ${money(projection)}.`
+    };
+  }
+
+  if(debtLoad>income&&income>0){
+    return {
+      title:'Aylık ödeme yükü geliri aşıyor',
+      body:
+        `Planlanan aylık borç ödemeleri ${money(debtLoad)}, `+
+        `bu ay kaydedilen gelir ${money(income)}. `+
+        `Bu ay kalan ödeme ${money(remaining)}.`
+    };
+  }
+
+  if(income>0){
+    return {
+      title:'Bu ayın görünümü',
+      body:
+        `Bu ay kaydedilen gelir ${money(income)}. `+
+        `Bu ay ${money(paid)} ödendi, `+
+        `planlanan ödemeden ${money(remaining)} kaldı. `+
+        `Kayıtlı harcamalar sonrası ay sonu tahmini ${
+          money(projection)
+        }.`
+    };
+  }
+
+  return {
+    title:'Gelir kayıtlarını kontrol edin',
+    body:
+      'Gelir ve borç ödeme kayıtları güncel olduğunda '+
+      'asistan aylık nakit durumunu otomatik hesaplar.'
+  };
+}
+
+function dueCard(d){
+  const badge=
+    d.days<0
+      ?`<span class="badge red">${Math.abs(d.days)} gün gecikti</span>`
+      :d.days===0
+        ?'<span class="badge orange">Bugün</span>'
+        :`<span class="badge">${d.days} gün</span>`;
+
+  const owner=d.custom?.debt_owner||'';
+
+  return `
+    <article class="list-card clickable" data-debt="${d.id}">
+      <div class="main">
+        <strong>${esc(d.name)}</strong>
+        <small>
+          ${d.date.toLocaleDateString('tr-TR')} ·
+          ${badge}
+          ${owner?` · ${esc(owner)}`:''}
+        </small>
+      </div>
+
+      <div class="amount">
+        ${d.amount>0?money(d.amount):'Tutar girilecek'}
+        <small>${esc(d.type)}</small>
+      </div>
+    </article>
+  `;
+}
+
+function debtCard(d){
+  const owner=d.custom?.debt_owner||'';
+  const rem=d.custom?.remaining_installments;
+
+  const left=
+    rem!==''&&rem!=null
+      ?`${fmt(rem)} taksit`
+      :'';
+
+  return `
+    <article class="list-card clickable" data-debt="${d.id}">
+      <div class="main">
+        <strong>${esc(d.name)}</strong>
+        <small>
+          ${owner?`${esc(owner)} · `:''}
+          ${esc(d.type)}
+          ${left?` · ${esc(left)}`:''}
+          ${d.status==='closed'
+            ?' · <span class="badge green">Kapandı</span>'
+            :''
+          }
+        </small>
+      </div>
+
+      <div class="amount">
+        ${d.minimum>0?money(d.minimum):'Tutar girilecek'}
+        <small>
+          ${
+            d.dueDate
+              ?parseDate(d.dueDate)
+                .toLocaleDateString('tr-TR')
+              :'Tarih girilmedi'
+          }
+        </small>
+      </div>
+    </article>
+  `;
+}
+
+function expenseCard(x){
+  return `
+    <article class="list-card clickable" data-expense="${x.id}">
+      <div class="main">
+        <strong>${esc(x.description)}</strong>
+        <small>
+          ${parseDate(x.date).toLocaleDateString('tr-TR')} ·
+          ${esc(x.category)}
+          ${x.addedBy?` · ${esc(x.addedBy)}`:''}
+        </small>
+      </div>
+
+      <div class="amount">
+        ${money(x.amount)}
+        <small>${esc(x.method)}</small>
+      </div>
+    </article>
+  `;
+}
+
+function paymentCard(p){
+  const d=state.debts
+    .map(normalizeDebt)
+    .find(x=>x.id===p.debtId);
+
+  return `
+    <article class="list-card clickable" data-payment="${p.id}">
+      <div class="main">
+        <strong>${esc(d?.name||'Silinmiş borç')}</strong>
+        <small>
+          ${parseDate(p.date).toLocaleDateString('tr-TR')}
+          ${p.addedBy?` · ${esc(p.addedBy)}`:''}
+        </small>
+      </div>
+
+      <div class="amount">
+        ${money(p.amount)}
+      </div>
+    </article>
+  `;
+}
+
+function renderDashboard(){
+  const income=monthlyIncomeTotal();
+  const debtLoad=monthlyDebtLoad();
+
+  const paid=currentMonthPayments()
+    .reduce((s,p)=>s+p.amount,0);
+
+  const remaining=Math.max(
+    0,
+    debtLoad-paid
+  );
+
+  const due=dueItems();
+
+  $('#totalDebt').textContent=money(income);
+  $('#monthOut').textContent=money(debtLoad);
+  $('#monthPaid').textContent=money(paid);
+  $('#monthRemaining').textContent=money(remaining);
+
+  const tip=assistantTip();
+
+  $('#assistantCard').innerHTML=`
+    <strong>${esc(tip.title)}</strong>
+    <p class="muted">${esc(tip.body)}</p>
+  `;
+
+  $('#upcomingMini').innerHTML=
+    due.length
+      ?due.slice(0,4).map(dueCard).join('')
+      :empty('Yaklaşan borç ödemesi yok.');
+
+  const recent=[...state.payments]
+    .map(normalizePayment)
+    .sort((a,b)=>
+      `${b.date}${b.createdAt}`
+        .localeCompare(`${a.date}${a.createdAt}`)
+    )
+    .slice(0,5);
+
+  $('#recentPayments').innerHTML=
+    recent.length
+      ?recent.map(paymentCard).join('')
+      :empty('Henüz ödeme kaydı yok.');
+}
+
+function renderDebts(){
+  const q=$('#debtSearch')
+    .value
+    .trim()
+    .toLocaleLowerCase('tr-TR');
+
+  const filter=$('#debtFilter').value;
+
+  const owner=
+    $('#debtOwnerFilter')?.value
+    ||'all';
+
+  const list=state.debts
+    .map(normalizeDebt)
+    .filter(d=>
+      (
+        filter==='all'
+        ||(filter==='active'&&d.status==='active')
+        ||(filter==='closed'&&d.status==='closed')
+      )
+      &&
+      (
+        owner==='all'
+        ||d.custom?.debt_owner===owner
+      )
+      &&
+      (
+        !q
+        ||`${d.name} ${d.type} ${d.notes} ${JSON.stringify(d.custom)}`
+          .toLocaleLowerCase('tr-TR')
+          .includes(q)
+      )
+    )
+    .sort((a,b)=>
+      a.status===b.status
+        ?b.createdAt.localeCompare(a.createdAt)
+        :a.status==='active'
+          ?-1
+          :1
+    );
+
+  $('#debtList').innerHTML=
+    list.length
+      ?list.map(debtCard).join('')
+      :empty(
+        filter==='active'
+          ?'Aktif borç bulunmuyor.'
+          :'Borç kaydı bulunmuyor.'
+      );
+}
+
+function populateMonths(){
+  const select=$('#expenseMonth');
+  const current=monthKey();
+
+  const months=new Set([
+    current,
+    ...state.expenses
+      .map(x=>normalizeExpense(x).date.slice(0,7))
+      .filter(Boolean)
+  ]);
+
+  const sorted=[...months].sort().reverse();
+  const old=select.value||current;
+
+  select.innerHTML=sorted.map(m=>{
+    const [y,mo]=m.split('-');
+
+    const label=new Date(+y,+mo-1,1)
+      .toLocaleDateString('tr-TR',{
+        month:'long',
+        year:'numeric'
+      });
+
+    return `<option value="${m}">${label}</option>`;
+  }).join('');
+
+  select.value=sorted.includes(old)?old:current;
+}
+
+function renderExpenses(){
+  populateMonths();
+
+  const q=$('#expenseSearch')
+    .value
+    .trim()
+    .toLocaleLowerCase('tr-TR');
+
+  const m=$('#expenseMonth').value;
+
+  const list=state.expenses
+    .map(normalizeExpense)
+    .filter(x=>
+      x.date.startsWith(m)
+      &&
+      (
+        !q
+        ||`${x.description} ${x.category} ${x.method} ${x.notes} ${JSON.stringify(x.custom)}`
+          .toLocaleLowerCase('tr-TR')
+          .includes(q)
+      )
+    )
+    .sort((a,b)=>
+      `${b.date}${b.createdAt}`
+        .localeCompare(`${a.date}${a.createdAt}`)
+    );
+
+  const total=list.reduce(
+    (s,x)=>s+x.amount,
+    0
+  );
+
+  $('#expenseList').innerHTML=`
+    <div class="expense-total">
+      <span>Seçili dönem toplamı</span>
+      <strong>${money(total)}</strong>
+    </div>
+
+    ${
+      list.length
+        ?list.map(expenseCard).join('')
+        :empty('Bu dönemde harcama yok.')
+    }
+  `;
+}
+
+function renderPayments(){
+  const period=
+    $('#paymentPeriodFilter')?.value
+    ||'current';
+
+  const current=monthKey();
+  const previous=previousMonthKey();
+
+  const list=[...state.payments]
+    .map(normalizePayment)
+    .filter(p=>
+      period==='all'
+      ||(
+        period==='current'
+        &&p.date?.startsWith(current)
+      )
+      ||(
+        period==='previous'
+        &&p.date?.startsWith(previous)
+      )
+    )
+    .sort((a,b)=>
+      `${b.date}${b.createdAt}`
+        .localeCompare(`${a.date}${a.createdAt}`)
+    );
+
+  $('#paymentList').innerHTML=
+    list.length
+      ?list.map(paymentCard).join('')
+      :empty(
+        period==='current'
+          ?'Bu ay henüz ödeme kaydı yok.'
+          :period==='previous'
+            ?'Geçen ay ödeme kaydı yok.'
+            :'Henüz borç ödemesi yok.'
+      );
+}
+
+function renderCalendar(){
+  const due=dueItems();
+
+  $('#calendarList').innerHTML=
+    due.length
+      ?due.map(dueCard).join('')
+      :empty('Takvimde yaklaşan ödeme yok.');
+}
+
+function renderBottomNav(){
+  const visible=appConfig.menus.filter(
+    x=>
+      x.view!=='settings'
+      &&(x.visible||x.locked)
+  );
+
+  $('#bottomNav').innerHTML=
+    visible.map(x=>`
+      <button
+        class="nav-btn ${x.view===activeView?'active':''}"
+        data-view="${x.view}"
+      >
+        <span>${esc(x.icon)}</span>
+        <small>${esc(x.label)}</small>
+      </button>
+    `).join('');
+
+  if(
+    activeView!=='settings'
+    &&!visible.some(x=>x.view===activeView)
+  ){
+    activeView=visible[0]?.view||'dashboard';
+  }
+
+  $$('.view').forEach(
+    v=>v.classList.toggle(
+      'active',
+      v.id===activeView
+    )
+  );
+
+  $$('.nav-btn').forEach(
+    b=>b.classList.toggle(
+      'active',
+      b.dataset.view===activeView
+    )
+  );
+
+  $('#settingsShortcut')
+    ?.classList
+    .toggle(
+      'active',
+      activeView==='settings'
+    );
+}
+
+function renderTitles(){
+  document.title=
+    appConfig.applicationName
+    ||'Borç ve Gelir Asistanım';
+
+  $('#appTitle').textContent=
+    appConfig.applicationName
+    ||'Borç ve Gelir Asistanım';
+
+  $('#orgEyebrow').textContent=
+    (
+      state.budget.orgName
+      ||'ORTAK FİNANS'
+    ).toLocaleUpperCase('tr-TR');
+
+  for(const [view,id] of [
+    ['debts','debtsPageTitle'],
+    ['incomes','incomesPageTitle'],
+    ['expenses','expensesPageTitle'],
+    ['calendar','calendarPageTitle'],
+    ['payments','paymentsPageTitle'],
+    ['settings','settingsPageTitle']
+  ]){
+    const m=menuItem(view);
+
+    if(m){
+      $('#'+id).textContent=m.label;
+    }
+  }
+}
+
+function renderBudget(){
+  const f=$('#budgetForm');
+
+  f.orgName.value=
+    state.budget.orgName||'';
+
+  f.fixedExpenses.value=
+    state.budget.fixedExpenses||'';
+
+  f.reserve.value=
+    state.budget.reserve||'';
+
+  $('#deviceName').value=
+    deviceName()==='Bu telefon'
+      ?''
+      :deviceName();
+
+  $('#applicationName').value=
+    appConfig.applicationName;
+
+  $('#expenseCategories').value=
+    appConfig.lists.expenseCategories.join('\n');
+
+  $('#paymentMethods').value=
+    appConfig.lists.paymentMethods.join('\n');
+
+  $('#incomeStudents').value=
+    (appConfig.lists.incomeStudents||[])
+      .join('\n');
+}
+
+function renderMenuManager(){
+  $('#menuManager').innerHTML=
+    appConfig.menus.map((m,i)=>`
+      <div class="config-row" data-menu-index="${i}">
+        <div>
+          ${
+            m.view==='settings'
+              ?'<span class="tiny" aria-label="Ayarlar sağ üstte">⚙ Sağ üstte</span>'
+              :m.locked
+                ?'<span class="tiny" aria-label="Zorunlu menü">🔒 Zorunlu</span>'
+                :`
+                  <button type="button" class="tiny" data-menu-toggle>
+                    ${m.visible?'✓ Gösteriliyor':'Göster'}
+                  </button>
+                `
+          }
+        </div>
+
+        <div class="field-meta">
+          <input
+            type="text"
+            data-menu-label
+            value="${esc(m.label)}"
+            maxlength="18"
+          >
+
+          <small>
+            ${
+              m.view==='settings'
+                ?'Alt menüde yer kaplamaz; sağ üstte sabittir'
+                :m.locked
+                  ?'Sistem için zorunlu; gizlenemez'
+                  :(
+                    m.visible
+                      ?'Alt menüde görünür'
+                      :'Alt menüde gizli'
+                  )
+            }
+          </small>
+        </div>
+
+        <div class="drag-actions">
+          ${
+            m.view==='settings'
+              ?''
+              :`
+                <button
+                  type="button"
+                  class="tiny"
+                  data-menu-up
+                  ${i===0?'disabled':''}
+                >↑</button>
+
+                <button
+                  type="button"
+                  class="tiny"
+                  data-menu-down
+                  ${i===appConfig.menus.length-1?'disabled':''}
+                >↓</button>
+              `
+          }
+        </div>
+      </div>
+    `).join('');
+}
+
+function renderFieldManager(){
+  const module=$('#fieldModuleSelect').value;
+  const cfg=appConfig.fields[module];
+
+  $('#builtInFieldManager').innerHTML=
+    cfg.builtIns.map((f,i)=>`
+      <div class="config-row" data-built-index="${i}">
+        <div>
+          ${
+            f.locked
+              ?'<span class="tiny" aria-label="Zorunlu alan">🔒 Zorunlu</span>'
+              :`
+                <button
+                  type="button"
+                  class="tiny"
+                  data-built-toggle
+                >
+                  ${f.visible?'✓ Gösteriliyor':'Göster'}
+                </button>
+              `
+          }
+        </div>
+
+        <div class="field-meta">
+          <input
+            type="text"
+            data-built-label
+            value="${esc(f.label)}"
+            maxlength="40"
+          >
+
+          <small>
+            ${
+              f.locked
+                ?'Sistem için zorunlu; gizlenemez'
+                :(
+                  f.visible
+                    ?'Standart alan · görünür'
+                    :'Standart alan · gizli'
+                )
+            }
+          </small>
+        </div>
+
+        <div class="drag-actions">
+          <button
+            type="button"
+            class="tiny"
+            data-built-up
+            ${i===0?'disabled':''}
+          >↑</button>
+
+          <button
+            type="button"
+            class="tiny"
+            data-built-down
+            ${i===cfg.builtIns.length-1?'disabled':''}
+          >↓</button>
+        </div>
+      </div>
+    `).join('');
+
+  $('#customFieldManager').innerHTML=
+    cfg.custom.length
+      ?cfg.custom.map((f,i)=>`
+        <div class="config-row" data-custom-index="${i}">
+          <button
+            type="button"
+            class="tiny"
+            data-custom-toggle
+          >
+            ${f.visible!==false?'✓ Gösteriliyor':'Göster'}
+          </button>
+
+          <div class="field-meta">
+            <strong>${esc(f.label)}</strong>
+            <small>
+              ${customTypeLabel(f.type)}
+              ${f.required?' · zorunlu':''}
+              ${f.visible===false?' · gizli':''}
+            </small>
+          </div>
+
+          <div class="drag-actions">
+            <button
+              type="button"
+              class="tiny"
+              data-custom-edit
+            >Düzenle</button>
+
+            <button
+              type="button"
+              class="tiny"
+              data-custom-delete
+            >Sil</button>
+
+            <button
+              type="button"
+              class="tiny"
+              data-custom-up
+              ${i===0?'disabled':''}
+            >↑</button>
+
+            <button
+              type="button"
+              class="tiny"
+              data-custom-down
+              ${i===cfg.custom.length-1?'disabled':''}
+            >↓</button>
+          </div>
+        </div>
+      `).join('')
+      :empty('Henüz özel alan yok.');
+}
+
+function customTypeLabel(t){
+  return ({
+    text:'Metin',
+    number:'Sayı / Tutar',
+    date:'Tarih',
+    select:'Seçim listesi',
+    checkbox:'Evet / Hayır',
+    textarea:'Uzun metin'
+  })[t]||t;
+}
+
+function renderAll(){
+  renderTitles();
+  renderBottomNav();
+  renderDashboard();
+  renderDebts();
+  renderIncomes();
+  renderExpenses();
+  renderPayments();
+  renderCalendar();
+  renderBudget();
+  renderMenuManager();
+  renderFieldManager();
+  renderCloud();
+}
+
+function openView(view){
+  const m=menuItem(view);
+
+  if(m&&!m.visible&&!m.locked){
+    view='settings';
+  }
+
+  activeView=view;
+
+  $$('.view').forEach(
+    v=>v.classList.toggle(
+      'active',
+      v.id===view
+    )
+  );
+
+  renderBottomNav();
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+}
+
+function buildOptions(options,value){
+  const arr=
+    typeof options==='function'
+      ?options()
+      :options||[];
+
+  return arr.map(o=>{
+    const obj=
+      typeof o==='string'
+        ?{value:o,label:o}
+        :o;
+
+    return `
+      <option
+        value="${esc(obj.value)}"
+        ${
+          String(value??'')===String(obj.value)
+            ?'selected'
+            :''
+        }
+      >
+        ${esc(obj.label)}
+      </option>
+    `;
+  }).join('');
+}
+
+function inputHtml(name,label,def,value,required=false){
+  const req=
+    required||def.required
+      ?'required'
+      :'';
+
+  if(def.type==='textarea'){
+    return `
+      <label>
+        ${esc(label)}
+        <textarea name="${name}" rows="2" ${req}>${esc(value??'')}</textarea>
+      </label>
+    `;
+  }
+
+  if(def.type==='select'){
+    return `
+      <label>
+        ${esc(label)}
+        <select name="${name}" ${req}>
+          ${buildOptions(def.options,value)}
+        </select>
+      </label>
+    `;
+  }
+
+  if(def.type==='checkbox'){
+    return `
+      <label class="check-row">
+        <input
+          type="checkbox"
+          name="${name}"
+          ${value?'checked':''}
+        >
+        ${esc(label)}
+      </label>
+    `;
+  }
+
+  const extra=
+    def.type==='number'
+      ?`inputmode="decimal" min="${def.min??0}" step="${def.step||'0.01'}"`
+      :'';
+
+  return `
+    <label>
+      ${esc(label)}
+      <input
+        name="${name}"
+        type="${def.type||'text'}"
+        value="${esc(value??'')}"
+        ${
+          def.placeholder
+            ?`placeholder="${esc(def.placeholder)}"`
+            :''
+        }
+        ${extra}
+        ${req}
+      >
+    </label>
+  `;
+}
+
+function customInputHtml(field,value){
+  const def={
+    type:field.type,
+    required:field.required,
+    options:()=>field.options||[]
+  };
+
+  return inputHtml(
+    `custom__${field.id}`,
+    field.label,
+    def,
+    value,
+    field.required
+  );
+}
+
+function buildRecordFields(module,record={}){
+  const cfg=appConfig.fields[module];
+  let html='';
+
+  for(const f of cfg.builtIns){
+    if(!f.visible&&!f.locked){
+      continue;
+    }
+
+    const def=fieldDefs[module][f.id];
+    let value=record[f.id];
+
+    if(!record.id){
+      if(f.id==='date'){
+        value=todayISO();
+      }
+
+      if(f.id==='frequency'){
+        value='monthly';
+      }
+
+      if(f.id==='category'){
+        value=
+          appConfig.lists.expenseCategories[0]
+          ||'Diğer';
+      }
+
+      if(f.id==='method'){
+        value=
+          appConfig.lists.paymentMethods[0]
+          ||'Banka';
+      }
+    }
+
+    html+=inputHtml(
+      f.id,
+      f.label,
+      def,
+      value,
+      !!f.locked
+    );
+  }
+
+  for(const f of cfg.custom){
+    if(f.visible===false){
+      continue;
+    }
+
+    html+=customInputHtml(
+      f,
+      record.custom?.[f.id]
+    );
+  }
+
+  return html;
+}
+
+function openRecordDialog(module,record=null){
+  record=record||{};
+
+  const form=$('#recordForm');
+
+  form.reset();
+
+  form.querySelector('[name="id"]').value=
+    record.id||'';
+
+  form.querySelector('[name="module"]').value=
+    module;
+
+  $('#recordDialogTitle').textContent=
+    record.id
+      ?'Kaydı Düzenle'
+      :`Yeni ${menuItem(module)?.label||'Kayıt'}`;
+
+  $('#recordFields').innerHTML=
+    buildRecordFields(module,record);
+
+  $('#recordDialog').showModal();
+}
+
+function parseCustomValues(fd,module,oldCustom={}){
+  const out={...oldCustom};
+
+  for(const f of appConfig.fields[module].custom){
+    if(f.visible===false){
+      continue;
+    }
+
+    const k=`custom__${f.id}`;
+
+    if(f.type==='checkbox'){
+      out[f.id]=fd[k]==='on';
+      continue;
+    }
+
+    if(!(k in fd)){
+      continue;
+    }
+
+    let v=fd[k];
+
+    if(f.type==='number'){
+      v=v===''?'':+v;
+    }
+
+    out[f.id]=v;
+  }
+
+  return out;
+}
+
+function formDefaults(module,old={}){
+  if(module==='debts'){
+    return {
+      name:'',
+      type:'Diğer',
+      original:0,
+      balance:0,
+      rate:0,
+      minimum:0,
+      dueDate:'',
+      frequency:'monthly',
+      notes:'',
+      ...old
+    };
+  }
+
+  if(module==='expenses'){
+    return {
+      date:todayISO(),
+      category:
+        appConfig.lists.expenseCategories[0]
+        ||'Diğer',
+      description:'',
+      amount:0,
+      method:
+        appConfig.lists.paymentMethods[0]
+        ||'Banka',
+      notes:'',
+      ...old
+    };
+  }
+
+  return {
+    debtId:'',
+    date:todayISO(),
+    amount:0,
+    notes:'',
+    ...old
+  };
+}
+
+function detailRows(module,record){
+  const rows=[];
+
+  for(const f of appConfig.fields[module].builtIns){
+    if(!f.visible&&!f.locked){
+      continue;
+    }
+
+    let v=record[f.id];
+
+    if(f.id==='debtId'){
+      v=
+        state.debts
+          .map(normalizeDebt)
+          .find(d=>d.id===v)
+          ?.name
+        ||'Silinmiş borç';
+    }
+
+    if(['amount','balance','original','minimum'].includes(f.id)){
+      v=money(v);
+    }
+    else if(f.id==='rate'){
+      v=`%${fmt(v)}`;
+    }
+    else if(
+      (f.id==='date'||f.id==='dueDate')
+      &&v
+    ){
+      v=parseDate(v)
+        .toLocaleDateString('tr-TR');
+    }
+    else if(f.id==='frequency'){
+      v=
+        v==='monthly'
+          ?'Aylık'
+          :'Tek sefer';
+    }
+
+    rows.push([
+      f.label,
+      v||'—'
+    ]);
+  }
+
+  for(const f of appConfig.fields[module].custom){
+    if(f.visible===false){
+      continue;
+    }
+
+    let v=record.custom?.[f.id];
+
+    if(f.type==='checkbox'){
+      v=v?'Evet':'Hayır';
+    }
+
+    if(
+      f.type==='number'
+      &&v!==''
+      &&v!=null
+    ){
+      v=fmt(v);
+    }
+
+    if(f.type==='date'&&v){
+      v=parseDate(v)
+        .toLocaleDateString('tr-TR');
+    }
+
+    rows.push([
+      f.label,
+      v||'—'
+    ]);
+  }
+
+  return rows;
+}
+
+function showDetail(module,record){
+  const rows=detailRows(module,record);
+  const canEdit=module!=='payments';
+
+  $('#detailContent').innerHTML=`
+    <div class="dialog-head">
+      <div>
+        <p class="eyebrow">
+          ${esc(menuItem(module)?.label||'KAYIT')}
+        </p>
+
+        <h3>
+          ${
+            esc(
+              module==='debts'
+                ?record.name
+                :module==='expenses'
+                  ?record.description
+                  :'Ödeme'
+            )
+          }
+        </h3>
+      </div>
+
+      <button
+        type="button"
+        class="icon-btn close-detail"
+      >×</button>
+    </div>
+
+    <div class="detail-grid">
+      ${
+        rows.map(([k,v])=>`
+          <div class="detail-row">
+            <span>${esc(k)}</span>
+            <strong>${esc(v)}</strong>
+          </div>
+        `).join('')
+      }
+    </div>
+
+    <div class="detail-actions">
+      ${
+        module==='debts'
+          ?`
+            <button
+              class="primary"
+              data-pay="${record.id}"
+            >
+              Ödeme Yap
+            </button>
+          `
+          :''
+      }
+
+      ${
+        canEdit
+          ?`
+            <button
+              class="secondary"
+              data-edit-record="${module}"
+              data-record-id="${record.id}"
+            >
+              Düzenle
+            </button>
+          `
+          :''
+      }
+
+      ${
+        module!=='payments'
+          ?`
+            <button
+              class="danger-btn"
+              data-delete-record="${module}"
+              data-record-id="${record.id}"
+            >
+              Sil
+            </button>
+          `
+          :''
+      }
+    </div>
+  `;
+
+  $('#detailDialog').showModal();
+}
+
+async function persistAppConfig(){
+  saveAppConfig();
+
+  if(session){
+    try{
+      await cloudUpsertAppConfig();
+      toast('Uygulama ayarı kaydedildi.');
+    }catch(e){
+      alert(
+        `Ayar buluta kaydedilemedi: ${e.message}`
+      );
+    }
+  }else{
+    toast('Ayar bu telefonda kaydedildi.');
+  }
+}
+
+function swap(arr,a,b){
+  if(b<0||b>=arr.length){
+    return;
+  }
+
+  [arr[a],arr[b]]=[arr[b],arr[a]];
+}
+
+function renderCloud(){
+  const configured=!!(
+    cloud.url
+    &&cloud.key
+  );
+
+  $('#cloudStepConfig')
+    .classList
+    .toggle(
+      'hidden',
+      configured
+    );
+
+  $('#cloudStepAuth')
+    .classList
+    .toggle(
+      'hidden',
+      !configured
+    );
+
+  $('#loggedOutAuth')
+    .classList
+    .toggle(
+      'hidden',
+      !!session
+    );
+
+  $('#loggedInAuth')
+    .classList
+    .toggle(
+      'hidden',
+      !session
+    );
+
+  $('#authBanner')
+    .classList
+    .toggle(
+      'hidden',
+      !!session
+    );
+
+  $('#logoutBtn')
+    .classList
+    .toggle(
+      'hidden',
+      !session
+    );
+
+  $('#syncBadge').textContent=
+    session
+      ?(syncing?'Senkron…':'Bulut')
+      :(configured?'Giriş yok':'Yerel');
+
+  $('#syncBadge').className=
+    `status-badge ${session?'online':'offline'}`;
+
+  $('#cloudSummary').textContent=
+    session
+      ?`Bağlı hesap: ${session.user.email}`
+      :configured
+        ?'Bulut ayarlı, kurum hesabına giriş yapılmadı.'
+        :'Bulut bağlantısı yapılmadı.';
+
+  if(session){
+    $('#cloudUserEmail').textContent=
+      session.user.email;
+  }
+}
+
+async function initSupabase(){
+  if(
+    !cloud.url
+    ||!cloud.key
+    ||!window.supabase
+  ){
+    renderCloud();
+    return;
+  }
+
+  try{
+    sb=window.supabase.createClient(
+      cloud.url,
+      cloud.key
+    );
+
+    const {data}=
+      await sb.auth.getSession();
+
+    session=data.session;
+
+    sb.auth.onAuthStateChange(
+      (_e,s)=>{
+        session=s;
+        renderCloud();
+      }
+    );
+
+    if(session){
+      await pullCloud();
+    }
+  }catch(e){
+    console.error(e);
+    toast('Bulut bağlantısı başlatılamadı.');
+  }
+
+  renderCloud();
+}
+
+async function login(){
+  if(!sb){
+    return toast(
+      'Önce bağlantı bilgilerini kaydedin.'
+    );
+  }
+
+  const email=
+    $('#authEmail').value.trim();
+
+  const password=
+    $('#authPassword').value;
+
+  const {data,error}=
+    await sb.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if(error){
+    return alert(error.message);
+  }
+
+  session=data.session;
+
+  $('#cloudDialog').close();
+
+  toast('Kurum hesabına giriş yapıldı.');
+
+  await pullCloud();
+}
+
+async function register(){
+  if(!sb){
+    return;
+  }
+
+  const email=
+    $('#authEmail').value.trim();
+
+  const password=
+    $('#authPassword').value;
+
+  if(password.length<6){
+    return toast(
+      'Şifre en az 6 karakter olmalı.'
+    );
+  }
+
+  const {data,error}=
+    await sb.auth.signUp({
+      email,
+      password
+    });
+
+  if(error){
+    return alert(error.message);
+  }
+
+  session=data.session;
+
+  if(session){
+    toast('Kurum hesabı oluşturuldu.');
+    await pushLocalToCloud();
+  }else{
+    alert(
+      'Hesap oluşturuldu. '+
+      'E-posta doğrulaması açıksa gelen bağlantıyı onaylayın, '+
+      'sonra Giriş Yapın.'
+    );
+  }
+}
+
+async function logout(){
+  if(sb){
+    await sb.auth.signOut();
+  }
+
+  session=null;
+
+  renderCloud();
+
+  toast('Kurum hesabından çıkıldı.');
+}
+
+const checkErr=(r,label)=>{
+  if(r.error){
+    throw new Error(
+      `${label}: ${r.error.message}`
+    );
+  }
+
+  return r;
+};
+
+function applyPaymentPlan(raw,paymentDate){
+  const d=normalizeDebt(raw);
+
+  const custom={
+    ...(raw.custom||raw.ozel_alanlar||{})
+  };
+
+  let rem=
+    custom.remaining_installments;
+
+  if(
+    rem!==''
+    &&rem!=null
+    &&!Number.isNaN(+rem)
+  ){
+    rem=Math.max(
+      0,
+      +rem-1
+    );
+
+    custom.remaining_installments=rem;
+
+    if(rem===0){
+      raw.status='closed';
+    }else{
+      raw.status='active';
+    }
+  }else{
+    raw.status='active';
+  }
+
+  const next=
+    +custom.next_payment_after_current
+    ||0;
+
+  if(next>0){
+    raw.minimum=next;
+    delete custom.next_payment_after_current;
+  }
+
+  if(
+    d.frequency==='monthly'
+    &&d.dueDate
+    &&parseDate(paymentDate)>=
+      new Date(
+        parseDate(d.dueDate).getTime()
+        -7*86400000
+      )
+  ){
+    raw.dueDate=
+      addMonths(
+        parseDate(d.dueDate),
+        1
+      )
+      .toISOString()
+      .slice(0,10);
+  }
+
+  raw.custom=custom;
+  raw.updatedAt=new Date().toISOString();
+
+  return raw;
+}
+
+async function cloudUpsertDebt(d){
+  return checkErr(
+    await sb.from('borclar').upsert({
+      id:d.id,
+      user_id:session.user.id,
+      ad:d.name,
+      tur:d.type,
+      ilk_tutar:d.original,
+      kalan_tutar:d.balance,
+      faiz_orani:d.rate,
+      aylik_odeme:d.minimum,
+      vade_tarihi:d.dueDate||null,
+      tekrar:d.frequency,
+      notlar:d.notes,
+      durum:d.status,
+      ekleyen:d.addedBy||deviceName(),
+      ozel_alanlar:d.custom||{},
+      olusturma_zamani:d.createdAt,
+      guncelleme_zamani:d.updatedAt
+    },{
+      onConflict:'id'
+    }),
+    'Borç'
+  );
+}
+
+async function cloudUpsertExpense(x){
+  return checkErr(
+    await sb.from('harcamalar').upsert({
+      id:x.id,
+      user_id:session.user.id,
+      tarih:x.date,
+      kategori:x.category,
+      aciklama:x.description,
+      tutar:x.amount,
+      odeme_yontemi:x.method,
+      notlar:x.notes,
+      ekleyen:x.addedBy||deviceName(),
+      ozel_alanlar:x.custom||{},
+      olusturma_zamani:x.createdAt,
+      guncelleme_zamani:x.updatedAt
+    },{
+      onConflict:'id'
+    }),
+    'Harcama'
+  );
+}
+
+async function cloudUpsertPayment(p){
+  return checkErr(
+    await sb.from('odemeler').upsert({
+      id:p.id,
+      user_id:session.user.id,
+      borc_id:p.debtId,
+      tarih:p.date,
+      tutar:p.amount,
+      notlar:p.notes,
+      ekleyen:p.addedBy||deviceName(),
+      ozel_alanlar:p.custom||{},
+      olusturma_zamani:p.createdAt
+    },{
+      onConflict:'id'
+    }),
+    'Ödeme'
+  );
+}
+
+async function cloudUpsertIncome(i){
+  return checkErr(
+    await sb.from('gelirler').upsert({
+      id:i.id,
+      user_id:session.user.id,
+      gelir_sahibi:i.owner,
+      gelir_turu:i.type,
+      ogrenci_adi:
+        i.type==='Özel Ders'
+          ?(i.student||null)
+          :null,
+      gelir_tarihi:i.date,
+      tutar:i.amount,
+      ekleyen:i.addedBy||deviceName(),
+      kaynak:i.source||null,
+      kaynak_kayit_id:i.sourceRecordId||null,
+      kaynak_ogrenci_id:i.sourceStudentId||null,
+      otomatik_aktarim:!!i.automatic,
+      olusturma_zamani:i.createdAt,
+      guncelleme_zamani:i.updatedAt
+    },{
+      onConflict:'id'
+    }),
+    'Gelir'
+  );
+}
+
+async function cloudUpsertSettings(){
+  return checkErr(
+    await sb.from('ayarlar').upsert({
+      user_id:session.user.id,
+      kurum_adi:state.budget.orgName,
+      aylik_gelir:+state.budget.income||0,
+      sabit_gider:+state.budget.fixedExpenses||0,
+      rezerv:+state.budget.reserve||0
+    },{
+      onConflict:'user_id'
+    }),
+    'Ayarlar'
+  );
+}
+
+async function cloudUpsertAppConfig(){
+  return checkErr(
+    await sb.from('uygulama_ayarlari').upsert({
+      user_id:session.user.id,
+      ayarlar:appConfig
+    },{
+      onConflict:'user_id'
+    }),
+    'Uygulama ayarları'
+  );
+}
