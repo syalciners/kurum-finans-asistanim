@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Kurum Finans" />
   <title>Borç ve Gelir Asistanım</title>
-  <link rel="manifest" href="manifest.webmanifest?v=130" />
-  <link rel="icon" href="icon.svg?v=130" />
-  <link rel="stylesheet" href="styles.css?v=130" />
+  <link rel="manifest" href="manifest.webmanifest?v=140" />
+  <link rel="icon" href="icon.svg?v=140" />
+  <link rel="stylesheet" href="styles.css?v=140" />
 </head>
 <body>
   <div class="app-shell">
@@ -21,7 +21,8 @@
       </div>
       <div class="top-actions">
         <span id="syncBadge" class="status-badge offline">Yerel</span>
-        <button id="installBtn" class="icon-btn hidden" title="Uygulamayı yükle">＋</button>
+        <button id="settingsShortcut" class="icon-btn" data-open="settings" title="Ayarlar" aria-label="Ayarlar">⚙</button>
+        <button id="installBtn" class="icon-btn hidden" title="Uygulamayı yükle" aria-label="Uygulamayı yükle">↓</button>
       </div>
     </header>
 
@@ -32,31 +33,23 @@
 
     <main id="main">
       <section id="dashboard" class="view active">
-        <div class="hero-card">
-          <div>
-            <span>Bu Ay Beklenen Gelir</span>
-            <strong id="totalDebt">₺0</strong>
-            <small id="debtInfo">Maaş + planlı özel ders gelirleri</small>
-          </div>
-          <div class="hero-side"><span>Aylık Borç Ödemesi</span><strong id="monthOut">₺0</strong></div>
+        <div class="summary-grid">
+          <article class="summary-card income"><span>Bu Ay Gelir</span><strong id="totalDebt">₺0</strong><small>Maaş + planlı özel ders</small></article>
+          <article class="summary-card"><span>Bu Ay Ödenecek</span><strong id="monthOut">₺0</strong><small>planlanan borç ödemeleri</small></article>
+          <article class="summary-card paid"><span>Bu Ay Ödendi</span><strong id="monthPaid">₺0</strong><small>kaydedilen ödemeler</small></article>
+          <article class="summary-card remaining"><span>Kalan Ödeme</span><strong id="monthRemaining">₺0</strong><small>bu ay için kalan</small></article>
         </div>
-        <div class="kpi-grid">
-          <article class="kpi"><span>Bu Ay Harcama</span><strong id="monthExpense">₺0</strong><small>kaydedilen gider</small></article>
-          <article class="kpi"><span>7 Gün</span><strong id="next7">₺0</strong><small>yaklaşan borç ödemesi</small></article>
-          <article class="kpi danger"><span>Geciken</span><strong id="overdueCount">0</strong><small>ödeme</small></article>
-          <article class="kpi"><span>Ay Sonu Tahmini</span><strong id="capacity">₺0</strong><small>gelir - borç - harcama</small></article>
-        </div>
-        <div class="section-head"><h2>Finans Asistanı</h2><button class="link-btn" data-open="settings">Bütçe</button></div>
+        <div class="section-head"><h2>Finans Asistanı</h2><button class="link-btn" data-open="calendar">Takvim</button></div>
         <article id="assistantCard" class="assistant-card"></article>
         <div class="section-head"><h2>Yaklaşan Ödemeler</h2><button class="link-btn" data-open="calendar">Tümü</button></div>
         <div id="upcomingMini" class="list"></div>
-        <div class="section-head"><h2>Gelir Planı</h2><button class="link-btn" data-open="incomes">Tümü</button></div>
-        <div id="recentExpenses" class="list"></div>
+        <div class="section-head"><h2>Son Yapılan Ödemeler</h2><button class="link-btn" data-open="payments">Tümünü Gör</button></div>
+        <div id="recentPayments" class="list"></div>
       </section>
 
       <section id="debts" class="view">
         <div class="page-title"><div><p class="eyebrow">BORÇ YÖNETİMİ</p><h2 id="debtsPageTitle">Borçlar</h2></div><button id="addDebtBtn" class="primary small">＋ Borç</button></div>
-        <div class="toolbar"><input id="debtSearch" placeholder="Borç ara…" /><select id="debtFilter"><option value="active">Aktif</option><option value="all">Tümü</option><option value="closed">Kapanan</option></select></div>
+        <div class="toolbar debt-toolbar"><input id="debtSearch" placeholder="Borç ara…" /><select id="debtOwnerFilter"><option value="all">Herkes</option><option value="Süleyman">Süleyman</option><option value="Başak">Başak</option></select><select id="debtFilter"><option value="active">Aktif</option><option value="all">Tümü</option><option value="closed">Kapanan</option></select></div>
         <div id="debtList" class="list"></div>
       </section>
 
@@ -83,6 +76,7 @@
 
       <section id="payments" class="view">
         <div class="page-title"><div><p class="eyebrow">BORÇ ÖDEMELERİ</p><h2 id="paymentsPageTitle">Ödemeler</h2></div><button id="addPaymentBtn" class="primary small">＋ Ödeme</button></div>
+        <div class="payment-filter-row"><select id="paymentPeriodFilter" aria-label="Ödeme dönemi"><option value="current">Bu Ay</option><option value="previous">Geçen Ay</option><option value="all">Tümü</option></select></div>
         <div id="paymentList" class="list"></div>
       </section>
 
@@ -104,7 +98,7 @@
         </div>
 
         <div class="panel stack">
-          <div class="setting-head"><div><h3>Menü Düzeni</h3><p class="muted">Menü adını değiştir, göster/gizle ve sırasını ayarla. Ayarlar menüsü güvenlik için gizlenemez.</p></div></div>
+          <div class="setting-head"><div><h3>Menü Düzeni</h3><p class="muted">Alt menüdeki bölümleri değiştir, göster/gizle ve sırala. Ayarlar sağ üstteki ⚙ simgesinde sabittir.</p></div></div>
           <div id="menuManager" class="config-list"></div>
         </div>
 
@@ -219,6 +213,6 @@
 
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=130"></script>
+  <script src="app.js?v=140"></script>
 </body>
 </html>
