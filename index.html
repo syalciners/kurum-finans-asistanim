@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Kurum Finans" />
   <title>Borç ve Gelir Asistanım</title>
-  <link rel="manifest" href="manifest.webmanifest?v=140" />
-  <link rel="icon" href="icon.svg?v=140" />
-  <link rel="stylesheet" href="styles.css?v=140" />
+  <link rel="manifest" href="manifest.webmanifest?v=150" />
+  <link rel="icon" href="icon.svg?v=150" />
+  <link rel="stylesheet" href="styles.css?v=150" />
 </head>
 <body>
   <div class="app-shell">
@@ -34,7 +34,7 @@
     <main id="main">
       <section id="dashboard" class="view active">
         <div class="summary-grid">
-          <article class="summary-card income"><span>Bu Ay Gelir</span><strong id="totalDebt">₺0</strong><small>Maaş + planlı özel ders</small></article>
+          <article class="summary-card income"><span>Bu Ay Gelir</span><strong id="totalDebt">₺0</strong><small>kaydedilen gelirler</small></article>
           <article class="summary-card"><span>Bu Ay Ödenecek</span><strong id="monthOut">₺0</strong><small>planlanan borç ödemeleri</small></article>
           <article class="summary-card paid"><span>Bu Ay Ödendi</span><strong id="monthPaid">₺0</strong><small>kaydedilen ödemeler</small></article>
           <article class="summary-card remaining"><span>Kalan Ödeme</span><strong id="monthRemaining">₺0</strong><small>bu ay için kalan</small></article>
@@ -55,11 +55,12 @@
 
 
       <section id="incomes" class="view">
-        <div class="page-title"><div><p class="eyebrow">GELİR PLANI</p><h2 id="incomesPageTitle">Gelirler</h2></div><button id="addIncomeBtn" class="primary small">＋ Gelir</button></div>
+        <div class="page-title"><div><p class="eyebrow">GELİR TAKİBİ</p><h2 id="incomesPageTitle">Gelirler</h2></div><button id="addIncomeBtn" class="primary small">＋ Gelir</button></div>
         <div class="kpi-grid">
-          <article class="kpi"><span>Bu Ay Beklenen</span><strong id="incomeMonthlyTotal">₺0</strong><small>takvimdeki günlere göre</small></article>
-          <article class="kpi"><span>Haftalık Özel Ders</span><strong id="incomeWeeklyTotal">₺0</strong><small>haftalık toplam</small></article>
+          <article class="kpi"><span>Seçili Ay Toplam</span><strong id="incomeMonthlyTotal">₺0</strong><small>kaydedilen tüm gelirler</small></article>
+          <article class="kpi"><span>Özel Ders Geliri</span><strong id="incomeLessonTotal">₺0</strong><small>seçili aydaki özel dersler</small></article>
         </div>
+        <div class="toolbar debt-toolbar"><select id="incomeOwnerFilter"><option value="all">Herkes</option><option value="Başak">Başak</option><option value="Süleyman">Süleyman</option></select><select id="incomeTypeFilter"><option value="all">Tüm gelir türleri</option><option value="Maaş">Maaş</option><option value="Özel Ders">Özel Ders</option><option value="Kira Geliri">Kira Geliri</option></select><select id="incomeMonth"></select></div>
         <div id="incomeList" class="list"></div>
       </section>
 
@@ -108,6 +109,12 @@
           <div id="builtInFieldManager" class="config-list"></div>
           <div class="subsection-title"><strong>Özel Alanlar</strong><button id="addCustomFieldBtn" class="secondary small">＋ Yeni Alan</button></div>
           <div id="customFieldManager" class="config-list"></div>
+        </div>
+
+        <div class="panel stack">
+          <div class="setting-head"><div><h3>Gelir Ayarları</h3><p class="muted">Özel ders geliri seçildiğinde görünecek öğrenci isimlerini buradan yönet.</p></div></div>
+          <label>Özel ders öğrencileri<textarea id="incomeStudents" rows="7" placeholder="Her satıra bir öğrenci adı"></textarea></label>
+          <button id="saveIncomeStudentsBtn" class="secondary">Öğrenci Listesini Kaydet</button>
         </div>
 
         <div class="panel stack">
@@ -174,15 +181,13 @@
     <form id="incomeForm" class="dialog-form">
       <div class="dialog-head"><h3 id="incomeDialogTitle">Yeni Gelir</h3><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" name="id" />
-      <label>Gelir adı<input name="name" required maxlength="60" placeholder="Örn. Süleyman Maaş" /></label>
-      <label>Kime ait<select name="owner"><option>Süleyman</option><option>Başak</option><option>Ortak</option></select></label>
-      <label>Tutar<input name="amount" required type="number" min="0" step="0.01" inputmode="decimal" /></label>
-      <label>Tekrar<select name="recurrence"><option value="monthly">Aylık</option><option value="weekly">Haftalık</option></select></label>
-      <label id="incomeWeekdayWrap" class="hidden">Haftanın günü<select name="weekday"><option value="1">Pazartesi</option><option value="2">Salı</option><option value="3">Çarşamba</option><option value="4">Perşembe</option><option value="5">Cuma</option><option value="6">Cumartesi</option><option value="0">Pazar</option></select></label>
-      <label>Not<textarea name="notes" rows="2"></textarea></label>
-      <label class="check-row"><input type="checkbox" name="active" checked /> Aktif</label>
+      <label>Gelir sahibi<select name="owner" required><option value="Başak">Başak</option><option value="Süleyman">Süleyman</option></select></label>
+      <label>Gelir türü<select name="type" required><option value="Maaş">Maaş</option><option value="Özel Ders">Özel Ders</option><option value="Kira Geliri">Kira Geliri</option></select></label>
+      <label id="incomeStudentWrap" class="hidden">Öğrenci<select name="student"></select></label>
+      <label>Gelir tarihi<input name="date" required type="date" /></label>
+      <label>Gelir miktarı<input name="amount" required type="number" min="0.01" step="0.01" inputmode="decimal" /></label>
       <button class="primary" type="submit">Kaydet</button>
-      <button id="deleteIncomeBtn" class="danger-btn" type="button">Gelir Planını Sil</button>
+      <button id="deleteIncomeBtn" class="danger-btn hidden" type="button">Gelir Kaydını Sil</button>
     </form>
   </dialog>
 
@@ -213,6 +218,6 @@
 
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=140"></script>
+  <script src="app.js?v=150"></script>
 </body>
 </html>
