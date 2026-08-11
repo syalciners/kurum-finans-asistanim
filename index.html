@@ -24,7 +24,7 @@
       style="width:44px;height:44px;object-fit:contain;border-radius:12px;flex:0 0 44px;"
     />
     <div style="min-width:0;">
-      <p class="eyebrow" id="orgEyebrow">ORTAK FİNANS</p>
+      <p class="eyebrow" id="orgEyebrow">FİNANS YÖNETİMİ</p>
       <h1 id="appTitle">Borç ve Gelir Asistanım</h1>
     </div>
   </div>
@@ -228,5 +228,16 @@
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js?v=161"></script>
+  <script>
+    (()=>{
+      const eyebrow=document.getElementById('orgEyebrow');
+      if(!eyebrow)return;
+      const fix=()=>{
+        if(eyebrow.textContent!=='FİNANS YÖNETİMİ')eyebrow.textContent='FİNANS YÖNETİMİ';
+      };
+      fix();
+      new MutationObserver(fix).observe(eyebrow,{childList:true,subtree:true,characterData:true});
+    })();
+  </script>
 </body>
 </html>
