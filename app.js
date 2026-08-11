@@ -1162,7 +1162,65 @@ function renderCalendar(){
       ?due.map(dueCard).join('')
       :empty('Takvimde yaklaşan ödeme yok.');
 }
+function navIcon(view){
+  const icons={
+    dashboard:`
+      <svg viewBox="0 0 24 24" width="21" height="21"
+           fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11.5 12 4l9 7.5"/>
+        <path d="M5 10.5V20h14v-9.5"/>
+        <path d="M9 20v-6h6v6"/>
+      </svg>`,
 
+    debts:`
+      <svg viewBox="0 0 24 24" width="21" height="21"
+           fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <path d="M3 9h18"/>
+        <path d="M7 15h4"/>
+      </svg>`,
+
+    payments:`
+      <svg viewBox="0 0 24 24" width="21" height="21"
+           fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="m8 12 2.5 2.5L16 9"/>
+      </svg>`,
+
+    incomes:`
+      <svg viewBox="0 0 24 24" width="21" height="21"
+           fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 8v8"/>
+        <path d="M8 12h8"/>
+      </svg>`,
+
+    calendar:`
+      <svg viewBox="0 0 24 24" width="21" height="21"
+           fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="18" height="16" rx="2"/>
+        <path d="M8 3v4"/>
+        <path d="M16 3v4"/>
+        <path d="M3 10h18"/>
+      </svg>`,
+
+    expenses:`
+      <svg viewBox="0 0 24 24" width="21" height="21"
+           fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"/>
+        <path d="M9 8h6"/>
+        <path d="M9 12h6"/>
+      </svg>`
+  };
+
+  return icons[view]||'';
+}
 function renderBottomNav(){
   const visible=appConfig.menus.filter(
     x=>
@@ -1176,7 +1234,7 @@ function renderBottomNav(){
         class="nav-btn ${x.view===activeView?'active':''}"
         data-view="${x.view}"
       >
-        <span>${esc(x.icon)}</span>
+        <span>${navIcon(x.view)}</span>
         <small>${esc(x.label)}</small>
       </button>
     `).join('');
