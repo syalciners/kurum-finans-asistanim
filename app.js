@@ -2340,3 +2340,1773 @@ async function cloudUpsertAppConfig(){
     'Uygulama ayarları'
   );
 }
+async function deleteCloud(table,id){
+  return checkErr(
+    await sb.from(table).delete().eq('id',id),
+    'Silme'
+  );
+}
+
+async function pullCloud(){
+  if(!session||syncing)return;
+
+  syncing=true;
+  renderCloud();
+
+  try{
+    const [de,ex,pa,inc,se,ac]=await Promise.all([
+      sb.from('borclar')
+        .select('*')
+        .order('olusturma_zamani',{ascending:false}),
+
+      sb.from('harcamalar')
+        .select('*')
+        .order('tarih',{ascending:false}),
+
+      sb.from('odemeler')
+        .select('*')
+        .order('tarih',{ascending:false}),
+
+      sb.from('gelirler')
+        .select('*')
+        .order('gelir_tarihi',{ascending:false}),
+
+      sb.from('ayarlar')
+        .select('*')
+        .eq('user_id',session.user.id)
+        .maybeSingle(),
+
+      sb.from('uygulama_ayarlari')
+        .select('*')
+        .eq('user_id',session.user.id)
+        .maybeSingle()
+    ]);
+
+    for(const [r,n] of [
+      [de,'Borçlar'],
+      [ex,'Harcamalar'],
+      [pa,'Ödemeler'],
+      [inc,'Gelirler'],
+      [se,'Ayarlar']
+    ]){
+      checkErr(r,n);
+    }
+
+    if(
+      ac.error
+      &&ac.error.code!=='PGRST116'
+    ){
+      throw new Error(
+        `V1.2 ayar tablosu: ${ac.error.message}`
+      );
+    }
+
+    state.debts=
+      (de.data||[]).map(normalizeDebt);
+
+    state.expenses=
+      (ex.data||[]).map(normalizeExpense);
+
+    state.payments=
+      (pa.data||[]).map(normalizePayment);
+
+    state.incomes=
+      (inc.data||[]).map(normalizeIncome);
+
+    if(se.data){
+      state.budget={
+        orgName:se.data.kurum_adi||'',
+        income:+se.data.aylik_gelir||0,
+        fixedExpenses:+se.data.sabit_gider||0,
+        reserve:+se.data.rezerv||0
+      };
+    }
+
+    if(ac.data?.ayarlar){
+      appConfig=
+        mergeAppConfig(ac.data.ayarlar);
+
+      saveAppConfig(false);
+    }
+
+    saveState(false);
+    renderAll();
+
+  }catch(e){
+    console.error(e);
+
+    alert(
+      `Bulut senkronizasyon hatası: ${e.message}\n\n`+
+      `V1.6 için önce v1.6_supabase_entegrasyon.sql `+
+      `dosyasının Supabase SQL Editor'de bir kez `+
+      `çalıştırıldığını kontrol edin.`
+    );
+
+  }finally{
+    syncing=false;
+    renderCloud();
+  }
+}
+
+async function pushLocalToCloud(){
+  if(!session||syncing)return;
+
+  syncing=true;
+
+  try{
+    for(const d0 of state.debts){
+      await cloudUpsertDebt(
+        normalizeDebt(d0)
+      );
+    }
+
+    for(const x0 of state.expenses){
+      await cloudUpsertExpense(
+        normalizeExpense(x0)
+      );
+    }
+
+    for(const p0 of state.payments){
+      await cloudUpsertPayment(
+        normalizePayment(p0)
+      );
+    }
+
+    for(const i0 of state.incomes){
+      await cloudUpsertIncome(
+        normalizeIncome(i0)
+      );
+    }
+
+    await cloudUpsertSettings();
+    await cloudUpsertAppConfig();
+
+    syncing=false;
+
+    await pullCloud();
+
+    toast(
+      'Yerel veri bulutla birleştirildi.'
+    );
+
+    if($('#cloudDialog')?.open){
+      $('#cloudDialog').close();
+    }
+
+  }catch(e){
+    console.error(e);
+
+    alert(
+      `Buluta gönderilemedi: ${e.message}`
+    );
+
+  }finally{
+    syncing=false;
+    renderCloud();
+  }
+}
+
+async function saveDebtCloud(d){
+  if(session){
+    try{
+      await cloudUpsertDebt(d);
+      await pullCloud();
+    }catch(e){
+      alert(
+        `Bulut kayıt hatası: ${e.message}`
+      );
+    }
+  }
+}
+
+async function saveExpenseCloud(x){
+  if(session){
+    try{
+      await cloudUpsertExpense(x);
+      await pullCloud();
+    }catch(e){
+      alert(
+        `Bulut kayıt hatası: ${e.message}`
+      );
+    }
+  }
+}
+
+async function saveBudgetCloud(){
+  if(session){
+    try{
+      await cloudUpsertSettings();
+      await pullCloud();
+    }catch(e){
+      alert(
+        `Bulut kayıt hatası: ${e.message}`
+      );
+    }
+  }
+}
+
+async function payCloud(
+  debtId,
+  amount,
+  date,
+  notes,
+  custom
+){
+  if(!session){
+    return false;
+  }
+
+  const d0=state.debts.find(
+    x=>normalizeDebt(x).id===debtId
+  );
+
+  if(!d0){
+    return false;
+  }
+
+  const payment=normalizePayment({
+    id:uid(),
+    debtId,
+    amount,
+    date,
+    notes:notes||'',
+    custom:custom||{},
+    addedBy:deviceName(),
+    createdAt:new Date().toISOString()
+  });
+
+  await cloudUpsertPayment(payment);
+
+  applyPaymentPlan(d0,date);
+
+  await cloudUpsertDebt(
+    normalizeDebt(d0)
+  );
+
+  await pullCloud();
+
+  return true;
+}
+
+$('#bottomNav')
+  .addEventListener('click',e=>{
+    const b=e.target.closest('[data-view]');
+
+    if(b){
+      openView(b.dataset.view);
+    }
+  });
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-open]');
+
+  if(b){
+    openView(b.dataset.open);
+  }
+});
+
+$('#addDebtBtn').onclick=
+  ()=>openRecordDialog('debts');
+
+$('#addExpenseBtn').onclick=
+  ()=>openRecordDialog('expenses');
+
+$('#addPaymentBtn').onclick=
+  ()=>openRecordDialog('payments');
+
+$$('form').forEach(
+  f=>f.addEventListener(
+    'submit',
+    blurActiveFormControl,
+    {capture:true}
+  )
+);
+
+$$('.close-dialog').forEach(
+  b=>b.onclick=()=>{
+    blurActiveFormControl();
+    b.closest('dialog').close();
+  }
+);
+
+$('#debtSearch').oninput=
+  renderDebts;
+
+$('#debtFilter').onchange=
+  renderDebts;
+
+$('#debtOwnerFilter').onchange=
+  renderDebts;
+
+$('#expenseSearch').oninput=
+  renderExpenses;
+
+$('#expenseMonth').onchange=
+  renderExpenses;
+
+$('#paymentPeriodFilter').onchange=
+  renderPayments;
+
+$$('dialog').forEach(
+  d=>d.addEventListener(
+    'close',
+    blurActiveFormControl
+  )
+);
+
+$('#recordForm').addEventListener(
+  'submit',
+  async e=>{
+    e.preventDefault();
+
+    const fd=
+      Object.fromEntries(
+        new FormData(e.target)
+      );
+
+    const module=fd.module;
+    const id=fd.id||uid();
+
+    if(module==='debts'){
+      const old=
+        state.debts
+          .map(normalizeDebt)
+          .find(x=>x.id===id);
+
+      const base=
+        formDefaults(
+          module,
+          old||{}
+        );
+
+      const custom=
+        parseCustomValues(
+          fd,
+          module,
+          old?.custom||{}
+        );
+
+      const d=normalizeDebt({
+        ...base,
+        ...fd,
+        id,
+        custom,
+
+        original:
+          fd.original!==undefined
+            ?+fd.original
+            :(old?.original||+fd.balance||0),
+
+        balance:+fd.balance,
+
+        rate:
+          fd.rate!==undefined
+            ?+fd.rate
+            :(old?.rate||0),
+
+        minimum:
+          fd.minimum!==undefined
+            ?+fd.minimum
+            :(old?.minimum||0),
+
+        status:
+          old?.status||'active',
+
+        addedBy:
+          old?.addedBy||deviceName(),
+
+        createdAt:
+          old?.createdAt
+          ||new Date().toISOString(),
+
+        updatedAt:
+          new Date().toISOString()
+      });
+
+      if(
+        !fieldConfig('debts','original').visible
+        &&!old
+      ){
+        d.original=0;
+      }
+
+      if(
+        !fieldConfig('debts','balance').visible
+        &&!old
+      ){
+        d.balance=0;
+      }
+
+      const i=
+        state.debts.findIndex(
+          x=>x.id===id
+        );
+
+      if(i>=0){
+        state.debts[i]=d;
+      }else{
+        state.debts.push(d);
+      }
+
+      saveState();
+
+      $('#recordDialog').close();
+
+      toast(
+        i>=0
+          ?'Borç güncellendi.'
+          :'Borç eklendi.'
+      );
+
+      await saveDebtCloud(d);
+    }
+
+    else if(module==='expenses'){
+      const old=
+        state.expenses
+          .map(normalizeExpense)
+          .find(x=>x.id===id);
+
+      const base=
+        formDefaults(
+          module,
+          old||{}
+        );
+
+      const custom=
+        parseCustomValues(
+          fd,
+          module,
+          old?.custom||{}
+        );
+
+      const x=normalizeExpense({
+        ...base,
+        ...fd,
+        id,
+        custom,
+        amount:+fd.amount,
+
+        addedBy:
+          old?.addedBy||deviceName(),
+
+        createdAt:
+          old?.createdAt
+          ||new Date().toISOString(),
+
+        updatedAt:
+          new Date().toISOString()
+      });
+
+      const i=
+        state.expenses.findIndex(
+          v=>v.id===id
+        );
+
+      if(i>=0){
+        state.expenses[i]=x;
+      }else{
+        state.expenses.push(x);
+      }
+
+      saveState();
+
+      $('#recordDialog').close();
+
+      toast(
+        i>=0
+          ?'Harcama güncellendi.'
+          :'Harcama eklendi.'
+      );
+
+      await saveExpenseCloud(x);
+    }
+
+    else if(module==='payments'){
+      const amount=+fd.amount;
+
+      const d=
+        state.debts
+          .map(normalizeDebt)
+          .find(x=>x.id===fd.debtId);
+
+      if(!d||amount<=0){
+        return;
+      }
+
+      const custom=
+        parseCustomValues(
+          fd,
+          module,
+          {}
+        );
+
+      if(
+        await payCloud(
+          d.id,
+          amount,
+          fd.date,
+          fd.notes,
+          custom
+        )
+      ){
+        e.target
+          .closest('dialog')
+          .close();
+
+        toast(
+          'Ödeme buluta kaydedildi.'
+        );
+
+        return;
+      }
+
+      state.payments.push(
+        normalizePayment({
+          id,
+          debtId:d.id,
+          amount,
+          date:fd.date,
+          notes:fd.notes||'',
+          custom,
+          addedBy:deviceName()
+        })
+      );
+
+      const raw=
+        state.debts.find(
+          x=>x.id===d.id
+        );
+
+      applyPaymentPlan(
+        raw,
+        fd.date
+      );
+
+      saveState();
+
+      $('#recordDialog').close();
+
+      toast(
+        raw.status==='closed'
+          ?'Borç planı tamamlandı.'
+          :'Ödeme kaydedildi.'
+      );
+    }
+  }
+);
+
+$('#addIncomeBtn').onclick=
+  ()=>openIncomeDialog();
+
+$('#incomeForm [name="type"]')
+  .onchange=
+    toggleIncomeStudent;
+
+$('#incomeOwnerFilter').onchange=
+  renderIncomes;
+
+$('#incomeTypeFilter').onchange=
+  renderIncomes;
+
+$('#incomeMonth').onchange=
+  renderIncomes;
+
+$('#incomeForm').addEventListener(
+  'submit',
+  async e=>{
+    e.preventDefault();
+
+    const fd=
+      Object.fromEntries(
+        new FormData(e.target)
+      );
+
+    if(
+      fd.type==='Özel Ders'
+      &&!fd.student
+    ){
+      return toast(
+        'Özel ders için öğrenci seçin. '+
+        'Öğrencileri Ayarlar’dan ekleyebilirsiniz.'
+      );
+    }
+
+    const now=
+      new Date().toISOString();
+
+    const id=
+      fd.id||uid();
+
+    const old=
+      state.incomes
+        .map(normalizeIncome)
+        .find(x=>x.id===id);
+
+    const obj=
+      normalizeIncome({
+        id,
+        owner:fd.owner,
+        type:fd.type,
+
+        student:
+          fd.type==='Özel Ders'
+            ?fd.student
+            :'',
+
+        date:fd.date,
+        amount:+fd.amount||0,
+
+        addedBy:
+          old?.addedBy||deviceName(),
+
+        source:
+          old?.source||'',
+
+        sourceRecordId:
+          old?.sourceRecordId||'',
+
+        sourceStudentId:
+          old?.sourceStudentId||'',
+
+        automatic:
+          !!old?.automatic,
+
+        createdAt:
+          old?.createdAt||now,
+
+        updatedAt:now
+      });
+
+    const i=
+      state.incomes.findIndex(
+        x=>normalizeIncome(x).id===id
+      );
+
+    if(i>=0){
+      state.incomes[i]=obj;
+    }else{
+      state.incomes.push(obj);
+    }
+
+    $('#incomeDialog').close();
+
+    saveState(false);
+
+    if(session){
+      try{
+        await cloudUpsertIncome(obj);
+        await pullCloud();
+
+        toast(
+          'Gelir kaydedildi.'
+        );
+      }catch(er){
+        alert(
+          `Gelir buluta kaydedilemedi: ${er.message}`
+        );
+      }
+    }else{
+      renderAll();
+
+      toast(
+        'Gelir bu telefonda kaydedildi.'
+      );
+    }
+  }
+);
+
+$('#incomeList').addEventListener(
+  'click',
+  e=>{
+    const row=
+      e.target.closest('[data-income]');
+
+    if(!row){
+      return;
+    }
+
+    const income=
+      state.incomes
+        .map(normalizeIncome)
+        .find(
+          x=>x.id===row.dataset.income
+        );
+
+    if(income){
+      openIncomeDialog(income);
+    }
+  }
+);
+
+$('#deleteIncomeBtn').onclick=
+  async()=>{
+    const id=
+      $('#incomeForm [name="id"]').value;
+
+    if(!id){
+      return;
+    }
+
+    if(
+      !confirm(
+        'Bu gelir kaydı silinsin mi?'
+      )
+    ){
+      return;
+    }
+
+    try{
+      if(session){
+        await deleteCloud(
+          'gelirler',
+          id
+        );
+
+        await pullCloud();
+      }else{
+        state.incomes=
+          state.incomes.filter(
+            x=>normalizeIncome(x).id!==id
+          );
+
+        saveState();
+      }
+
+      $('#incomeDialog').close();
+
+      toast(
+        'Gelir silindi.'
+      );
+
+    }catch(er){
+      alert(er.message);
+    }
+  };
+
+$('#budgetForm').addEventListener(
+  'submit',
+  async e=>{
+    e.preventDefault();
+
+    const fd=
+      Object.fromEntries(
+        new FormData(e.target)
+      );
+
+    state.budget={
+      orgName:fd.orgName||'',
+      income:+fd.income||0,
+      fixedExpenses:+fd.fixedExpenses||0,
+      reserve:+fd.reserve||0
+    };
+
+    saveState();
+
+    toast(
+      'Bütçe kaydedildi.'
+    );
+
+    await saveBudgetCloud();
+  }
+);
+
+$('#saveDeviceName').onclick=()=>{
+  const name=
+    $('#deviceName')
+      .value
+      .trim();
+
+  localStorage.setItem(
+    DEVICE_KEY,
+    name||'Bu telefon'
+  );
+
+  toast(
+    'Telefon adı kaydedildi.'
+  );
+};
+
+$('#saveApplicationName').onclick=
+  async()=>{
+    appConfig.applicationName=
+      $('#applicationName')
+        .value
+        .trim()
+      ||'Borç ve Gelir Asistanım';
+
+    await persistAppConfig();
+  };
+
+$('#saveListsBtn').onclick=
+  async()=>{
+    const cats=
+      $('#expenseCategories')
+        .value
+        .split('\n')
+        .map(x=>x.trim())
+        .filter(Boolean);
+
+    const methods=
+      $('#paymentMethods')
+        .value
+        .split('\n')
+        .map(x=>x.trim())
+        .filter(Boolean);
+
+    if(
+      !cats.length
+      ||!methods.length
+    ){
+      return toast(
+        'Listeler boş bırakılamaz.'
+      );
+    }
+
+    appConfig.lists.expenseCategories=[
+      ...new Set(cats)
+    ];
+
+    appConfig.lists.paymentMethods=[
+      ...new Set(methods)
+    ];
+
+    await persistAppConfig();
+  };
+
+$('#saveIncomeStudentsBtn').onclick=
+  async()=>{
+    const students=
+      $('#incomeStudents')
+        .value
+        .split('\n')
+        .map(x=>x.trim())
+        .filter(Boolean);
+
+    appConfig.lists.incomeStudents=[
+      ...new Set(students)
+    ];
+
+    await persistAppConfig();
+
+    toast(
+      'Öğrenci listesi kaydedildi.'
+    );
+  };
+
+$('#menuManager').addEventListener(
+  'change',
+  async e=>{
+    const row=
+      e.target.closest(
+        '[data-menu-index]'
+      );
+
+    if(
+      !row
+      ||!e.target.matches(
+        '[data-menu-label]'
+      )
+    ){
+      return;
+    }
+
+    const i=
+      +row.dataset.menuIndex;
+
+    const m=
+      appConfig.menus[i];
+
+    m.label=
+      e.target.value.trim()
+      ||defaultAppConfig.menus.find(
+        x=>x.view===m.view
+      )?.label
+      ||m.view;
+
+    await persistAppConfig();
+  }
+);
+
+$('#menuManager').addEventListener(
+  'click',
+  async e=>{
+    const row=
+      e.target.closest(
+        '[data-menu-index]'
+      );
+
+    if(!row){
+      return;
+    }
+
+    const i=
+      +row.dataset.menuIndex;
+
+    const m=
+      appConfig.menus[i];
+
+    if(
+      e.target.matches(
+        '[data-menu-toggle]'
+      )
+      &&!m.locked
+    ){
+      m.visible=!m.visible;
+
+      await persistAppConfig();
+      return;
+    }
+
+    if(
+      e.target.matches(
+        '[data-menu-up]'
+      )
+    ){
+      swap(
+        appConfig.menus,
+        i,
+        i-1
+      );
+    }
+
+    else if(
+      e.target.matches(
+        '[data-menu-down]'
+      )
+    ){
+      swap(
+        appConfig.menus,
+        i,
+        i+1
+      );
+    }
+
+    else{
+      return;
+    }
+
+    await persistAppConfig();
+  }
+);
+
+$('#fieldModuleSelect').onchange=
+  renderFieldManager;
+
+$('#builtInFieldManager')
+  .addEventListener(
+    'change',
+    async e=>{
+      const row=
+        e.target.closest(
+          '[data-built-index]'
+        );
+
+      if(
+        !row
+        ||!e.target.matches(
+          '[data-built-label]'
+        )
+      ){
+        return;
+      }
+
+      const module=
+        $('#fieldModuleSelect').value;
+
+      const i=
+        +row.dataset.builtIndex;
+
+      const f=
+        appConfig.fields[module]
+          .builtIns[i];
+
+      f.label=
+        e.target.value.trim()
+        ||defaultAppConfig
+          .fields[module]
+          .builtIns
+          .find(
+            x=>x.id===f.id
+          )?.label
+        ||f.id;
+
+      await persistAppConfig();
+    }
+  );
+
+$('#builtInFieldManager')
+  .addEventListener(
+    'click',
+    async e=>{
+      const row=
+        e.target.closest(
+          '[data-built-index]'
+        );
+
+      if(!row){
+        return;
+      }
+
+      const module=
+        $('#fieldModuleSelect').value;
+
+      const i=
+        +row.dataset.builtIndex;
+
+      const arr=
+        appConfig.fields[module]
+          .builtIns;
+
+      const f=arr[i];
+
+      if(
+        e.target.matches(
+          '[data-built-toggle]'
+        )
+        &&!f.locked
+      ){
+        f.visible=!f.visible;
+
+        await persistAppConfig();
+        return;
+      }
+
+      if(
+        e.target.matches(
+          '[data-built-up]'
+        )
+      ){
+        swap(
+          arr,
+          i,
+          i-1
+        );
+      }
+
+      else if(
+        e.target.matches(
+          '[data-built-down]'
+        )
+      ){
+        swap(
+          arr,
+          i,
+          i+1
+        );
+      }
+
+      else{
+        return;
+      }
+
+      await persistAppConfig();
+    }
+  );
+
+$('#addCustomFieldBtn').onclick=()=>{
+  const f=$('#customFieldForm');
+
+  f.reset();
+
+  f.querySelector(
+    '[name="fieldId"]'
+  ).value='';
+
+  $('#customOptionsWrap')
+    .classList
+    .add('hidden');
+
+  $('#customFieldDialog')
+    .showModal();
+};
+
+$('#customFieldForm [name="type"]')
+  .onchange=e=>
+    $('#customOptionsWrap')
+      .classList
+      .toggle(
+        'hidden',
+        e.target.value!=='select'
+      );
+
+$('#customFieldForm').addEventListener(
+  'submit',
+  async e=>{
+    e.preventDefault();
+
+    const fd=
+      Object.fromEntries(
+        new FormData(e.target)
+      );
+
+    const module=
+      $('#fieldModuleSelect').value;
+
+    const arr=
+      appConfig.fields[module].custom;
+
+    const id=
+      fd.fieldId||uid();
+
+    const obj={
+      id,
+      label:fd.label.trim(),
+      type:fd.type,
+      required:fd.required==='on',
+      visible:true,
+
+      options:
+        fd.type==='select'
+          ?fd.options
+            .split('\n')
+            .map(x=>x.trim())
+            .filter(Boolean)
+          :[]
+    };
+
+    const i=
+      arr.findIndex(
+        x=>x.id===id
+      );
+
+    if(i>=0){
+      obj.visible=
+        arr[i].visible!==false;
+    }
+
+    if(i>=0){
+      arr[i]=obj;
+    }else{
+      arr.push(obj);
+    }
+
+    $('#customFieldDialog')
+      .close();
+
+    await persistAppConfig();
+  }
+);
+
+$('#customFieldManager').addEventListener(
+  'click',
+  async e=>{
+    const row=
+      e.target.closest(
+        '[data-custom-index]'
+      );
+
+    if(!row){
+      return;
+    }
+
+    const module=
+      $('#fieldModuleSelect').value;
+
+    const i=
+      +row.dataset.customIndex;
+
+    const arr=
+      appConfig.fields[module].custom;
+
+    const f=arr[i];
+
+    if(
+      e.target.matches(
+        '[data-custom-toggle]'
+      )
+    ){
+      f.visible=
+        f.visible===false;
+
+      await persistAppConfig();
+      return;
+    }
+
+    if(
+      e.target.matches(
+        '[data-custom-edit]'
+      )
+    ){
+      const form=
+        $('#customFieldForm');
+
+      form.querySelector(
+        '[name="fieldId"]'
+      ).value=f.id;
+
+      form.querySelector(
+        '[name="label"]'
+      ).value=f.label;
+
+      form.querySelector(
+        '[name="type"]'
+      ).value=f.type;
+
+      form.querySelector(
+        '[name="options"]'
+      ).value=
+        (f.options||[]).join('\n');
+
+      form.querySelector(
+        '[name="required"]'
+      ).checked=!!f.required;
+
+      $('#customOptionsWrap')
+        .classList
+        .toggle(
+          'hidden',
+          f.type!=='select'
+        );
+
+      $('#customFieldDialog')
+        .showModal();
+
+      return;
+    }
+
+    if(
+      e.target.matches(
+        '[data-custom-delete]'
+      )
+    ){
+      if(
+        !confirm(
+          `“${f.label}” alanı formdan kaldırılsın mı? `+
+          `Eski kayıtlardaki veri güvenlik için silinmez.`
+        )
+      ){
+        return;
+      }
+
+      arr.splice(i,1);
+    }
+
+    else if(
+      e.target.matches(
+        '[data-custom-up]'
+      )
+    ){
+      swap(
+        arr,
+        i,
+        i-1
+      );
+    }
+
+    else if(
+      e.target.matches(
+        '[data-custom-down]'
+      )
+    ){
+      swap(
+        arr,
+        i,
+        i+1
+      );
+    }
+
+    else{
+      return;
+    }
+
+    await persistAppConfig();
+  }
+);
+
+document.addEventListener(
+  'click',
+  async e=>{
+    if(
+      e.target.closest(
+        '.close-detail'
+      )
+    ){
+      $('#detailDialog').close();
+      return;
+    }
+
+    const debt=
+      e.target.closest(
+        '[data-debt]'
+      );
+
+    if(debt){
+      const d=
+        state.debts
+          .map(normalizeDebt)
+          .find(
+            x=>x.id===debt.dataset.debt
+          );
+
+      if(d){
+        showDetail(
+          'debts',
+          d
+        );
+      }
+
+      return;
+    }
+
+    const expense=
+      e.target.closest(
+        '[data-expense]'
+      );
+
+    if(expense){
+      const x=
+        state.expenses
+          .map(normalizeExpense)
+          .find(
+            v=>v.id===expense.dataset.expense
+          );
+
+      if(x){
+        showDetail(
+          'expenses',
+          x
+        );
+      }
+
+      return;
+    }
+
+    const payment=
+      e.target.closest(
+        '[data-payment]'
+      );
+
+    if(payment){
+      const p=
+        state.payments
+          .map(normalizePayment)
+          .find(
+            v=>v.id===payment.dataset.payment
+          );
+
+      if(p){
+        showDetail(
+          'payments',
+          p
+        );
+      }
+
+      return;
+    }
+
+    const pay=
+      e.target.closest('[data-pay]');
+
+    if(pay){
+      $('#detailDialog').close();
+
+      openRecordDialog(
+        'payments',
+        {
+          debtId:pay.dataset.pay,
+          date:todayISO()
+        }
+      );
+
+      return;
+    }
+
+    const edit=
+      e.target.closest(
+        '[data-edit-record]'
+      );
+
+    if(edit){
+      const module=
+        edit.dataset.editRecord;
+
+      const id=
+        edit.dataset.recordId;
+
+      const record=
+        module==='debts'
+          ?state.debts
+            .map(normalizeDebt)
+            .find(x=>x.id===id)
+          :state.expenses
+            .map(normalizeExpense)
+            .find(x=>x.id===id);
+
+      $('#detailDialog').close();
+
+      if(record){
+        openRecordDialog(
+          module,
+          record
+        );
+      }
+
+      return;
+    }
+
+    const del=
+      e.target.closest(
+        '[data-delete-record]'
+      );
+
+    if(del){
+      const module=
+        del.dataset.deleteRecord;
+
+      const id=
+        del.dataset.recordId;
+
+      if(
+        !confirm(
+          'Bu kayıt silinsin mi?'
+        )
+      ){
+        return;
+      }
+
+      try{
+        if(session){
+          const table={
+            debts:'borclar',
+            expenses:'harcamalar',
+            payments:'odemeler'
+          }[module];
+
+          await deleteCloud(
+            table,
+            id
+          );
+
+          await pullCloud();
+        }
+
+        else if(module==='debts'){
+          state.debts=
+            state.debts.filter(
+              x=>x.id!==id
+            );
+
+          state.payments=
+            state.payments.filter(
+              x=>
+                normalizePayment(x)
+                  .debtId!==id
+            );
+
+          saveState();
+        }
+
+        else if(module==='expenses'){
+          state.expenses=
+            state.expenses.filter(
+              x=>x.id!==id
+            );
+
+          saveState();
+        }
+
+        else{
+          state.payments=
+            state.payments.filter(
+              x=>x.id!==id
+            );
+
+          saveState();
+        }
+
+        $('#detailDialog').close();
+
+        toast(
+          'Kayıt silindi.'
+        );
+
+      }catch(er){
+        alert(er.message);
+      }
+    }
+  }
+);
+
+$('#exportBtn').onclick=()=>{
+  const blob=new Blob(
+    [
+      JSON.stringify(
+        {state,appConfig},
+        null,
+        2
+      )
+    ],
+    {
+      type:'application/json'
+    }
+  );
+
+  const a=
+    document.createElement('a');
+
+  a.href=
+    URL.createObjectURL(blob);
+
+  a.download=
+    `kurum-finans-yedek-${todayISO()}.json`;
+
+  a.click();
+
+  URL.revokeObjectURL(a.href);
+};
+
+$('#importInput').onchange=
+  async e=>{
+    const f=e.target.files[0];
+
+    if(!f){
+      return;
+    }
+
+    try{
+      const data=
+        JSON.parse(
+          await f.text()
+        );
+
+      if(data.state){
+        state={
+          ...clone(defaultState),
+          ...data.state
+        };
+
+        if(data.appConfig){
+          appConfig=
+            mergeAppConfig(
+              data.appConfig
+            );
+        }
+      }else{
+        state={
+          ...clone(defaultState),
+          ...data
+        };
+      }
+
+      saveState(false);
+      saveAppConfig(false);
+      renderAll();
+
+      toast(
+        'Yedek yüklendi.'
+      );
+
+      if(
+        session
+        &&confirm(
+          'Yedek buluta da gönderilsin mi?'
+        )
+      ){
+        await pushLocalToCloud();
+      }
+
+    }catch{
+      alert(
+        'Geçersiz yedek dosyası.'
+      );
+    }
+
+    e.target.value='';
+  };
+
+$('#resetBtn').onclick=()=>{
+  if(
+    confirm(
+      'Yalnız bu telefondaki yerel önbellek temizlenecek. '+
+      'Buluttaki veriler silinmez. Devam?'
+    )
+  ){
+    state=
+      clone(defaultState);
+
+    appConfig=
+      clone(defaultAppConfig);
+
+    saveState(false);
+    saveAppConfig(false);
+    renderAll();
+
+    toast(
+      'Yerel veri temizlendi.'
+    );
+  }
+};
+
+function openCloudDialog(){
+  if(cloud.url){
+    $('#supabaseUrl').value=
+      cloud.url;
+  }
+
+  if(cloud.key){
+    $('#supabaseKey').value=
+      cloud.key;
+  }
+
+  renderCloud();
+
+  $('#cloudDialog')
+    .showModal();
+}
+
+$('#openCloudSetup').onclick=
+  openCloudDialog;
+
+$('#cloudSetupBtn').onclick=
+  openCloudDialog;
+
+$('#saveCloudConfig').onclick=
+  async()=>{
+    const url=
+      $('#supabaseUrl')
+        .value
+        .trim()
+        .replace(/\/$/,'');
+
+    const key=
+      $('#supabaseKey')
+        .value
+        .trim();
+
+    if(
+      !/^https:\/\/.+\.supabase\.co$/.test(url)
+      ||key.length<20
+    ){
+      return toast(
+        'Geçerli Supabase URL ve key girin.'
+      );
+    }
+
+    cloud={url,key};
+
+    localStorage.setItem(
+      CONFIG_KEY,
+      JSON.stringify(cloud)
+    );
+
+    sb=null;
+    session=null;
+
+    await initSupabase();
+
+    renderCloud();
+
+    toast(
+      'Bulut bağlantısı kaydedildi.'
+    );
+  };
+
+$('#loginBtn').onclick=
+  login;
+
+$('#registerBtn').onclick=
+  register;
+
+$('#logoutBtn').onclick=
+  logout;
+
+$('#cloudLogoutButton').onclick=
+  logout;
+
+$('#syncNowBtn').onclick=
+  ()=>session
+    ?pullCloud()
+    :toast(
+      'Önce kurum hesabına giriş yapın.'
+    );
+
+$('#cloudSyncButton').onclick=
+  pushLocalToCloud;
+
+window.addEventListener(
+  'focus',
+  ()=>{
+    if(session){
+      pullCloud();
+    }
+  }
+);
+
+document.addEventListener(
+  'visibilitychange',
+  ()=>{
+    if(
+      document.visibilityState==='visible'
+      &&session
+    ){
+      pullCloud();
+    }
+  }
+);
+
+setInterval(
+  ()=>{
+    if(
+      session
+      &&document.visibilityState==='visible'
+    ){
+      pullCloud();
+    }
+  },
+  20000
+);
+
+window.addEventListener(
+  'beforeinstallprompt',
+  e=>{
+    e.preventDefault();
+
+    deferredPrompt=e;
+
+    $('#installBtn')
+      .classList
+      .remove('hidden');
+  }
+);
+
+$('#installBtn').onclick=
+  async()=>{
+    if(!deferredPrompt){
+      return;
+    }
+
+    deferredPrompt.prompt();
+
+    await deferredPrompt.userChoice;
+
+    deferredPrompt=null;
+
+    $('#installBtn')
+      .classList
+      .add('hidden');
+  };
+
+if(
+  location.search.includes('error_code=')
+  ||location.hash.includes('error_code=')
+){
+  history.replaceState(
+    {},
+    document.title,
+    location.pathname
+  );
+}
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker
+    .register(
+      './sw.js?v=160',
+      {updateViaCache:'none'}
+    )
+    .then(reg=>reg.update())
+    .catch(console.error);
+}
+
+renderAll();
+initSupabase();
