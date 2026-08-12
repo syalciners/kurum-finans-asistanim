@@ -428,3 +428,157 @@
   #debts #debtList .list-card[data-debt] .amount{font-size:14px!important}
   #detailDialog .v179-detail-main strong{font-size:21px!important}
 }
+
+/* V211: Takvim ve genel son görsel polish. */
+.app-shell{padding-bottom:118px!important;scroll-padding-bottom:118px!important}
+.toast{bottom:106px!important;max-width:calc(100% - 28px)!important;text-align:center!important}
+#calendar #v175CalendarKpis{
+  gap:8px!important;
+  margin:-4px 0 12px!important;
+}
+#calendar #v175CalendarKpis .v175-quick-card{
+  min-height:68px!important;
+  padding:11px 10px!important;
+  text-align:left!important;
+  align-content:center!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 1px 5px rgba(15,23,42,.025)!important;
+}
+#calendar #v175CalendarKpis [data-calendar-quick="overdue"]{border-top:3px solid #ef4444!important}
+#calendar #v175CalendarKpis [data-calendar-quick="week"]{border-top:3px solid #f59e0b!important}
+#calendar #v175CalendarKpis [data-calendar-quick="all"]{border-top:3px solid #148a86!important}
+#calendar #v175CalendarKpis .v175-quick-card span{
+  font-size:9px!important;
+  font-weight:830!important;
+  color:#7c8aa0!important;
+}
+#calendar #v175CalendarKpis .v175-quick-card strong{
+  margin-top:2px!important;
+  font-size:17px!important;
+  font-weight:870!important;
+}
+#calendar #v175CalendarKpis .v175-quick-card small{
+  margin-top:1px!important;
+  font-size:9px!important;
+}
+#calendar #v175CalendarKpis [data-calendar-quick="overdue"].active{
+  background:#fef2f2!important;
+  border-color:#f3bfc4!important;
+}
+#calendar #v175CalendarKpis [data-calendar-quick="overdue"].active span,
+#calendar #v175CalendarKpis [data-calendar-quick="overdue"].active strong,
+#calendar #v175CalendarKpis [data-calendar-quick="overdue"].active small{color:#d84343!important}
+#calendar #v175CalendarKpis [data-calendar-quick="week"].active{
+  background:#fff7e8!important;
+  border-color:#f3d49a!important;
+}
+#calendar #v175CalendarKpis [data-calendar-quick="week"].active span,
+#calendar #v175CalendarKpis [data-calendar-quick="week"].active strong,
+#calendar #v175CalendarKpis [data-calendar-quick="week"].active small{color:#c97800!important}
+#calendar #v175CalendarKpis [data-calendar-quick="all"].active{
+  background:#ecfdf9!important;
+  border-color:#afe2d9!important;
+}
+#calendar #v175CalendarKpis [data-calendar-quick="all"].active span,
+#calendar #v175CalendarKpis [data-calendar-quick="all"].active strong,
+#calendar #v175CalendarKpis [data-calendar-quick="all"].active small{color:#148a86!important}
+#calendar .bs-calendar-sort{margin:0 0 12px!important}
+#calendar .bs-calendar-sort label{
+  width:min(100%,240px)!important;
+  min-height:42px!important;
+  padding:6px 8px!important;
+  border-radius:12px!important;
+  box-shadow:0 1px 4px rgba(15,23,42,.02)!important;
+}
+#calendar .v175-calendar-group{
+  position:relative!important;
+  margin:16px 2px 7px!important;
+  padding:0 2px 7px!important;
+  border-bottom:1px solid #e9eef5!important;
+}
+#calendar .v175-calendar-group strong{
+  font-size:11px!important;
+  font-weight:860!important;
+}
+#calendar .v175-calendar-group small{
+  font-size:9px!important;
+  font-weight:700!important;
+}
+#calendar #calendarList{
+  gap:8px!important;
+}
+#calendar #calendarList .list-card[data-debt]{
+  align-items:flex-start!important;
+  padding:12px 13px!important;
+  border-left:3px solid #8eb1ff!important;
+  border-radius:14px!important;
+  background:#fff!important;
+}
+#calendar #calendarList .list-card[data-debt]:has(.badge.red){
+  border-left-color:#ef4444!important;
+  background:#fffafa!important;
+}
+#calendar #calendarList .list-card[data-debt]:has(.badge.orange){
+  border-left-color:#f59e0b!important;
+  background:#fffdfa!important;
+}
+#calendar #calendarList .list-card[data-debt] .main{
+  gap:4px!important;
+  min-width:0!important;
+}
+#calendar #calendarList .list-card[data-debt] .main>strong{
+  font-size:12.5px!important;
+  line-height:1.25!important;
+}
+#calendar #calendarList .list-card[data-debt] .main>small{
+  font-size:9px!important;
+  line-height:1.4!important;
+}
+#calendar #calendarList .list-card[data-debt] .badge{
+  padding:3px 7px!important;
+  font-size:8px!important;
+  font-weight:830!important;
+}
+#calendar #calendarList .list-card[data-debt] .amount{
+  min-width:92px!important;
+  margin-left:auto!important;
+  color:#2563eb!important;
+  font-size:14.5px!important;
+  font-weight:870!important;
+  line-height:1.15!important;
+}
+#calendar #calendarList .list-card[data-debt]:has(.badge.red) .amount{color:#d84343!important}
+#calendar #calendarList .list-card[data-debt]:has(.badge.orange) .amount{color:#c97800!important}
+#calendar #calendarList .amount .bs-calendar-pay{
+  min-width:72px!important;
+  margin-top:7px!important;
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  border:1px solid #c7d8ff!important;
+  background:#eff6ff!important;
+  color:#2563eb!important;
+  box-shadow:none!important;
+  font-size:9px!important;
+  font-weight:850!important;
+}
+#calendar #calendarList .amount .bs-calendar-pay.partial{
+  border-color:#f2d59e!important;
+  background:#fff7e8!important;
+  color:#c97800!important;
+}
+#calendar #calendarList .amount .bs-calendar-pay:active{transform:scale(.97)!important}
+.empty{box-shadow:none!important}
+@media(max-width:520px){
+  .app-shell{padding-bottom:116px!important}
+  .toast{bottom:104px!important}
+  #calendar #v175CalendarKpis{gap:6px!important}
+  #calendar #v175CalendarKpis .v175-quick-card{
+    min-height:64px!important;
+    padding:10px 7px!important;
+  }
+  #calendar #v175CalendarKpis .v175-quick-card strong{font-size:15px!important}
+  #calendar .bs-calendar-sort label{width:100%!important}
+  #calendar #calendarList .list-card[data-debt]{padding:11px 12px!important;gap:9px!important}
+  #calendar #calendarList .list-card[data-debt] .amount{min-width:82px!important;font-size:13.5px!important}
+}
