@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.2.2 - Ödeme / toplam borç bakiyesi bütünlüğü */
+/* BS OFİS BÜTÇE V2.2.3 - Ödeme / toplam borç bakiyesi bütünlüğü */
 (() => {
   if(window.__bsDebtBalanceV222Loaded) return;
   window.__bsDebtBalanceV222Loaded=true;
@@ -97,13 +97,18 @@
       const grid=document.querySelector('#detailContent .detail-grid');
       if(!grid || grid.querySelector('.bs-debt-balance-row')) return;
 
+      const exactBankPlan=(
+        d.custom?.plan_type==='exact_bank_schedule'
+        ||Array.isArray(d.custom?.installment_schedule)
+      );
+
       let value='Tanımlanmadı';
       let color='#c97800';
       let suffix='';
 
       if((+d.balance||0)>EPS){
         value=money(Math.max(0,+d.balance||0));
-        color='';
+        color=exactBankPlan?'#2563eb':'';
       }else if(resolved.tracked && resolved.source==='plan'){
         value=money(resolved.amount);
         color='#2563eb';
