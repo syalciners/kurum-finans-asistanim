@@ -1,10 +1,10 @@
-const CACHE='bs-ofis-butce-ui218-core-cleanup-20260813';
+const CACHE='bs-ofis-butce-ui219-visual-standard-20260813';
 const ASSETS=[
-  './?v=218',
-  './index.html?v=218',
-  './styles.css?v=211',
+  './?v=219',
+  './index.html?v=219',
+  './styles.css?v=219',
   './app.js?v=176',
-  './core-compat.js?v=218',
+  './core-compat.js?v=219',
   './v17-ui.js?v=218',
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
@@ -14,7 +14,7 @@ const ASSETS=[
   './ui.js?v=217',
   './payment-plan.js?v=200',
   './payment-schedule.js?v=198',
-  './manifest.webmanifest?v=218',
+  './manifest.webmanifest?v=219',
   './bs-budget-mark-v194.svg?v=195',
   './bs-budget-logo-v194.svg',
   './bs-budget-mark.svg?v=194',
@@ -56,7 +56,7 @@ self.addEventListener('fetch',e=>{
       })
       .catch(() =>
         caches.match(e.request)
-          .then(r=>r||caches.match('./?v=218')||caches.match('./index.html?v=218'))
+          .then(r=>r||caches.match('./?v=219')||caches.match('./index.html?v=219'))
       )
   );
 });
