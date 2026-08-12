@@ -214,7 +214,7 @@
   // Kısmi ödeme / taksit planı iş mantığı.
   if(!document.querySelector('script[data-payment-plan-loader]')){
     const script = document.createElement('script');
-    script.src = 'payment-plan.js?v=196';
+    script.src = 'payment-plan.js?v=200';
     script.dataset.paymentPlanLoader = '1';
     document.head.appendChild(script);
   }
