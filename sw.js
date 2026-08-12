@@ -13,7 +13,7 @@ const ASSETS=[
   './v180-ui.js?v=180',
   './v181-ui.js?v=181',
   './v182-ui.js?v=182',
-  './manifest.webmanifest?v=180',
+  './manifest.webmanifest?v=182',
   './bs-budget-mark.svg?v=182',
   './bs-budget-logo.svg?v=180'
 ];
