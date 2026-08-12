@@ -2,3 +2,37 @@
 
 /* V1.4 sade mobil finans düzeni */
 .summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:4px 0 20px}.summary-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;display:grid;gap:5px;box-shadow:0 4px 16px rgba(20,33,61,.04)}.summary-card span,.summary-card small{font-size:12px;color:var(--muted)}.summary-card strong{font-size:22px}.summary-card.income strong{color:var(--success)}.summary-card.paid strong{color:var(--accent)}.summary-card.remaining strong{color:var(--orange)}.payment-filter-row{display:flex;justify-content:flex-end;margin:-4px 0 12px}.payment-filter-row select{width:auto;min-width:130px}.debt-toolbar{grid-template-columns:minmax(120px,1fr) auto auto}.top-actions .icon-btn.active{background:#dfe9ff;color:var(--accent)}@media(max-width:480px){.debt-toolbar{grid-template-columns:1fr 1fr}.debt-toolbar input{grid-column:1/-1}.summary-card strong{font-size:20px}}
+
+/* V207: üst bar ve alt sekme zemini daha yumuşak, kavisli yüzeyler. */
+.app-shell > .topbar{
+  margin:0 2px 16px!important;
+  border:1px solid var(--bs-line,var(--line))!important;
+  border-top:0!important;
+  border-radius:0 0 20px 20px!important;
+  box-shadow:0 5px 16px rgba(15,23,42,.055)!important;
+  overflow:hidden;
+}
+.app-shell > .bottom-nav{
+  left:50%!important;
+  right:auto!important;
+  bottom:8px!important;
+  width:min(calc(100% - 20px),800px)!important;
+  transform:translateX(-50%)!important;
+  border:1px solid var(--bs-line,var(--line))!important;
+  border-radius:19px!important;
+  box-shadow:0 -3px 16px rgba(15,23,42,.07)!important;
+  padding-top:7px!important;
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+@media(max-width:520px){
+  .app-shell > .topbar{
+    margin:0 0 14px!important;
+    border-radius:0 0 18px 18px!important;
+  }
+  .app-shell > .bottom-nav{
+    width:calc(100% - 16px)!important;
+    bottom:8px!important;
+    border-radius:18px!important;
+  }
+}
