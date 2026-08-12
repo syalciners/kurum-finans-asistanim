@@ -1,13 +1,13 @@
-const CACHE='bs-ofis-butce-ui218-core-compat-20260813';
+const CACHE='bs-ofis-butce-ui218-core-cleanup-20260813';
 const ASSETS=[
   './?v=218',
   './index.html?v=218',
   './styles.css?v=211',
   './app.js?v=176',
   './core-compat.js?v=218',
-  './v17-ui.js?v=216',
+  './v17-ui.js?v=218',
   './v175-ui.js?v=175',
-  './v176-ui.js?v=214',
+  './v176-ui.js?v=218',
   './v177-ui.js?v=214',
   './v178-ui.js?v=214',
   './v179-ui.js?v=179',
