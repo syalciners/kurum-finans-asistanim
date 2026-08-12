@@ -582,3 +582,185 @@
   #calendar #calendarList .list-card[data-debt]{padding:11px 12px!important;gap:9px!important}
   #calendar #calendarList .list-card[data-debt] .amount{min-width:82px!important;font-size:13.5px!important}
 }
+
+/* V219: üst bar, sekmeler ve Gelirler ekranı ortak görsel standardı. */
+.app-shell > .topbar{
+  margin:6px 2px 16px!important;
+  border:1px solid var(--bs-line,var(--line))!important;
+  border-radius:19px!important;
+  box-shadow:0 5px 18px rgba(15,23,42,.055)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+.app-shell > .bottom-nav{
+  gap:2px!important;
+  padding:6px 7px calc(6px + env(safe-area-inset-bottom))!important;
+  border-radius:19px!important;
+  box-shadow:0 6px 24px rgba(15,23,42,.10)!important;
+}
+.app-shell > .bottom-nav .nav-btn{
+  min-height:52px!important;
+  border-radius:13px!important;
+  padding:5px 4px!important;
+}
+.app-shell > .bottom-nav .nav-btn.active{
+  background:#f8faff!important;
+}
+.app-shell > .bottom-nav .nav-btn.active span{
+  background:#eaf1ff!important;
+}
+
+#incomes > .kpi-grid{
+  gap:8px!important;
+  margin:0 0 9px!important;
+}
+#incomes > .kpi-grid .kpi{
+  min-height:94px!important;
+  padding:13px 14px!important;
+  align-content:start!important;
+  border-radius:15px!important;
+  box-shadow:0 1px 6px rgba(15,23,42,.025)!important;
+}
+#incomes > .kpi-grid .kpi span{
+  font-size:10px!important;
+  font-weight:820!important;
+  color:#64748b!important;
+}
+#incomes > .kpi-grid .kpi strong{
+  margin-top:7px!important;
+  font-size:22px!important;
+  font-weight:870!important;
+  letter-spacing:-.03em!important;
+}
+#incomes > .kpi-grid .kpi small{
+  margin-top:2px!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+}
+#incomes > .kpi-grid [data-income-main-filter="all"]{
+  border-top:3px solid #148a86!important;
+}
+#incomes > .kpi-grid [data-income-main-filter="all"] strong{
+  color:#148a86!important;
+}
+#incomes > .kpi-grid [data-income-main-filter="lesson"]{
+  border-top:3px solid #2563eb!important;
+}
+#incomes > .kpi-grid [data-income-main-filter="lesson"] strong{
+  color:#2563eb!important;
+}
+#incomes > .kpi-grid [data-income-main-filter="all"].active{
+  background:#f1fbf9!important;
+  border-color:#afe2d9!important;
+  border-top-color:#148a86!important;
+  box-shadow:inset 0 3px 0 #148a86,0 1px 6px rgba(20,138,134,.04)!important;
+}
+#incomes > .kpi-grid [data-income-main-filter="all"].active span,
+#incomes > .kpi-grid [data-income-main-filter="all"].active strong,
+#incomes > .kpi-grid [data-income-main-filter="all"].active small{
+  color:#148a86!important;
+}
+#incomes > .kpi-grid [data-income-main-filter="lesson"].active{
+  background:#eff6ff!important;
+  border-color:#c7d8ff!important;
+  border-top-color:#2563eb!important;
+  box-shadow:inset 0 3px 0 #2563eb,0 1px 6px rgba(37,99,235,.04)!important;
+}
+#incomes > .kpi-grid [data-income-main-filter="lesson"].active span,
+#incomes > .kpi-grid [data-income-main-filter="lesson"].active strong,
+#incomes > .kpi-grid [data-income-main-filter="lesson"].active small{
+  color:#2563eb!important;
+}
+#incomes #incomeOwnerKpis{
+  margin:0 0 12px!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi{
+  min-height:58px!important;
+  padding:9px 10px!important;
+}
+#incomes .toolbar.debt-toolbar{
+  padding:7px!important;
+  border:1px solid var(--bs-line,var(--line))!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  box-shadow:0 1px 5px rgba(15,23,42,.022)!important;
+}
+#incomes .toolbar.debt-toolbar select{
+  min-height:42px!important;
+  border-color:#d7e0eb!important;
+  background:#fbfcfe!important;
+}
+#incomes #incomeList{
+  gap:8px!important;
+}
+#incomes #incomeList .list-card{
+  align-items:flex-start!important;
+  padding:13px 14px!important;
+  border-left:3px solid #8fd5c8!important;
+  border-radius:14px!important;
+}
+#incomes #incomeList .list-card .main{
+  gap:4px!important;
+}
+#incomes #incomeList .list-card .main>strong{
+  font-size:12.5px!important;
+  line-height:1.25!important;
+}
+#incomes #incomeList .list-card .main>small{
+  font-size:9px!important;
+  line-height:1.35!important;
+}
+#incomes #incomeList .list-card .amount{
+  margin-left:auto!important;
+  color:#148a86!important;
+  font-size:15px!important;
+  font-weight:870!important;
+  line-height:1.15!important;
+}
+#incomes #incomeList .income-bs-card{
+  border-left-color:#8eb1ff!important;
+  background:#fcfdff!important;
+}
+#incomes #incomeList .income-bs-card .amount{
+  color:#2563eb!important;
+}
+@media(max-width:520px){
+  .app-shell > .topbar{
+    margin:4px 0 14px!important;
+    border-radius:17px!important;
+  }
+  .app-shell > .bottom-nav{
+    border-radius:17px!important;
+    padding-left:5px!important;
+    padding-right:5px!important;
+  }
+  .app-shell > .bottom-nav .nav-btn{
+    min-height:50px!important;
+    border-radius:11px!important;
+  }
+  #incomes > .kpi-grid .kpi{
+    min-height:88px!important;
+    padding:12px!important;
+  }
+  #incomes > .kpi-grid .kpi strong{
+    font-size:19px!important;
+  }
+  #incomes #incomeOwnerKpis{
+    gap:6px!important;
+  }
+  #incomes #incomeOwnerKpis .income-owner-kpi{
+    min-height:55px!important;
+    padding:8px 7px!important;
+  }
+  #incomes .toolbar.debt-toolbar{
+    padding:6px!important;
+    gap:6px!important;
+  }
+  #incomes #incomeList .list-card{
+    padding:12px!important;
+    gap:10px!important;
+  }
+  #incomes #incomeList .list-card .amount{
+    font-size:14px!important;
+  }
+}
