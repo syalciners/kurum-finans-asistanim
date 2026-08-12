@@ -6,11 +6,6 @@
   const EPS=.005;
   const roundMoney=n=>Math.round((+n||0)*100)/100;
 
-  if(typeof applyPaymentPlan!=='function'){
-    console.warn('V220 bakiye katmanı: applyPaymentPlan bulunamadı.');
-    return;
-  }
-
   function latestPayment(debtId,paymentDate){
     for(let i=state.payments.length-1;i>=0;i--){
       const p=normalizePayment(state.payments[i]);
@@ -30,92 +25,106 @@
     rawPayment.custom={...paymentCustom(rawPayment),...meta,debt_balance_v1:true};
   }
 
-  const originalApplyPaymentPlanV220=applyPaymentPlan;
+  function install(){
+    if(window.__bsDebtBalanceV220Installed) return;
 
-  applyPaymentPlan=function(raw,paymentDate,explicitAmount=null,paymentRecord=null){
-    if(!raw) return raw;
-
-    const before=normalizeDebt(raw);
-    const rawPayment=paymentRecord || (
-      explicitAmount==null
-        ?latestPayment(before.id,paymentDate)
-        :null
-    );
-
-    // Aynı ödeme kaydı yeniden işlenirse taksit ve bakiye ikinci kez ilerlemesin.
-    if(rawPayment && paymentCustom(rawPayment).debt_balance_v1){
-      return raw;
+    // Eski payment-plan fallback'i çok yavaş cihazda gecikebilir.
+    // Her durumda V4 taksit motorunun son hali yüklendikten sonra sarılır.
+    if(!window.__bsPaymentPlanV3Loaded || typeof applyPaymentPlan!=='function'){
+      setTimeout(install,80);
+      return;
     }
 
-    const paymentAmount=roundMoney(
-      explicitAmount!=null
-        ?explicitAmount
-        :rawPayment
-          ?normalizePayment(rawPayment).amount
-          :0
-    );
+    const originalApplyPaymentPlanV220=applyPaymentPlan;
 
-    if(paymentAmount<=0){
-      return originalApplyPaymentPlanV220(raw,paymentDate,explicitAmount,paymentRecord);
-    }
+    applyPaymentPlan=function(raw,paymentDate,explicitAmount=null,paymentRecord=null){
+      if(!raw) return raw;
 
-    const balanceBefore=Math.max(0,roundMoney(before.balance));
-    const balanceTracked=balanceBefore>EPS;
+      const before=normalizeDebt(raw);
+      const rawPayment=paymentRecord || (
+        explicitAmount==null
+          ?latestPayment(before.id,paymentDate)
+          :null
+      );
 
-    // Toplam bakiye takip ediliyorsa borçtan fazla tutar taksitleri gereksiz ilerletmesin.
-    const planAmount=balanceTracked
-      ?Math.min(paymentAmount,balanceBefore)
-      :paymentAmount;
-
-    const result=originalApplyPaymentPlanV220(
-      raw,
-      paymentDate,
-      planAmount,
-      rawPayment||paymentRecord
-    );
-
-    if(!balanceTracked){
-      markPayment(rawPayment,{
-        debt_balance_tracked:false,
-        debt_balance_before:balanceBefore,
-        debt_balance_after:balanceBefore,
-        debt_balance_applied:0,
-        debt_balance_unapplied_amount:0
-      });
-      return result;
-    }
-
-    const applied=Math.min(paymentAmount,balanceBefore);
-    const balanceAfter=Math.max(0,roundMoney(balanceBefore-applied));
-    raw.balance=balanceAfter;
-    raw.updatedAt=new Date().toISOString();
-
-    if(balanceAfter<=EPS){
-      raw.balance=0;
-      raw.status='closed';
-
-      const custom={...(raw.custom||raw.ozel_alanlar||{})};
-      if(
-        custom.remaining_installments!=='' &&
-        custom.remaining_installments!=null &&
-        !Number.isNaN(+custom.remaining_installments)
-      ){
-        custom.remaining_installments=0;
+      // Aynı ödeme kaydı yeniden işlenirse taksit ve bakiye ikinci kez ilerlemesin.
+      if(rawPayment && paymentCustom(rawPayment).debt_balance_v1){
+        return raw;
       }
-      delete custom.current_installment_paid;
-      raw.custom=custom;
-    }
 
-    markPayment(rawPayment,{
-      debt_balance_tracked:true,
-      debt_balance_before:balanceBefore,
-      debt_balance_after:balanceAfter,
-      debt_balance_applied:roundMoney(applied),
-      debt_balance_unapplied_amount:Math.max(0,roundMoney(paymentAmount-applied))
-    });
+      const paymentAmount=roundMoney(
+        explicitAmount!=null
+          ?explicitAmount
+          :rawPayment
+            ?normalizePayment(rawPayment).amount
+            :0
+      );
 
-    return result;
-  };
+      if(paymentAmount<=0){
+        return originalApplyPaymentPlanV220(raw,paymentDate,explicitAmount,paymentRecord);
+      }
 
-  applyPaymentPlan.__bsDebtBalanceV220=true;
+      const balanceBefore=Math.max(0,roundMoney(before.balance));
+      const balanceTracked=balanceBefore>EPS;
+
+      // Toplam bakiye takip ediliyorsa borçtan fazla tutar taksitleri gereksiz ilerletmesin.
+      const planAmount=balanceTracked
+        ?Math.min(paymentAmount,balanceBefore)
+        :paymentAmount;
+
+      const result=originalApplyPaymentPlanV220(
+        raw,
+        paymentDate,
+        planAmount,
+        rawPayment||paymentRecord
+      );
+
+      if(!balanceTracked){
+        markPayment(rawPayment,{
+          debt_balance_tracked:false,
+          debt_balance_before:balanceBefore,
+          debt_balance_after:balanceBefore,
+          debt_balance_applied:0,
+          debt_balance_unapplied_amount:0
+        });
+        return result;
+      }
+
+      const applied=Math.min(paymentAmount,balanceBefore);
+      const balanceAfter=Math.max(0,roundMoney(balanceBefore-applied));
+      raw.balance=balanceAfter;
+      raw.updatedAt=new Date().toISOString();
+
+      if(balanceAfter<=EPS){
+        raw.balance=0;
+        raw.status='closed';
+
+        const custom={...(raw.custom||raw.ozel_alanlar||{})};
+        if(
+          custom.remaining_installments!=='' &&
+          custom.remaining_installments!=null &&
+          !Number.isNaN(+custom.remaining_installments)
+        ){
+          custom.remaining_installments=0;
+        }
+        delete custom.current_installment_paid;
+        raw.custom=custom;
+      }
+
+      markPayment(rawPayment,{
+        debt_balance_tracked:true,
+        debt_balance_before:balanceBefore,
+        debt_balance_after:balanceAfter,
+        debt_balance_applied:roundMoney(applied),
+        debt_balance_unapplied_amount:Math.max(0,roundMoney(paymentAmount-applied))
+      });
+
+      return result;
+    };
+
+    applyPaymentPlan.__bsDebtBalanceV220=true;
+    window.__bsDebtBalanceV220Installed=true;
+  }
+
+  install();
 })();
