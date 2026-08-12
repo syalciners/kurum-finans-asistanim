@@ -221,6 +221,15 @@
     return panel;
   }
 
+  function visibleIncomeCount(incomes){
+    const keys = new Set();
+    incomes.forEach(x => {
+      const bs = x.sourceRecordId && (x.automatic || x.source);
+      keys.add(bs ? `bs:${x.sourceRecordId}` : `manual:${x.id}`);
+    });
+    return keys.size;
+  }
+
   function currentMonthData(){
     const month = monthKey();
     const incomes = state.incomes
@@ -239,6 +248,7 @@
 
     return {
       incomes,payments,expenses,
+      incomeCount:visibleIncomeCount(incomes),
       incomeTotal,paymentTotal,expenseTotal,
       net:incomeTotal-paymentTotal-expenseTotal
     };
@@ -268,7 +278,7 @@
       populateMonths();
       month.value = monthKey();
     }
-    const category = document.querySelector('#v176ExpenseCategory');
+    const category = document.querySelector('#v176ExpenseCategoryFilter');
     if(category) category.value = 'all';
     const search = document.querySelector('#expenseSearch');
     if(search) search.value = '';
@@ -361,11 +371,11 @@
 
     const values = [
       ['#v177Income',money(data.incomeTotal)],
-      ['#v177IncomeCount',`${data.incomes.length} kayıt`],
+      ['#v177IncomeCount',`${data.incomeCount} gelir kaydı`],
       ['#v177Payments',money(data.paymentTotal)],
-      ['#v177PaymentCount',`${data.payments.length} kayıt`],
+      ['#v177PaymentCount',`${data.payments.length} ödeme`],
       ['#v177Expenses',money(data.expenseTotal)],
-      ['#v177ExpenseCount',`${data.expenses.length} kayıt`]
+      ['#v177ExpenseCount',`${data.expenses.length} harcama`]
     ];
     values.forEach(([selector,value]) => {
       const el = document.querySelector(selector);
