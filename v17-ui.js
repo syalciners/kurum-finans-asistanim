@@ -19,15 +19,15 @@
     wrap.id = 'incomeOwnerKpis';
     wrap.className = 'income-owner-kpis';
     wrap.innerHTML = `
-      <article class="income-owner-kpi">
+      <article class="income-owner-kpi" data-owner-kpi="Başak" role="button" tabindex="0" aria-label="Başak gelirlerini filtrele">
         <span>Başak</span>
         <strong id="incomeOwnerBasak">₺0</strong>
       </article>
-      <article class="income-owner-kpi">
+      <article class="income-owner-kpi" data-owner-kpi="Süleyman" role="button" tabindex="0" aria-label="Süleyman gelirlerini filtrele">
         <span>Süleyman</span>
         <strong id="incomeOwnerSuleyman">₺0</strong>
       </article>
-      <article class="income-owner-kpi">
+      <article class="income-owner-kpi" data-owner-kpi="Kurum Kasası" role="button" tabindex="0" aria-label="Kurum gelirlerini filtrele">
         <span>Kurum</span>
         <strong id="incomeOwnerKurum">₺0</strong>
       </article>
@@ -60,6 +60,21 @@
         gap:4px;
         text-align:center;
         box-shadow:0 3px 12px rgba(20,33,61,.035);
+        cursor:pointer;
+        transition:border-color .15s ease, background .15s ease, transform .15s ease;
+        -webkit-tap-highlight-color:transparent;
+      }
+      .income-owner-kpi:active{
+        transform:scale(.98);
+      }
+      .income-owner-kpi.active{
+        border-color:#8eb1ff;
+        background:#eef4ff;
+        box-shadow:0 0 0 2px rgba(36,107,253,.08);
+      }
+      .income-owner-kpi:focus-visible{
+        outline:2px solid #8eb1ff;
+        outline-offset:2px;
       }
       .income-owner-kpi span{
         color:var(--muted);
@@ -68,6 +83,10 @@
         white-space:nowrap;
         overflow:hidden;
         text-overflow:ellipsis;
+      }
+      .income-owner-kpi.active span,
+      .income-owner-kpi.active strong{
+        color:var(--accent);
       }
       .income-owner-kpi strong{
         color:var(--ink);
@@ -98,6 +117,7 @@
     ensureOwnerCards();
 
     const totals = Object.fromEntries(ownerOrder.map(owner => [owner, 0]));
+    const activeOwner = document.querySelector('#incomeOwnerFilter')?.value || 'all';
 
     monthList.forEach(x => {
       if(Object.prototype.hasOwnProperty.call(totals, x.owner)){
@@ -110,6 +130,12 @@
       if(el){
         el.textContent = money(totals[owner]);
       }
+    });
+
+    document.querySelectorAll('[data-owner-kpi]').forEach(card => {
+      const active = card.dataset.ownerKpi === activeOwner;
+      card.classList.toggle('active', active);
+      card.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
   }
 
@@ -260,8 +286,45 @@
         : empty('Bu filtrede gelir kaydı yok.');
   }
 
+  function toggleOwnerFilter(owner){
+    const ownerFilter = document.querySelector('#incomeOwnerFilter');
+    if(!ownerFilter){
+      return;
+    }
+
+    ownerFilter.value = ownerFilter.value === owner ? 'all' : owner;
+    renderIncomes();
+  }
+
+  function bindOwnerCardActions(){
+    const wrap = document.querySelector('#incomeOwnerKpis');
+    if(!wrap || wrap.dataset.bound === '1'){
+      return;
+    }
+
+    wrap.dataset.bound = '1';
+
+    wrap.addEventListener('click', e => {
+      const card = e.target.closest('[data-owner-kpi]');
+      if(card){
+        toggleOwnerFilter(card.dataset.ownerKpi);
+      }
+    });
+
+    wrap.addEventListener('keydown', e => {
+      const card = e.target.closest('[data-owner-kpi]');
+      if(!card || !['Enter', ' '].includes(e.key)){
+        return;
+      }
+
+      e.preventDefault();
+      toggleOwnerFilter(card.dataset.ownerKpi);
+    });
+  }
+
   ensureOwnerCardStyles();
   ensureOwnerCards();
+  bindOwnerCardActions();
 
   renderIncomes = renderIncomesV17;
 
