@@ -215,6 +215,23 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js?v=176"></script>
   <script src="v17-ui.js?v=199"></script>
-  <script src="v176-ui.js?v=190"></script>
+  <script src="v176-ui.js?v=204"></script>
+  <script>
+    (()=>{
+      if(typeof openView!=='function' || typeof menuItem!=='function') return;
+      const baseOpenView=openView;
+      openView=function(view){
+        if(view!=='expenses') return baseOpenView(view);
+        const menu=menuItem('expenses');
+        const wasLocked=menu?.locked;
+        if(menu) menu.locked=true;
+        try{
+          return baseOpenView(view);
+        }finally{
+          if(menu) menu.locked=wasLocked;
+        }
+      };
+    })();
+  </script>
 </body>
 </html>
