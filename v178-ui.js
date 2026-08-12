@@ -195,7 +195,7 @@
     ensureQuickActions();
   };
 
-  // V1.7.9 görsel iyileştirme modülünü yükle.
+  // İşlevsel görsel/detay modülü.
   if(!document.querySelector('script[data-v179-loader]')){
     const script = document.createElement('script');
     script.src = 'v179-ui.js?v=179';
@@ -203,11 +203,11 @@
     document.head.appendChild(script);
   }
 
-  // V1.8.0 kurumsal tema modülünü yükle. Modül V1.7.9'un hazır olmasını bekler.
-  if(!document.querySelector('script[data-v180-loader]')){
+  // Marka ve tema artık tek güncel dosyada tutulur.
+  if(!document.querySelector('script[data-current-ui-loader]')){
     const script = document.createElement('script');
-    script.src = 'v180-ui.js?v=180';
-    script.dataset.v180Loader = '1';
+    script.src = 'ui.js?v=190';
+    script.dataset.currentUiLoader = '1';
     document.head.appendChild(script);
   }
 })();
