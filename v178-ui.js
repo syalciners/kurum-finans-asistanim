@@ -203,10 +203,10 @@
     document.head.appendChild(script);
   }
 
-  // Marka ve tema artık tek güncel dosyada tutulur.
+  // Marka ve tema tek güncel dosyada tutulur.
   if(!document.querySelector('script[data-current-ui-loader]')){
     const script = document.createElement('script');
-    script.src = 'ui.js?v=190';
+    script.src = 'ui.js?v=191';
     script.dataset.currentUiLoader = '1';
     document.head.appendChild(script);
   }
