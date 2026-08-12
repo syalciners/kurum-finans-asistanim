@@ -370,4 +370,12 @@
 
   renderPayments();
   renderExpenses();
+
+  // V1.7.7 yönetim panelini V1.7.6 katmanından yükle.
+  if(!document.querySelector('script[data-v177-loader]')){
+    const script = document.createElement('script');
+    script.src = 'v177-ui.js?v=177';
+    script.dataset.v177Loader = '1';
+    document.head.appendChild(script);
+  }
 })();
