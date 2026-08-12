@@ -210,4 +210,12 @@
     script.dataset.currentUiLoader = '1';
     document.head.appendChild(script);
   }
+
+  // Kısmi ödeme / taksit planı iş mantığı.
+  if(!document.querySelector('script[data-payment-plan-loader]')){
+    const script = document.createElement('script');
+    script.src = 'payment-plan.js?v=192';
+    script.dataset.paymentPlanLoader = '1';
+    document.head.appendChild(script);
+  }
 })();
