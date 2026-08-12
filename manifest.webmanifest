@@ -1,23 +1,23 @@
 {
   "id": "./",
-  "name": "BS OFİS BÜTÇE",
+  "name": "BS BÜTÇE YÖNETİMİ",
   "short_name": "BS Bütçe",
   "start_url": "./?v=180",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f5f7fb",
-  "theme_color": "#14213d",
+  "background_color": "#f3f6fb",
+  "theme_color": "#14213D",
   "icons": [
     {
-      "src": "bs-logo.png?v=2",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "bs-budget-mark.svg?v=180",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "bs-logo.png?v=2",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "bs-budget-mark.svg?v=180",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "maskable"
     }
   ]
