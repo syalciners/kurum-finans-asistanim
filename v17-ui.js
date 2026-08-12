@@ -455,10 +455,51 @@
     });
   }
 
+  function bindAutomaticIncomeGuards(){
+    const originalOpenIncomeDialogV17 = openIncomeDialog;
+
+    openIncomeDialog = function(income={}){
+      const normalized = normalizeIncome(income);
+
+      if(normalized.id && isBsIncome(normalized)){
+        openBsIncomeDetail(findBsGroup(normalized.sourceRecordId));
+        return;
+      }
+
+      return originalOpenIncomeDialogV17(income);
+    };
+
+    const deleteBtn = document.querySelector('#deleteIncomeBtn');
+
+    if(
+      deleteBtn &&
+      deleteBtn.onclick &&
+      deleteBtn.dataset.v17Guard !== '1'
+    ){
+      const originalDeleteIncomeV17 = deleteBtn.onclick;
+      deleteBtn.dataset.v17Guard = '1';
+
+      deleteBtn.onclick = async() => {
+        const id = document.querySelector('#incomeForm [name="id"]')?.value || '';
+        const income = state.incomes
+          .map(normalizeIncome)
+          .find(x => x.id === id);
+
+        if(income && isBsIncome(income)){
+          toast('BS Ofis gelirleri Finans uygulamasından silinmez.');
+          return;
+        }
+
+        return originalDeleteIncomeV17();
+      };
+    }
+  }
+
   ensureOwnerCardStyles();
   ensureOwnerCards();
   bindOwnerCardActions();
   bindBsIncomeDetails();
+  bindAutomaticIncomeGuards();
 
   renderIncomes = renderIncomesV17;
 
