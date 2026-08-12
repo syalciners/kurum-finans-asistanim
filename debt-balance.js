@@ -109,6 +109,9 @@
       if((+d.balance||0)>EPS){
         value=money(Math.max(0,+d.balance||0));
         color=exactBankPlan?'#2563eb':'';
+        if(exactBankPlan){
+          suffix=' <small style="font-size:8px;color:#64748b;font-weight:700">(otomatik)</small>';
+        }
       }else if(resolved.tracked && resolved.source==='plan'){
         value=money(resolved.amount);
         color='#2563eb';
