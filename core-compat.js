@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.2.0 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.2.1 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -155,7 +155,7 @@
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=220', {updateViaCache:'none'})
+      .register('./sw.js?v=221', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
