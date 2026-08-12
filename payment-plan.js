@@ -1,15 +1,14 @@
-/* BS OFİS BÜTÇE - Kısmi ödeme / taksit planı V2.1 */
+/* BS OFİS BÜTÇE - Kısmi ödeme / taksit planı V3 */
 (() => {
   // Dinamik UI modülleri paralel yüklenebildiği için bu modül en son devreye girer.
-  // Böylece v179 veya güncel ui.js paymentCard/debtCard davranışını sonradan ezemez.
   if(!window.__bsOfisV179Loaded || !document.querySelector('#bsCurrentUiStyles')){
-    if(!window.__bsPaymentPlanV2Waiting){
-      window.__bsPaymentPlanV2Waiting=true;
+    if(!window.__bsPaymentPlanV3Waiting){
+      window.__bsPaymentPlanV3Waiting=true;
       const retry=()=>{
         if(window.__bsOfisV179Loaded && document.querySelector('#bsCurrentUiStyles')){
-          window.__bsPaymentPlanV2Waiting=false;
+          window.__bsPaymentPlanV3Waiting=false;
           const script=document.createElement('script');
-          script.src='payment-plan.js?v=193&final=1';
+          script.src='payment-plan.js?v=196&final=1';
           script.dataset.paymentPlanFinal='1';
           document.head.appendChild(script);
           return;
@@ -21,8 +20,8 @@
     return;
   }
 
-  if(window.__bsPaymentPlanV2Loaded) return;
-  window.__bsPaymentPlanV2Loaded=true;
+  if(window.__bsPaymentPlanV3Loaded) return;
+  window.__bsPaymentPlanV3Loaded=true;
 
   const EPS=.005;
   const roundMoney=n=>Math.round((+n||0)*100)/100;
@@ -79,12 +78,11 @@
   function decoratePaymentRecord(paymentRecord,meta){
     if(!paymentRecord) return;
     const custom={...(paymentRecord.custom||paymentRecord.ozel_alanlar||{})};
-    Object.assign(custom,meta,{payment_plan_v2:true});
+    Object.assign(custom,meta,{payment_plan_v2:true,payment_plan_v3:true});
     paymentRecord.custom=custom;
   }
 
-  // Eski applyPaymentPlan her ödeme kaydında taksit sayısını azaltıp vadeyi ilerletiyordu.
-  // Yeni sürüm yalnız mevcut taksit tamamen ödendiğinde planı ilerletir.
+  // Bir ödeme, mevcut taksiti tamamen bitirmedikçe vade/taksit ilerlemez.
   applyPaymentPlan=function(raw,paymentDate,explicitAmount=null,paymentRecord=null){
     if(!raw) return raw;
 
@@ -140,7 +138,7 @@
           }
         }
 
-        // Mevcut taksit tamamlandı.
+        // Mevcut taksit tamamen ödendi.
         paidBefore=0;
         completed++;
 
@@ -260,36 +258,34 @@
   paymentCard=function(p){
     const x=normalizePayment(p);
     const meta=x.custom||{};
-    if(!meta.payment_plan_v2) return originalPaymentCard(x);
+    if(!meta.payment_plan_v2 && !meta.payment_plan_v3) return originalPaymentCard(x);
 
     const d=state.debts.map(normalizeDebt).find(v=>v.id===x.debtId);
     const status=meta.payment_status;
 
     let statusHtml='';
     if(status==='partial'){
-      statusHtml=` · <span class="badge orange">Kısmi ödeme</span>`;
+      statusHtml='<span class="badge orange">Kısmi ödeme</span>';
     }else if(status==='completed_plus_partial'){
-      statusHtml=` · <span class="badge green">Taksit ödendi</span>`;
+      statusHtml='<span class="badge green">Taksit ödendi + sonraki taksite aktarıldı</span>';
     }else if(status==='completed'){
-      statusHtml=` · <span class="badge green">Taksit ödendi</span>`;
+      statusHtml='<span class="badge green">Taksit ödendi</span>';
     }
 
     let secondLine='';
     if(status==='partial'){
-      secondLine=`<small>Kalan taksit ${money(meta.installment_remaining_after||0)}</small>`;
+      secondLine=`<small>${statusHtml} · Taksitte kalan ${money(meta.installment_remaining_after||0)}</small>`;
     }else if(status==='completed_plus_partial'){
-      secondLine=`<small>Sonraki taksitte kalan ${money(meta.installment_remaining_after||0)}</small>`;
+      secondLine=`<small>${statusHtml} · Sonraki taksitte kalan ${money(meta.installment_remaining_after||0)}</small>`;
+    }else if(status==='completed'){
+      secondLine=`<small>${statusHtml}</small>`;
     }
 
     return `
       <article class="list-card clickable v179-payment-card" data-payment="${esc(x.id)}">
         <div class="main">
           <strong>${esc(d?.name||'Silinmiş borç')}</strong>
-          <small>
-            ${parseDate(x.date).toLocaleDateString('tr-TR')}
-            ${x.addedBy?` · ${esc(x.addedBy)}`:''}
-            ${statusHtml}
-          </small>
+          <small>${parseDate(x.date).toLocaleDateString('tr-TR')}${x.addedBy?` · ${esc(x.addedBy)}`:''}</small>
           ${secondLine}
         </div>
         <div class="amount">${money(x.amount)}</div>
@@ -312,10 +308,7 @@
       <article class="list-card clickable" data-debt="${x.id}">
         <div class="main">
           <strong>${esc(x.name)}</strong>
-          <small>
-            ${owner?`${esc(owner)} · `:''}${esc(x.type)}${left?` · ${esc(left)}`:''}
-            · <span class="badge orange">Kısmi</span>
-          </small>
+          <small>${owner?`${esc(owner)} · `:''}${esc(x.type)}${left?` · ${esc(left)}`:''} · <span class="badge orange">Kısmi</span></small>
           <small>${money(paid)} ödendi · bu taksitte ${money(remaining)} kaldı</small>
         </div>
         <div class="amount">
@@ -344,8 +337,20 @@
       amountInput.closest('label')?.insertAdjacentElement('afterend',hint);
     }
 
+    const selectedDebt=()=>state.debts.map(normalizeDebt).find(x=>x.id===debtSelect.value);
+
+    const suggestAmount=force=>{
+      const d=selectedDebt();
+      if(!d) return;
+      const remaining=currentInstallmentRemaining(d);
+      if(remaining<=EPS) return;
+      if(force || !amountInput.value || +amountInput.value<=0){
+        amountInput.value=String(remaining);
+      }
+    };
+
     const update=()=>{
-      const d=state.debts.map(normalizeDebt).find(x=>x.id===debtSelect.value);
+      const d=selectedDebt();
       if(!d){hint.textContent='Ödeme yapılacak borcu seçin.';return;}
 
       const remaining=currentInstallmentRemaining(d);
@@ -367,14 +372,19 @@
       if(entered+EPS<remaining){
         hint.innerHTML=`<strong style="color:#c97800">Kısmi ödeme</strong> · Bu işlemden sonra aynı taksitte ${money(remaining-entered)} kalacak.`;
       }else if(Math.abs(entered-remaining)<=EPS){
-        hint.innerHTML=`<strong style="color:#168a42">Taksit tamamlanacak</strong> · Sonraki vade ancak kayıt tamamlandığında açılacak.`;
+        hint.innerHTML=`<strong style="color:#168a42">Taksit tamamlanacak</strong> · Sonraki vade ancak bu ödeme tamamlandıktan sonra açılacak.`;
       }else{
         hint.innerHTML=`<strong style="color:#2563eb">Fazla ödeme</strong> · Mevcut taksit kapanır; kalan ${money(entered-remaining)} sonraki taksite aktarılır.`;
       }
     };
 
-    debtSelect.onchange=update;
+    debtSelect.onchange=()=>{
+      suggestAmount(true);
+      update();
+    };
     amountInput.oninput=update;
+
+    suggestAmount(false);
     update();
   }
 
@@ -388,8 +398,85 @@
     openRecordDialog=wrapped;
   }
 
-  // Modül sonradan yüklendiğinde açık bir ödeme formu varsa hemen geliştir.
+  // Eski sistemde 12.08.2026 tarihinde yanlışlıkla tam taksit gibi ilerleyen
+  // Vakıfbank Kredi Kartı ₺11.973 kaydını kontrollü ve idempotent şekilde onar.
+  async function repairKnownLegacyPartial(){
+    const rawPayment=state.payments.find(raw=>{
+      const p=normalizePayment(raw);
+      if(p.date!=='2026-08-12' || Math.abs(p.amount-11973)>EPS) return false;
+      const d=state.debts.map(normalizeDebt).find(x=>x.id===p.debtId);
+      return d?.name==='Vakıfbank Kredi Kartı';
+    });
+    if(!rawPayment) return false;
+
+    const p=normalizePayment(rawPayment);
+    if(p.custom?.legacy_partial_repaired_v3) return false;
+
+    const rawDebt=state.debts.find(raw=>normalizeDebt(raw).id===p.debtId);
+    if(!rawDebt) return false;
+
+    const d=normalizeDebt(rawDebt);
+    const custom=debtCustom(d);
+    const planned=20326;
+    const paid=11973;
+    const remaining=8353;
+
+    // Eski motor vade tarihini 10.09'a taşıdıysa bir ay geri al.
+    if(d.dueDate==='2026-09-10'){
+      rawDebt.dueDate='2026-08-10';
+      const rem=custom.remaining_installments;
+      if(rem!=='' && rem!=null && !Number.isNaN(+rem)){
+        custom.remaining_installments=Math.max(0,+rem)+1;
+      }
+    }
+
+    rawDebt.minimum=planned;
+    rawDebt.status='active';
+    custom.current_installment_paid=paid;
+    custom.legacy_partial_repaired_v3=true;
+    rawDebt.custom=custom;
+    rawDebt.updatedAt=new Date().toISOString();
+
+    decoratePaymentRecord(rawPayment,{
+      payment_status:'partial',
+      installment_due_date:'2026-08-10',
+      installment_amount_at_payment:planned,
+      installment_paid_before:0,
+      installment_remaining_before:planned,
+      installment_remaining_after:remaining,
+      completed_installments:0,
+      unapplied_amount:0,
+      legacy_partial_repaired_v3:true
+    });
+
+    saveState(false);
+
+    if(session){
+      try{
+        await cloudUpsertPayment(normalizePayment(rawPayment));
+        await cloudUpsertDebt(normalizeDebt(rawDebt));
+      }catch(e){
+        console.warn('Kısmi ödeme eski kayıt bulut onarımı tamamlanamadı:',e);
+      }
+    }
+
+    return true;
+  }
+
+  async function refreshAfterRepair(){
+    const changed=await repairKnownLegacyPartial();
+    if(changed){
+      try{
+        renderDashboard();
+        renderDebts();
+        renderPayments();
+        renderCalendar();
+      }catch(_e){}
+    }
+  }
+
   setTimeout(enhancePaymentForm,0);
+  setTimeout(refreshAfterRepair,0);
 
   // Yeni dueItems / kart görünümü ekrana hemen yansısın.
   try{
