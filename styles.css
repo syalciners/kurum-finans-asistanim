@@ -36,3 +36,92 @@
     border-radius:18px!important;
   }
 }
+
+/* V208: Gelirler ekranı görsel polish. */
+#incomes #incomeOwnerKpis{
+  gap:8px!important;
+  margin:-6px 0 14px!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi{
+  min-height:62px!important;
+  padding:10px 10px 9px!important;
+  text-align:left!important;
+  align-content:center!important;
+  border-radius:14px!important;
+  border-color:var(--bs-line,var(--line))!important;
+  background:#fff!important;
+  box-shadow:0 1px 5px rgba(15,23,42,.025)!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi span{
+  font-size:9px!important;
+  font-weight:820!important;
+  color:#7c8aa0!important;
+  letter-spacing:.02em!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi strong{
+  margin-top:2px!important;
+  font-size:16px!important;
+  font-weight:860!important;
+  color:var(--bs-text,var(--ink))!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi.active{
+  background:var(--bs-blue-soft,#eff6ff)!important;
+  border-color:#b8cdfc!important;
+  box-shadow:inset 0 3px 0 var(--bs-blue,#2563eb),0 1px 5px rgba(37,99,235,.04)!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi.active span,
+#incomes #incomeOwnerKpis .income-owner-kpi.active strong{
+  color:var(--bs-blue,#2563eb)!important;
+}
+#incomes .toolbar.debt-toolbar{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin-bottom:13px!important;
+}
+#incomes .toolbar.debt-toolbar select{
+  min-width:0!important;
+  min-height:44px!important;
+  font-size:13px!important;
+}
+#incomes #incomeList .income-bs-card{
+  border-left:3px solid #9ec5ff!important;
+}
+#incomes #incomeList .income-bs-card .main>strong{
+  font-size:12px!important;
+  line-height:1.25!important;
+}
+#incomes #incomeList .income-distribution{
+  margin-top:2px!important;
+  color:#728096!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+}
+#incomes #incomeList .income-share-note{
+  width:fit-content!important;
+  margin-top:3px!important;
+  padding:3px 7px!important;
+  border-radius:999px!important;
+  background:var(--bs-blue-soft,#eff6ff)!important;
+  color:var(--bs-blue,#2563eb)!important;
+  font-size:8.5px!important;
+  font-weight:820!important;
+  line-height:1.25!important;
+}
+@media(max-width:520px){
+  #incomes #incomeOwnerKpis{
+    gap:6px!important;
+  }
+  #incomes #incomeOwnerKpis .income-owner-kpi{
+    min-height:58px!important;
+    padding:9px 7px!important;
+  }
+  #incomes #incomeOwnerKpis .income-owner-kpi strong{
+    font-size:14px!important;
+  }
+  #incomes .toolbar.debt-toolbar{
+    grid-template-columns:1fr 1fr!important;
+  }
+  #incomes .toolbar.debt-toolbar #incomeMonth{
+    grid-column:1/-1!important;
+  }
+}
