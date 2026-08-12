@@ -25,6 +25,31 @@
     rawPayment.custom={...paymentCustom(rawPayment),...meta,debt_balance_v1:true};
   }
 
+  function installDebtDetailBalance(){
+    if(typeof showDetail!=='function' || showDetail.__bsDebtBalanceDetailV220) return;
+
+    const originalShowDetailV220=showDetail;
+    const wrapped=function(module,record){
+      originalShowDetailV220(module,record);
+      if(module!=='debts') return;
+
+      const d=normalizeDebt(record);
+      const tracked=(+d.balance||0)>EPS || (+d.original||0)>EPS;
+      if(!tracked) return;
+
+      const grid=document.querySelector('#detailContent .detail-grid');
+      if(!grid || grid.querySelector('.bs-debt-balance-row')) return;
+
+      const row=document.createElement('div');
+      row.className='detail-row bs-debt-balance-row';
+      row.innerHTML=`<span>Toplam kalan borç</span><strong>${money(Math.max(0,+d.balance||0))}</strong>`;
+      grid.prepend(row);
+    };
+
+    wrapped.__bsDebtBalanceDetailV220=true;
+    showDetail=wrapped;
+  }
+
   function install(){
     if(window.__bsDebtBalanceV220Installed) return;
 
@@ -124,6 +149,7 @@
 
     applyPaymentPlan.__bsDebtBalanceV220=true;
     window.__bsDebtBalanceV220Installed=true;
+    installDebtDetailBalance();
   }
 
   install();
