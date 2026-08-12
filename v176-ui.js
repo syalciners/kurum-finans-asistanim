@@ -1,6 +1,59 @@
-/* BS OFİS BÜTÇE V2.0.5 - Ödemeler ve Harcamalar UX */
+/* BS OFİS BÜTÇE V2.0.6 - Ödemeler, Harcamalar ve ekran durumu UX */
 (() => {
   let expenseQuickMode = 'all';
+
+  function installViewStateGuard(){
+    if(typeof renderBottomNav==='function' && !renderBottomNav.__bsPreserveActiveView){
+      const originalRenderBottomNav=renderBottomNav;
+      const wrapped=function(){
+        const before=activeView;
+        const target=document.getElementById(before);
+        const validBefore=!!target?.classList?.contains('view');
+
+        originalRenderBottomNav();
+
+        if(validBefore && before && activeView!==before){
+          activeView=before;
+          document.querySelectorAll('.view').forEach(v=>{
+            v.classList.toggle('active',v.id===before);
+          });
+          document.querySelectorAll('.nav-btn').forEach(btn=>{
+            btn.classList.toggle('active',btn.dataset.view===before);
+          });
+          document.querySelector('#settingsShortcut')?.classList.toggle('active',before==='settings');
+        }
+      };
+      wrapped.__bsPreserveActiveView=true;
+      renderBottomNav=wrapped;
+    }
+
+    if(typeof openView==='function' && !openView.__bsAllowHiddenView){
+      const originalOpenView=openView;
+      const wrapped=function(view){
+        const target=document.getElementById(view);
+        const item=typeof menuItem==='function'?menuItem(view):null;
+        const hiddenValidView=!!(
+          target?.classList?.contains('view') &&
+          item &&
+          !item.visible &&
+          !item.locked
+        );
+
+        if(!hiddenValidView){
+          return originalOpenView(view);
+        }
+
+        activeView=view;
+        document.querySelectorAll('.view').forEach(v=>{
+          v.classList.toggle('active',v.id===view);
+        });
+        renderBottomNav();
+        window.scrollTo({top:0,behavior:'smooth'});
+      };
+      wrapped.__bsAllowHiddenView=true;
+      openView=wrapped;
+    }
+  }
 
   function ensureV176Styles(){
     if(document.querySelector('#v176Styles')) return;
@@ -583,6 +636,7 @@
     renderExpenseCategorySummary(monthList);
   }
 
+  installViewStateGuard();
   ensureV176Styles();
   ensurePaymentQuickCards();
   ensureExpenseCategoryFilter();
