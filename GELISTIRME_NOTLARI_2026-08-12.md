@@ -9,30 +9,42 @@
 - Efe Bulut 11.08.2026 / 8.000 ₺ testi başarılı: Süleyman 4.000 ₺ + Kurum Kasası 4.000 ₺.
 - V1.7 canlı senkron 4 tahsilat / 26.000 ₺ toplam için doğrulandı.
 - V1.7 5 dakikalık otomatik tetikleyici kuruldu.
-- Gelir ekranında seçili aya ait Başak / Süleyman / Kurum küçük toplam kartları eklendi.
-- Aynı BS Ofis PaymentID parçaları kullanıcıya tek tahsilat kartı olarak gösteriliyor.
-- Tek kart altında gelir dağılımı açıklaması gösteriliyor.
-- BS Ofis otomatik gelir kartları kullanıcı arayüzünde düzenleme/silme diyaloğuna açılmıyor; kaynak BS Ofis olarak korunuyor.
-- PWA manifest adı `BS OFİS BÜTÇE`, kısa adı `BS Bütçe` olarak güncellendi.
-- V1.7 arayüz dosyası PWA önbelleğine eklendi.
+- Gelir ekranında seçili aya ait Başak / Süleyman / Kurum toplam kartları ve hızlı filtre davranışı çalışıyor.
+- Aynı BS Ofis PaymentID parçaları kullanıcıya tek tahsilat kartı olarak gösteriliyor; dağılım alt açıklamada yer alıyor.
+- BS Ofis otomatik gelir kartları kullanıcı arayüzünde düzenleme/silme diyaloğuna açılmıyor.
+- Özet, Borçlar, Ödemeler, Gelirler ve Takvim ekranlarına dokunulabilir KPI/hızlı filtre akışları eklendi.
+- Özet ekranına gerçekleşen net nakit, ödeme planı, dikkat gerektirenler ve hızlı işlemler eklendi.
+- PWA marka adı `BS OFİS BÜTÇE YÖNETİMİ`, kısa adı `BS Bütçe` olarak sabitlendi.
 
-## Sabah kontrolü
+## UI190 mimari temizliği
 
-1. Uygulama kapatılıp yeniden açıldığında Gelirler ekranının aynı görünümü koruduğunu doğrula.
-2. 5 dakikalık V1.7 tetikleyicinin yeni bir tahsilatta otomatik çalışmasını ilk fırsatta kontrol et.
-3. Yeni bir BS Ofis tahsilatı geldiğinde toplam tahsilatın listede tek kart, dağılımın alt açıklamada görünmesini kontrol et.
+- Marka ve görsel tema tek `ui.js` dosyasında birleştirildi.
+- Eski üst üste tema zinciri kaldırıldı: `v180-ui.js`, `v181-ui.js`, `v182-ui.js`, `v184-ui.js` artık canlı repoda yok.
+- `v178-ui.js` yalnız işlevsel `v179-ui.js` ve tek güncel `ui.js` katmanını yüklüyor.
+- `index.html` ilk boyamada doğrudan yeni `bs-budget-mark.svg` logosunu kullanıyor.
+- Eski `FİNANS YÖNETİMİ` MutationObserver zorlaması kaldırıldı.
+- Üst bardaki gerçek `#appTitle` ve `#orgEyebrow` elemanları korunuyor; bulut senkronunun kullandığı DOM artık tema tarafından silinmiyor.
+- Eski `bs-logo.png` ve `icon.svg` marka varlıkları kaldırıldı.
+- Service Worker önbelleği yalnız güncel işlevsel modülleri ve `ui.js` katmanını içeriyor.
+- Tasarım standardı: açık `#F8FAFC` zemin, beyaz kartlar, ana mavi `#2563EB`; gelir/pozitif teal, kalan/yaklaşan turuncu, gecikme kırmızı.
+
+## Sıradaki kontroller
+
+1. Uygulama tamamen kapatılıp yeniden açıldığında üst barın tek ve temiz marka yapısıyla geldiğini doğrula.
+2. Bulut senkronunun başlık/DOM hatası vermediğini doğrula.
+3. Telefon ve masaüstünde Özet → Borçlar → Ödemeler → Gelirler → Takvim ekranlarında eski tema kalıntısı olmadığını kontrol et.
+4. Yeni BS Ofis tahsilatı geldiğinde V1.7 otomatik aktarımın tek kart + dağılım görünümünü koruduğunu doğrula.
 
 ## Sonraki güvenli geliştirmeler
 
-- Ana HTML içindeki eski statik `Borç ve Gelir Asistanım / Kurum Finans` metadata metinlerini `BS OFİS BÜTÇE` ile tamamen eşitlemek.
 - `app.js` içindeki schemaVersion 16 / merge 15 tutarsızlığını kontrollü düzeltmek.
-- Senkron hata mesajındaki V1.6 metnini V1.7'ye güncellemek.
-- Çalışan Apps Script V1.7 dosyalarının nihai kopyasını repoda tek bir teknik yedek halinde sabitlemek.
-- Arayüzde yalnız gerekirse gelir sahibi küçük kartlarını hızlı filtre düğmesi haline getirmek; kullanıcı kararı gerektirir.
+- Senkron hata mesajındaki eski V1.6 metnini güncel V1.7/V1.7 dağıtım yapısına göre düzeltmek.
+- Masaüstü/tablet responsive genişliği ve ekran başına bilgi yoğunluğunu kullanıcı testiyle ince ayarlamak.
+- Harcamalar görünür menüye alınacaksa alt menü kapasitesini bozmadan erişim akışını tasarlamak.
 
 ## Değiştirilmemesi gerekenler
 
 - StudentPayments tek nakit/gelir kaynağı olmaya devam edecek.
 - Lessons ek gelir yaratmayacak; yalnız tahsilatın sahibini/dağılımını belirleyecek.
 - Veritabanında dağıtım parçalı, kullanıcı arayüzünde tahsilat tek kayıt olarak kalacak.
-- V1.7 doğrulanmadan eski V1.6 tetikleyici tekrar kurulmayacak.
+- Finans çekirdeği ve doğrulanmış V1.7 dağıtım motoru yalnız kritik hata varsa değiştirilecek.
