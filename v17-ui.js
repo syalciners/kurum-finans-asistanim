@@ -1,5 +1,18 @@
 /* BS OFİS BÜTÇE V1.7 - Gelir ekranı ek görünüm */
 (() => {
+  const originalMergeAppConfigV17 = mergeAppConfig;
+
+  mergeAppConfig = function(raw={}){
+    const cfg = originalMergeAppConfigV17(raw);
+    cfg.schemaVersion = 16;
+    return cfg;
+  };
+
+  if(appConfig && appConfig.schemaVersion !== 16){
+    appConfig.schemaVersion = 16;
+    saveAppConfig(false);
+  }
+
   const ownerOrder = ['Başak', 'Süleyman', 'Kurum Kasası'];
   const ownerIds = {
     'Başak': 'incomeOwnerBasak',
