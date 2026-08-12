@@ -1,7 +1,7 @@
-/* BS OFİS BÜTÇE V2.2.0 - Ödeme / toplam borç bakiyesi bütünlüğü */
+/* BS OFİS BÜTÇE V2.2.1 - Ödeme / toplam borç bakiyesi bütünlüğü */
 (() => {
-  if(window.__bsDebtBalanceV220Loaded) return;
-  window.__bsDebtBalanceV220Loaded=true;
+  if(window.__bsDebtBalanceV221Loaded) return;
+  window.__bsDebtBalanceV221Loaded=true;
 
   const EPS=.005;
   const roundMoney=n=>Math.round((+n||0)*100)/100;
@@ -25,33 +25,71 @@
     rawPayment.custom={...paymentCustom(rawPayment),...meta,debt_balance_v1:true};
   }
 
-  function installDebtDetailBalance(){
-    if(typeof showDetail!=='function' || showDetail.__bsDebtBalanceDetailV220) return;
+  function ensureBalanceFieldVisible(){
+    const field=appConfig?.fields?.debts?.builtIns?.find(x=>x.id==='balance');
+    if(field) field.visible=true;
+  }
 
-    const originalShowDetailV220=showDetail;
+  function installBalanceFormField(){
+    if(typeof openRecordDialog!=='function' || openRecordDialog.__bsDebtBalanceFormV221) return;
+
+    const originalOpenRecordDialogV221=openRecordDialog;
+    const wrapped=function(module,record=null){
+      if(module==='debts') ensureBalanceFieldVisible();
+
+      const result=originalOpenRecordDialogV221(module,record);
+
+      if(module==='debts'){
+        const input=document.querySelector('#recordForm [name="balance"]');
+        const label=input?.closest('label');
+        if(label && !label.querySelector('.bs-balance-field-hint')){
+          const hint=document.createElement('small');
+          hint.className='bs-balance-field-hint';
+          hint.style.cssText='color:#64748b;font-size:10px;font-weight:600;line-height:1.35';
+          hint.textContent='Toplam bakiye biliniyorsa girin. Her ödeme sonrası otomatik azalır.';
+          label.appendChild(hint);
+        }
+      }
+
+      return result;
+    };
+
+    wrapped.__bsDebtBalanceFormV221=true;
+    openRecordDialog=wrapped;
+  }
+
+  function installDebtDetailBalance(){
+    if(typeof showDetail!=='function' || showDetail.__bsDebtBalanceDetailV221) return;
+
+    const originalShowDetailV221=showDetail;
     const wrapped=function(module,record){
-      originalShowDetailV220(module,record);
+      originalShowDetailV221(module,record);
       if(module!=='debts') return;
 
       const d=normalizeDebt(record);
-      const tracked=(+d.balance||0)>EPS || (+d.original||0)>EPS;
-      if(!tracked) return;
-
       const grid=document.querySelector('#detailContent .detail-grid');
       if(!grid || grid.querySelector('.bs-debt-balance-row')) return;
 
+      const hasBalance=(+d.balance||0)>EPS;
+      const knownZero=d.status==='closed' && ((+d.original||0)>EPS || (+d.balance||0)===0);
+      const value=hasBalance
+        ?money(Math.max(0,+d.balance||0))
+        :knownZero
+          ?money(0)
+          :'Tanımlanmadı';
+
       const row=document.createElement('div');
       row.className='detail-row bs-debt-balance-row';
-      row.innerHTML=`<span>Toplam kalan borç</span><strong>${money(Math.max(0,+d.balance||0))}</strong>`;
+      row.innerHTML=`<span>Toplam kalan borç</span><strong${!hasBalance&&!knownZero?' style="color:#c97800"':''}>${value}</strong>`;
       grid.prepend(row);
     };
 
-    wrapped.__bsDebtBalanceDetailV220=true;
+    wrapped.__bsDebtBalanceDetailV221=true;
     showDetail=wrapped;
   }
 
   function install(){
-    if(window.__bsDebtBalanceV220Installed) return;
+    if(window.__bsDebtBalanceV221Installed) return;
 
     // Eski payment-plan fallback'i çok yavaş cihazda gecikebilir.
     // Her durumda V4 taksit motorunun son hali yüklendikten sonra sarılır.
@@ -60,7 +98,7 @@
       return;
     }
 
-    const originalApplyPaymentPlanV220=applyPaymentPlan;
+    const originalApplyPaymentPlanV221=applyPaymentPlan;
 
     applyPaymentPlan=function(raw,paymentDate,explicitAmount=null,paymentRecord=null){
       if(!raw) return raw;
@@ -86,7 +124,7 @@
       );
 
       if(paymentAmount<=0){
-        return originalApplyPaymentPlanV220(raw,paymentDate,explicitAmount,paymentRecord);
+        return originalApplyPaymentPlanV221(raw,paymentDate,explicitAmount,paymentRecord);
       }
 
       const balanceBefore=Math.max(0,roundMoney(before.balance));
@@ -97,7 +135,7 @@
         ?Math.min(paymentAmount,balanceBefore)
         :paymentAmount;
 
-      const result=originalApplyPaymentPlanV220(
+      const result=originalApplyPaymentPlanV221(
         raw,
         paymentDate,
         planAmount,
@@ -147,8 +185,9 @@
       return result;
     };
 
-    applyPaymentPlan.__bsDebtBalanceV220=true;
-    window.__bsDebtBalanceV220Installed=true;
+    applyPaymentPlan.__bsDebtBalanceV221=true;
+    window.__bsDebtBalanceV221Installed=true;
+    installBalanceFormField();
     installDebtDetailBalance();
   }
 
