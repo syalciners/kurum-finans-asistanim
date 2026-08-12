@@ -512,4 +512,105 @@
   if(monthFilter) monthFilter.onchange = renderIncomes;
 
   renderIncomes();
+
+  // V1.7.4 - Büyük gelir KPI kartları da hızlı filtre olarak çalışır.
+  const monthlyKpiCard = document.querySelector('#incomeMonthlyTotal')?.closest('.kpi');
+  const lessonKpiCard = document.querySelector('#incomeLessonTotal')?.closest('.kpi');
+
+  function ensureMainKpiStyles(){
+    if(document.querySelector('#v174MainKpiStyles')){
+      return;
+    }
+
+    const style = document.createElement('style');
+    style.id = 'v174MainKpiStyles';
+    style.textContent = `
+      #incomes .kpi-grid > .kpi[data-income-main-filter]{
+        cursor:pointer;
+        transition:border-color .15s ease, background .15s ease, transform .15s ease, box-shadow .15s ease;
+        -webkit-tap-highlight-color:transparent;
+      }
+      #incomes .kpi-grid > .kpi[data-income-main-filter]:active{
+        transform:scale(.985);
+      }
+      #incomes .kpi-grid > .kpi[data-income-main-filter].active{
+        border-color:#8eb1ff;
+        background:#eef4ff;
+        box-shadow:0 0 0 2px rgba(36,107,253,.08);
+      }
+      #incomes .kpi-grid > .kpi[data-income-main-filter].active span,
+      #incomes .kpi-grid > .kpi[data-income-main-filter].active strong,
+      #incomes .kpi-grid > .kpi[data-income-main-filter].active small{
+        color:var(--accent);
+      }
+      #incomes .kpi-grid > .kpi[data-income-main-filter]:focus-visible{
+        outline:2px solid #8eb1ff;
+        outline-offset:2px;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function updateMainKpiState(){
+    const owner = document.querySelector('#incomeOwnerFilter')?.value || 'all';
+    const type = document.querySelector('#incomeTypeFilter')?.value || 'all';
+
+    if(monthlyKpiCard){
+      const active = owner === 'all' && type === 'all';
+      monthlyKpiCard.classList.toggle('active', active);
+      monthlyKpiCard.setAttribute('aria-pressed', active ? 'true' : 'false');
+    }
+
+    if(lessonKpiCard){
+      const active = owner === 'all' && type === 'Özel Ders';
+      lessonKpiCard.classList.toggle('active', active);
+      lessonKpiCard.setAttribute('aria-pressed', active ? 'true' : 'false');
+    }
+  }
+
+  function applyMainIncomeFilter(mode){
+    const owner = document.querySelector('#incomeOwnerFilter');
+    const type = document.querySelector('#incomeTypeFilter');
+
+    if(!owner || !type){
+      return;
+    }
+
+    owner.value = 'all';
+    type.value = mode === 'lesson' ? 'Özel Ders' : 'all';
+    renderIncomes();
+    updateMainKpiState();
+  }
+
+  function bindMainIncomeKpi(card, mode, label){
+    if(!card || card.dataset.mainKpiBound === '1'){
+      return;
+    }
+
+    card.dataset.mainKpiBound = '1';
+    card.dataset.incomeMainFilter = mode;
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', label);
+
+    card.addEventListener('click', () => applyMainIncomeFilter(mode));
+    card.addEventListener('keydown', e => {
+      if(!['Enter', ' '].includes(e.key)){
+        return;
+      }
+      e.preventDefault();
+      applyMainIncomeFilter(mode);
+    });
+  }
+
+  ensureMainKpiStyles();
+  bindMainIncomeKpi(monthlyKpiCard, 'all', 'Seçili ayın tüm gelirlerini göster');
+  bindMainIncomeKpi(lessonKpiCard, 'lesson', 'Seçili ayın özel ders gelirlerini göster');
+
+  document.querySelector('#incomeOwnerFilter')?.addEventListener('change', updateMainKpiState);
+  document.querySelector('#incomeTypeFilter')?.addEventListener('change', updateMainKpiState);
+  document.querySelector('#incomeMonth')?.addEventListener('change', updateMainKpiState);
+  document.querySelector('#incomeOwnerKpis')?.addEventListener('click', () => setTimeout(updateMainKpiState, 0));
+
+  updateMainKpiState();
 })();
