@@ -226,3 +226,205 @@
   }
   #payments #paymentList .v179-payment-card .amount{font-size:14px!important}
 }
+
+/* V210: Borçlar ekranı ve borç detayı polish. */
+#debts #v175DebtKpis{
+  gap:8px!important;
+  margin:-4px 0 14px!important;
+}
+#debts #v175DebtKpis .v175-quick-card{
+  min-height:68px!important;
+  padding:11px 10px!important;
+  text-align:left!important;
+  align-content:center!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 1px 5px rgba(15,23,42,.025)!important;
+}
+#debts #v175DebtKpis [data-debt-quick="active"]{border-top:3px solid #148a86!important}
+#debts #v175DebtKpis [data-debt-quick="month"]{border-top:3px solid #f59e0b!important}
+#debts #v175DebtKpis [data-debt-quick="overdue"]{border-top:3px solid #ef4444!important}
+#debts #v175DebtKpis .v175-quick-card span{
+  font-size:9px!important;
+  font-weight:830!important;
+  color:#7c8aa0!important;
+}
+#debts #v175DebtKpis .v175-quick-card strong{
+  margin-top:2px!important;
+  font-size:17px!important;
+  font-weight:870!important;
+}
+#debts #v175DebtKpis .v175-quick-card small{
+  margin-top:1px!important;
+  font-size:9px!important;
+}
+#debts #v175DebtKpis [data-debt-quick="month"].active{
+  background:#fff7e8!important;
+  border-color:#f3d49a!important;
+}
+#debts #v175DebtKpis [data-debt-quick="month"].active span,
+#debts #v175DebtKpis [data-debt-quick="month"].active strong,
+#debts #v175DebtKpis [data-debt-quick="month"].active small{color:#c97800!important}
+#debts #v175DebtKpis [data-debt-quick="overdue"].active{
+  background:#fef2f2!important;
+  border-color:#f3bfc4!important;
+}
+#debts #v175DebtKpis [data-debt-quick="overdue"].active span,
+#debts #v175DebtKpis [data-debt-quick="overdue"].active strong,
+#debts #v175DebtKpis [data-debt-quick="overdue"].active small{color:#d84343!important}
+#debts .debt-toolbar{
+  gap:8px!important;
+  margin-bottom:13px!important;
+}
+#debts .debt-toolbar input,
+#debts .debt-toolbar select{
+  min-height:44px!important;
+  font-size:13px!important;
+}
+#debts #debtList{
+  gap:8px!important;
+}
+#debts #debtList .list-card[data-debt]{
+  align-items:flex-start!important;
+  padding:13px 14px!important;
+  border-left:3px solid #8eb1ff!important;
+  border-radius:14px!important;
+}
+#debts:has([data-debt-quick="active"].active) #debtList .list-card[data-debt]{
+  border-left-color:#58b8ab!important;
+}
+#debts:has([data-debt-quick="month"].active) #debtList .list-card[data-debt]{
+  border-left-color:#f59e0b!important;
+  background:#fffdfa!important;
+}
+#debts:has([data-debt-quick="overdue"].active) #debtList .list-card[data-debt]{
+  border-left-color:#ef4444!important;
+  background:#fffafa!important;
+}
+#debts #debtList .list-card[data-debt]:has(.badge.orange){
+  border-left-color:#f59e0b!important;
+  background:#fffdfa!important;
+}
+#debts #debtList .v179-debt-closed{
+  border-left-color:#b7c2d1!important;
+  background:#fbfcfd!important;
+  opacity:.78!important;
+}
+#debts #debtList .list-card[data-debt] .main{
+  gap:4px!important;
+  min-width:0!important;
+}
+#debts #debtList .list-card[data-debt] .main>strong{
+  font-size:12.5px!important;
+  line-height:1.25!important;
+}
+#debts #debtList .list-card[data-debt] .main>small{
+  font-size:9px!important;
+  line-height:1.4!important;
+}
+#debts #debtList .list-card[data-debt] .amount{
+  margin-left:auto!important;
+  color:#2563eb!important;
+  font-size:15px!important;
+  font-weight:870!important;
+  line-height:1.15!important;
+}
+#debts:has([data-debt-quick="active"].active) #debtList .list-card[data-debt] .amount{color:#148a86!important}
+#debts:has([data-debt-quick="month"].active) #debtList .list-card[data-debt] .amount{color:#c97800!important}
+#debts:has([data-debt-quick="overdue"].active) #debtList .list-card[data-debt] .amount{color:#d84343!important}
+#debts #debtList .list-card[data-debt]:has(.badge.orange) .amount{color:#c97800!important}
+#debts #debtList .list-card[data-debt] .amount small{
+  margin-top:4px!important;
+  font-size:8.5px!important;
+  font-weight:700!important;
+}
+#detailDialog .v179-detail-hero{
+  border-radius:16px!important;
+  padding:14px 15px!important;
+  background:#f8fafc!important;
+  box-shadow:0 1px 5px rgba(15,23,42,.025)!important;
+}
+#detailDialog .v179-detail-main span{
+  font-size:8.5px!important;
+  letter-spacing:.08em!important;
+}
+#detailDialog .v179-detail-main strong{
+  font-size:23px!important;
+  letter-spacing:-.03em!important;
+}
+#detailDialog .v179-detail-main small{
+  font-size:9.5px!important;
+  line-height:1.4!important;
+}
+#detailDialog .detail-grid{
+  padding:4px 13px!important;
+  border-radius:14px!important;
+  background:#fff!important;
+}
+#detailDialog .detail-row{
+  padding:9px 0!important;
+  align-items:center!important;
+}
+#detailDialog .detail-row span{
+  font-size:10px!important;
+}
+#detailDialog .detail-row strong{
+  font-size:10.5px!important;
+  text-align:right!important;
+}
+#detailDialog .bs-installment-plan{
+  margin-top:10px!important;
+  border-radius:15px!important;
+  box-shadow:0 1px 5px rgba(15,23,42,.025)!important;
+}
+#detailDialog .bs-installment-plan-head{
+  padding:12px 13px 10px!important;
+  background:#f8fafc!important;
+}
+#detailDialog .bs-installment-plan-head strong{
+  font-size:11.5px!important;
+}
+#detailDialog .bs-installment-plan-head small{
+  font-size:9px!important;
+}
+#detailDialog .bs-installment-count{
+  padding:4px 7px!important;
+  font-size:8.5px!important;
+}
+#detailDialog .bs-installment-row{
+  padding:9px 13px!important;
+}
+#detailDialog .bs-installment-main strong,
+#detailDialog .bs-installment-amount strong{
+  font-size:10.5px!important;
+}
+#detailDialog .bs-installment-main small,
+#detailDialog .bs-installment-amount small{
+  font-size:8.5px!important;
+}
+#detailDialog .bs-installment-current{
+  padding:3px 6px!important;
+  font-size:7.5px!important;
+}
+#detailDialog .detail-actions{
+  gap:8px!important;
+  margin-top:3px!important;
+}
+#detailDialog .detail-actions button{
+  min-height:42px!important;
+  border-radius:12px!important;
+}
+@media(max-width:520px){
+  #debts #v175DebtKpis{gap:6px!important}
+  #debts #v175DebtKpis .v175-quick-card{
+    min-height:64px!important;
+    padding:10px 7px!important;
+  }
+  #debts #v175DebtKpis .v175-quick-card strong{font-size:15px!important}
+  #debts #debtList .list-card[data-debt]{
+    padding:12px!important;
+    gap:10px!important;
+  }
+  #debts #debtList .list-card[data-debt] .amount{font-size:14px!important}
+  #detailDialog .v179-detail-main strong{font-size:21px!important}
+}
