@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V1.7.7 - Özet yönetim paneli */
+/* BS OFİS BÜTÇE V2.0.1 - Özet yönetim paneli */
 (() => {
   function ensureV177Styles(){
     if(document.querySelector('#v177Styles')) return;
@@ -159,6 +159,43 @@
         font-size:11px;
         font-weight:750;
       }
+
+      /* V201: eski tekrar eden asistan bloğu kaldırılır, alt listeler sıkılaştırılır. */
+      #dashboard .v201-hidden{display:none!important}
+      #dashboard .section-head.v201-compact-head{
+        margin:16px 2px 8px!important;
+      }
+      #dashboard .section-head.v201-compact-head h2{
+        font-size:13px!important;
+        font-weight:840!important;
+        letter-spacing:-.02em!important;
+      }
+      #dashboard .section-head.v201-compact-head .link-btn{
+        font-size:10px!important;
+        font-weight:800!important;
+      }
+      #dashboard #upcomingMini,
+      #dashboard #recentPayments{
+        gap:7px!important;
+      }
+      #dashboard #upcomingMini .list-card,
+      #dashboard #recentPayments .list-card{
+        min-height:0!important;
+        padding:11px 12px!important;
+      }
+      #dashboard #upcomingMini .list-card strong,
+      #dashboard #recentPayments .list-card strong{
+        font-size:12px!important;
+      }
+      #dashboard #upcomingMini .list-card small,
+      #dashboard #recentPayments .list-card small{
+        font-size:9px!important;
+      }
+      #dashboard #upcomingMini .list-card .amount,
+      #dashboard #recentPayments .list-card .amount{
+        font-size:13px!important;
+      }
+
       @media(max-width:380px){
         .v177-balance-card{padding:13px}
         .v177-balance-main strong{font-size:23px}
@@ -354,6 +391,44 @@
     `;
   }
 
+  function compactLegacyDashboard(){
+    const dashboard=document.querySelector('#dashboard');
+    if(!dashboard) return;
+
+    const assistant=document.querySelector('#assistantCard');
+    if(assistant){
+      assistant.classList.add('v201-hidden');
+      const head=assistant.previousElementSibling;
+      if(head?.classList?.contains('section-head')) head.classList.add('v201-hidden');
+    }
+
+    const upcoming=document.querySelector('#upcomingMini');
+    const upcomingHead=upcoming?.previousElementSibling;
+    if(upcomingHead?.classList?.contains('section-head')){
+      upcomingHead.classList.add('v201-compact-head');
+      const title=upcomingHead.querySelector('h2');
+      const btn=upcomingHead.querySelector('.link-btn');
+      if(title) title.textContent='Sıradaki Ödemeler';
+      if(btn) btn.textContent='Takvim';
+    }
+
+    const recent=document.querySelector('#recentPayments');
+    const recentHead=recent?.previousElementSibling;
+    if(recentHead?.classList?.contains('section-head')){
+      recentHead.classList.add('v201-compact-head');
+      const title=recentHead.querySelector('h2');
+      const btn=recentHead.querySelector('.link-btn');
+      if(title) title.textContent='Son Ödemeler';
+      if(btn) btn.textContent='Tümü';
+    }
+
+    // Ana ekranda uzun liste yerine en güncel 3 satır yeterli; tam liste ilgili modülde kalır.
+    [upcoming,recent].forEach(list=>{
+      if(!list) return;
+      [...list.children].slice(3).forEach(node=>node.remove());
+    });
+  }
+
   function renderDashboardPanel(){
     ensureDashboardPanel();
     const data = currentMonthData();
@@ -383,6 +458,7 @@
     });
 
     renderAttention();
+    compactLegacyDashboard();
   }
 
   ensureV177Styles();
@@ -396,7 +472,7 @@
 
   renderDashboardPanel();
 
-  // V1.7.8 hızlı işlemler modülünü yükle.
+  // Hızlı işlemler modülünü mevcut zincirde yükle.
   if(!document.querySelector('script[data-v178-loader]')){
     const script = document.createElement('script');
     script.src = 'v178-ui.js?v=178';
