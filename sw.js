@@ -1,4 +1,4 @@
-const CACHE='bs-ofis-butce-ui212-20260812';
+const CACHE='bs-ofis-butce-ui212-pwa-20260812';
 const ASSETS=[
   './?v=212',
   './index.html?v=212',
@@ -13,7 +13,7 @@ const ASSETS=[
   './ui.js?v=191',
   './payment-plan.js?v=200',
   './payment-schedule.js?v=198',
-  './manifest.webmanifest?v=195',
+  './manifest.webmanifest?v=212',
   './bs-budget-mark-v194.svg?v=195',
   './bs-budget-logo-v194.svg',
   './bs-budget-mark.svg?v=194',
