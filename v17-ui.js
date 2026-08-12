@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V1.7 - Gelir ekranı ek görünüm */
+/* BS OFİS BÜTÇE V2.1.5 - Gelir ekranı ve sabit modül zinciri */
 (() => {
   const originalMergeAppConfigV17 = mergeAppConfig;
 
@@ -613,12 +613,4 @@
   document.querySelector('#incomeOwnerKpis')?.addEventListener('click', () => setTimeout(updateMainKpiState, 0));
 
   updateMainKpiState();
-
-  // V1.7.5 modülünü mevcut V1.7 katmanından yükle.
-  if(!document.querySelector('script[data-v175-loader]')){
-    const script = document.createElement('script');
-    script.src = 'v175-ui.js?v=175';
-    script.dataset.v175Loader = '1';
-    document.head.appendChild(script);
-  }
 })();
