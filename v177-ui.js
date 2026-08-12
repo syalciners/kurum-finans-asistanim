@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.0.1 - Özet yönetim paneli */
+/* BS OFİS BÜTÇE V2.0.2 - Özet yönetim paneli */
 (() => {
   function ensureV177Styles(){
     if(document.querySelector('#v177Styles')) return;
@@ -196,6 +196,35 @@
         font-size:13px!important;
       }
 
+      /* V202: Sıradaki Ödemeler hızlı ödeme butonu. */
+      #dashboard #upcomingMini .amount .bs-calendar-pay{
+        appearance:none!important;
+        display:block!important;
+        margin:6px 0 0 auto!important;
+        padding:5px 10px!important;
+        border:1px solid #c7d8ff!important;
+        border-radius:999px!important;
+        background:#eff6ff!important;
+        color:#2563eb!important;
+        box-shadow:none!important;
+        font:800 9px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif!important;
+        cursor:pointer!important;
+        -webkit-tap-highlight-color:transparent!important;
+      }
+      #dashboard #upcomingMini .amount .bs-calendar-pay:hover{
+        background:#e5efff!important;
+        border-color:#adc6ff!important;
+      }
+      #dashboard #upcomingMini .amount .bs-calendar-pay:active{
+        transform:scale(.97)!important;
+        background:#dfeaff!important;
+      }
+      #dashboard #upcomingMini .amount .bs-calendar-pay.partial{
+        border-color:#f2d59e!important;
+        background:#fff7e8!important;
+        color:#c97800!important;
+      }
+
       @media(max-width:380px){
         .v177-balance-card{padding:13px}
         .v177-balance-main strong{font-size:23px}
@@ -352,6 +381,35 @@
     });
   }
 
+  function bindUpcomingPay(){
+    const list=document.querySelector('#upcomingMini');
+    if(!list || list.dataset.v202PayBound==='1') return;
+    list.dataset.v202PayBound='1';
+
+    list.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-calendar-pay]');
+      if(!btn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const debt=state.debts
+        .map(normalizeDebt)
+        .find(d=>d.id===btn.dataset.calendarPay);
+      if(!debt) return;
+
+      const remaining=typeof window.currentInstallmentRemaining==='function'
+        ?window.currentInstallmentRemaining(debt)
+        :Math.max(0,+debt.minimum||0);
+
+      openRecordDialog('payments',{
+        debtId:debt.id,
+        date:todayISO(),
+        amount:remaining>0?remaining:''
+      });
+    },true);
+  }
+
   function renderAttention(){
     const el = document.querySelector('#v177Attention');
     if(!el) return;
@@ -427,6 +485,8 @@
       if(!list) return;
       [...list.children].slice(3).forEach(node=>node.remove());
     });
+
+    bindUpcomingPay();
   }
 
   function renderDashboardPanel(){
