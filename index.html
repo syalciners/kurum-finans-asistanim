@@ -8,21 +8,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BS OFİS BÜTÇE" />
   <title>BS OFİS BÜTÇE</title>
-  <link rel="manifest" href="manifest.webmanifest?v=173" />
+  <link rel="manifest" href="manifest.webmanifest?v=176" />
   <link rel="icon" type="image/png" href="bs-logo.png?v=1" />
-  <link rel="stylesheet" href="styles.css?v=173" />
+  <link rel="stylesheet" href="styles.css?v=176" />
 </head>
 <body>
   <div class="app-shell">
   <header class="topbar">
   <div style="display:flex;align-items:center;gap:11px;min-width:0;">
-    <img
-      src="bs-logo.png?v=1"
-      alt="BS Ofis"
-      width="44"
-      height="44"
-      style="width:44px;height:44px;object-fit:contain;border-radius:12px;flex:0 0 44px;"
-    />
+    <img src="bs-logo.png?v=1" alt="BS Ofis" width="44" height="44" style="width:44px;height:44px;object-fit:contain;border-radius:12px;flex:0 0 44px;" />
     <div style="min-width:0;">
       <p class="eyebrow" id="orgEyebrow">FİNANS YÖNETİMİ</p>
       <h1 id="appTitle">BS OFİS BÜTÇE</h1>
@@ -62,7 +56,6 @@
         <div id="debtList" class="list"></div>
       </section>
 
-
       <section id="incomes" class="view">
         <div class="page-title"><div><p class="eyebrow">GELİR TAKİBİ</p><h2 id="incomesPageTitle">Gelirler</h2></div><button id="addIncomeBtn" class="primary small">＋ Gelir</button></div>
         <div class="kpi-grid">
@@ -92,7 +85,6 @@
 
       <section id="settings" class="view">
         <div class="page-title"><div><p class="eyebrow">AYARLAR</p><h2 id="settingsPageTitle">Uygulama Ayarları</h2></div></div>
-
         <form id="budgetForm" class="panel form-grid">
           <h3>Bütçe</h3>
           <label>Kurum adı<input name="orgName" placeholder="Örn. BS Ofis" /></label>
@@ -100,18 +92,15 @@
           <label>Korunacak nakit rezervi<input name="reserve" inputmode="decimal" type="number" min="0" step="0.01" /></label>
           <button class="primary" type="submit">Kaydet</button>
         </form>
-
         <div class="panel stack">
           <div class="setting-head"><div><h3>Uygulama Görünümü</h3><p class="muted">İsimler ve menüler iki telefonda ortak güncellenir.</p></div></div>
           <label>Uygulama başlığı<input id="applicationName" maxlength="40" placeholder="BS OFİS BÜTÇE" /></label>
           <button id="saveApplicationName" class="secondary">Başlığı Kaydet</button>
         </div>
-
         <div class="panel stack">
           <div class="setting-head"><div><h3>Menü Düzeni</h3><p class="muted">Alt menüdeki bölümleri değiştir, göster/gizle ve sırala. Ayarlar sağ üstteki ⚙ simgesinde sabittir.</p></div></div>
           <div id="menuManager" class="config-list"></div>
         </div>
-
         <div class="panel stack">
           <div class="setting-head"><div><h3>Form Alanları</h3><p class="muted">Gereksiz alanları gizle; yeni özel alanlar ekle. Sistem için zorunlu alanlar silinemez.</p></div></div>
           <label>Düzenlenecek bölüm<select id="fieldModuleSelect"><option value="debts">Borçlar</option><option value="expenses">Harcamalar</option><option value="payments">Ödemeler</option></select></label>
@@ -119,27 +108,23 @@
           <div class="subsection-title"><strong>Özel Alanlar</strong><button id="addCustomFieldBtn" class="secondary small">＋ Yeni Alan</button></div>
           <div id="customFieldManager" class="config-list"></div>
         </div>
-
         <div class="panel stack">
           <div class="setting-head"><div><h3>Gelir Ayarları</h3><p class="muted">Özel ders geliri seçildiğinde görünecek öğrenci isimlerini buradan yönet.</p></div></div>
           <label>Özel ders öğrencileri<textarea id="incomeStudents" rows="7" placeholder="Her satıra bir öğrenci adı"></textarea></label>
           <button id="saveIncomeStudentsBtn" class="secondary">Öğrenci Listesini Kaydet</button>
         </div>
-
         <div class="panel stack">
           <div class="setting-head"><div><h3>Liste Seçenekleri</h3><p class="muted">Harcama kategorilerini ve ödeme yöntemlerini satır satır düzenleyebilirsin.</p></div></div>
           <label>Harcama kategorileri<textarea id="expenseCategories" rows="7"></textarea></label>
           <label>Ödeme yöntemleri<textarea id="paymentMethods" rows="5"></textarea></label>
           <button id="saveListsBtn" class="secondary">Liste Seçeneklerini Kaydet</button>
         </div>
-
         <div class="panel stack">
           <h3>Bu Telefon</h3>
           <label>İşlemleri yapan kişi<input id="deviceName" placeholder="Örn. Süleyman" /></label>
           <button id="saveDeviceName" class="secondary">Telefon adını kaydet</button>
           <p class="muted">Bu ad yalnız işlem geçmişinde “ekleyen” bilgisini göstermek için bu cihazda tutulur.</p>
         </div>
-
         <div class="panel stack">
           <h3>Ortak Bulut</h3>
           <div id="cloudSummary" class="cloud-summary"></div>
@@ -147,7 +132,6 @@
           <button id="syncNowBtn" class="secondary">Şimdi Senkronize Et</button>
           <button id="logoutBtn" class="danger-btn hidden">Kurum Hesabından Çık</button>
         </div>
-
         <div class="panel stack">
           <h3>Veri Yedeği</h3>
           <button id="exportBtn" class="secondary">JSON Yedeği İndir</button>
@@ -184,7 +168,6 @@
       <button class="primary" type="submit">Alanı Kaydet</button>
     </form>
   </dialog>
-
 
   <dialog id="incomeDialog">
     <form id="incomeForm" class="dialog-form">
@@ -227,8 +210,9 @@
 
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=173"></script>
-  <script src="v17-ui.js?v=173"></script>
+  <script src="app.js?v=176"></script>
+  <script src="v17-ui.js?v=176"></script>
+  <script src="v176-ui.js?v=176"></script>
   <script>
     (()=>{
       const eyebrow=document.getElementById('orgEyebrow');
