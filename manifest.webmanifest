@@ -1,17 +1,17 @@
 {
-  "name": "Borç ve Gelir Asistanım",
-  "short_name": "Finans Asistanım",
-  "start_url": "./?v=16",
+  "name": "BS OFİS BÜTÇE",
+  "short_name": "BS Bütçe",
+  "start_url": "./?v=172",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#14213d",
- "icons": [
-  {
-    "src": "bs-logo.png",
-    "sizes": "512x512",
-    "type": "image/png",
-    "purpose": "any maskable"
-  }
-]
+  "icons": [
+    {
+      "src": "bs-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
