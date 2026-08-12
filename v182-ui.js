@@ -220,4 +220,12 @@
   }
 
   waitAndApply();
+
+  // V1.8.4 marka ve kullanıcı dostu arayüz katmanını yükle.
+  if(!document.querySelector('script[data-v184-loader]')){
+    const script=document.createElement('script');
+    script.src='v184-ui.js?v=184';
+    script.dataset.v184Loader='1';
+    document.head.appendChild(script);
+  }
 })();
