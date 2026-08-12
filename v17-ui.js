@@ -249,7 +249,7 @@
 
   function bsIncomeCard(group, activeOwner='all'){
     const ownerTotals = ownerTotalsForGroup(group);
-    const filteredShare = activeOwner !== 'all'
+    const activeShare = activeOwner !== 'all'
       ? Number(ownerTotals[activeOwner]) || 0
       : group.amount;
 
@@ -260,7 +260,7 @@
 
     const detailLine = activeOwner === 'all'
       ? `Dağılım: ${distributionText(group)}`
-      : `${ownerShortName(activeOwner)} payı: ${money(filteredShare)} · Tahsilat toplamı: ${money(group.amount)}`;
+      : `${ownerShortName(activeOwner)} payı: ${money(activeShare)} · Tahsilat toplamı: ${money(group.amount)}`;
 
     return `
       <article
@@ -281,7 +281,7 @@
         </div>
 
         <div class="amount">
-          ${money(filteredShare)}
+          ${money(group.amount)}
         </div>
       </article>
     `;
