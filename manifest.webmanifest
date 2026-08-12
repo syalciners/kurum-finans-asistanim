@@ -2,7 +2,7 @@
   "id": "./",
   "name": "BS OFİS BÜTÇE YÖNETİMİ",
   "short_name": "BS Bütçe",
-  "start_url": "./?v=192",
+  "start_url": "./?v=193",
   "scope": "./",
   "display": "standalone",
   "background_color": "#F8FAFC",
