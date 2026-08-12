@@ -2,7 +2,7 @@
 
 BS Ofis için mobil öncelikli, ortak bulut verili finans yönetim PWA'sı.
 
-## Güncel durum — V1.7
+## Güncel durum — V1.7 çekirdek / UI190
 
 - Kurum borçları ve borç ödemeleri
 - Kurum harcamaları
@@ -28,6 +28,21 @@ Gelir sahipliği, `Lessons` tablosundaki `DersDurumu = Yapıldı` kayıtlarına 
 - diğer öğretmenler → Kurum Kasası
 
 Örnek: Efe Bulut 8.000 ₺ tahsilat → Süleyman 4.000 ₺ + Kurum Kasası 4.000 ₺. Kullanıcı ekranında tahsilat tek 8.000 ₺ kart olarak görünür.
+
+## Frontend mimarisi
+
+Görsel mimari 12.08.2026 tarihinde sadeleştirilmiştir. Marka ve tema artık üst üste sürüm dosyalarıyla değil, tek bir güncel katmanla yönetilir.
+
+Çalışan zincir:
+
+1. `app.js` — temel veri, form, bulut ve kayıt işlevleri
+2. `v17-ui.js` — V1.7 gelir görünümü ve BS Ofis tahsilat gruplanması
+3. `v176-ui.js` → `v177-ui.js` → `v178-ui.js` → `v179-ui.js` — doğrulanmış işlevsel UX modülleri
+4. `ui.js` — **tek güncel marka, renk, responsive ve görsel tema katmanı**
+
+Eski `v180-ui.js`, `v181-ui.js`, `v182-ui.js` ve `v184-ui.js` tema dosyaları kaldırılmıştır. Yeniden bağlanmamalıdır. Üst bardaki `#appTitle` ve `#orgEyebrow` DOM elemanları bulut/sistem uyumluluğu için korunur; görsel tema bu elemanları silmemelidir.
+
+Güncel tasarım standardı: açık `#F8FAFC` zemin, beyaz kartlar, ana eylem/aktif durumda `#2563EB`, pozitif/gelir vurgusunda teal, yaklaşan/kalan ödemede turuncu ve gecikmede kırmızı. Marka ikonu `bs-budget-mark.svg`, yatay marka dosyası `bs-budget-logo.svg`.
 
 ## Supabase migrasyonları
 
