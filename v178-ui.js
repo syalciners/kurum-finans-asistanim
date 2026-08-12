@@ -33,20 +33,21 @@
         border:1px solid var(--line);
         background:var(--card);
         color:var(--ink);
-        border-radius:13px;
-        min-height:66px;
-        padding:9px 7px;
+        border-radius:14px;
+        min-height:72px;
+        padding:10px 8px;
         display:grid;
         justify-items:center;
         align-content:center;
-        gap:5px;
+        gap:6px;
         cursor:pointer;
-        box-shadow:0 3px 12px rgba(20,33,61,.03);
+        box-shadow:0 4px 14px rgba(20,33,61,.035);
         -webkit-tap-highlight-color:transparent;
-        transition:transform .15s ease,border-color .15s ease,background .15s ease;
+        transition:transform .15s ease,border-color .15s ease,background .15s ease,box-shadow .15s ease;
       }
       .v178-quick-btn:hover{
         border-color:#b9cbef;
+        box-shadow:0 6px 18px rgba(20,33,61,.055);
       }
       .v178-quick-btn:active{
         transform:scale(.985);
@@ -57,26 +58,47 @@
         outline-offset:2px;
       }
       .v178-quick-icon{
-        width:28px;
-        height:28px;
-        border-radius:9px;
+        width:32px;
+        height:32px;
+        border-radius:10px;
         display:grid;
         place-items:center;
         background:#eef4ff;
         color:var(--accent);
-        font-size:17px;
-        font-weight:850;
       }
-      .v178-quick-btn span:last-child{
+      .v178-quick-icon svg{
+        width:19px;
+        height:19px;
+        display:block;
+      }
+      .v178-quick-label{
         font-size:10px;
         font-weight:800;
         line-height:1.15;
         text-align:center;
       }
-      @media(max-width:380px){
-        .v178-quick-grid{gap:6px}
-        .v178-quick-btn{padding:8px 4px;min-height:62px}
-        .v178-quick-btn span:last-child{font-size:9px}
+      @media(max-width:520px){
+        .v178-quick-grid{
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:8px;
+        }
+        .v178-quick-btn{
+          min-height:58px;
+          padding:10px 11px;
+          grid-template-columns:34px minmax(0,1fr);
+          align-items:center;
+          align-content:center;
+          justify-items:start;
+          gap:9px;
+        }
+        .v178-quick-icon{
+          width:32px;
+          height:32px;
+        }
+        .v178-quick-label{
+          text-align:left;
+          font-size:11px;
+        }
       }
     `;
     document.head.appendChild(style);
@@ -97,20 +119,36 @@
       </div>
       <div class="v178-quick-grid">
         <button type="button" class="v178-quick-btn" data-v178-action="income" aria-label="Yeni gelir ekle">
-          <span class="v178-quick-icon">＋₺</span>
-          <span>Gelir Ekle</span>
+          <span class="v178-quick-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7.5h16v10H4z"/><path d="M16.5 11.5h3.5"/><path d="M8 4.5v6"/><path d="m5.5 8 2.5 2.5L10.5 8"/>
+            </svg>
+          </span>
+          <span class="v178-quick-label">Gelir Ekle</span>
         </button>
         <button type="button" class="v178-quick-btn" data-v178-action="payment" aria-label="Yeni borç ödemesi yap">
-          <span class="v178-quick-icon">✓</span>
-          <span>Ödeme Yap</span>
+          <span class="v178-quick-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.2 2.2 4.8-5"/>
+            </svg>
+          </span>
+          <span class="v178-quick-label">Ödeme Yap</span>
         </button>
         <button type="button" class="v178-quick-btn" data-v178-action="debt" aria-label="Yeni borç ekle">
-          <span class="v178-quick-icon">▤</span>
-          <span>Borç Ekle</span>
+          <span class="v178-quick-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 4.5h12v15l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2-2 1.2z"/><path d="M9 9h6"/><path d="M9 13h4"/>
+            </svg>
+          </span>
+          <span class="v178-quick-label">Borç Ekle</span>
         </button>
         <button type="button" class="v178-quick-btn" data-v178-action="expense" aria-label="Yeni harcama ekle">
-          <span class="v178-quick-icon">−₺</span>
-          <span>Harcama Ekle</span>
+          <span class="v178-quick-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7.5h16v10H4z"/><path d="M16.5 11.5h3.5"/><path d="M16 10v6"/><path d="m13.5 13.5 2.5 2.5 2.5-2.5"/>
+            </svg>
+          </span>
+          <span class="v178-quick-label">Harcama Ekle</span>
         </button>
       </div>
     `;
