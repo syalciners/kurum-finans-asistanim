@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.2.8 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.2.9 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -155,16 +155,16 @@
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=228', {updateViaCache:'none'})
+      .register('./sw.js?v=229', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
 
-  function loadScheduleEditorUx(){
-    if(document.querySelector('script[data-bs-schedule-editor-ux]')) return;
+  function loadV229Fixes(){
+    if(document.querySelector('script[data-bs-v229-fixes]')) return;
     const script=document.createElement('script');
-    script.src='./schedule-editor-ux.js?v=228';
-    script.dataset.bsScheduleEditorUx='1';
+    script.src='./v229-fixes.js?v=229';
+    script.dataset.bsV229Fixes='1';
     document.body.appendChild(script);
   }
 
@@ -172,5 +172,5 @@
   installViewStateGuard();
   installSafeTitleRenderer();
   refreshServiceWorker();
-  setTimeout(loadScheduleEditorUx,0);
+  setTimeout(loadV229Fixes,0);
 })();
