@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V1.7.6 - Ödemeler ve Harcamalar UX */
+/* BS OFİS BÜTÇE V2.0.3 - Ödemeler ve Harcamalar UX */
 (() => {
   let expenseQuickMode = 'all';
 
@@ -24,12 +24,105 @@
         color:var(--ink);
         font-size:11px;
       }
+
+      /* V203: seçili ay için sade, tıklanabilir kategori özeti. */
+      #v203ExpenseCategorySummary{
+        margin:0 0 12px;
+        padding:12px 13px;
+        border:1px solid var(--line);
+        border-radius:15px;
+        background:var(--card);
+        box-shadow:0 2px 8px rgba(15,23,42,.025);
+      }
+      .v203-expense-category-head{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        margin-bottom:9px;
+      }
+      .v203-expense-category-head strong{
+        color:var(--ink);
+        font-size:11px;
+        font-weight:850;
+      }
+      .v203-expense-category-reset{
+        appearance:none;
+        padding:0;
+        border:0;
+        background:transparent;
+        color:var(--accent);
+        font-size:9px;
+        font-weight:800;
+        cursor:pointer;
+      }
+      #v203ExpenseCategoryList{
+        display:grid;
+        gap:7px;
+      }
+      .v203-expense-category-row{
+        appearance:none;
+        width:100%;
+        border:1px solid transparent;
+        border-radius:11px;
+        background:transparent;
+        color:var(--ink);
+        padding:7px 8px;
+        display:grid;
+        grid-template-columns:minmax(0,1fr) auto;
+        gap:5px 10px;
+        text-align:left;
+        cursor:pointer;
+        -webkit-tap-highlight-color:transparent;
+      }
+      .v203-expense-category-row:hover{
+        background:#f8fafc;
+      }
+      .v203-expense-category-row.active{
+        background:#fff7e8;
+        border-color:#f2d59e;
+      }
+      .v203-expense-category-name{
+        min-width:0;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        font-size:10px;
+        font-weight:800;
+      }
+      .v203-expense-category-amount{
+        font-size:10px;
+        font-weight:850;
+        white-space:nowrap;
+      }
+      .v203-expense-category-track{
+        grid-column:1/-1;
+        height:5px;
+        overflow:hidden;
+        border-radius:999px;
+        background:#eef2f7;
+      }
+      .v203-expense-category-track span{
+        display:block;
+        height:100%;
+        border-radius:inherit;
+        background:#f59e0b;
+      }
+      .v203-expense-category-empty{
+        padding:4px 2px;
+        color:var(--muted);
+        font-size:10px;
+      }
+
       @media(max-width:480px){
         #expenses .toolbar.v176-expense-toolbar{
           grid-template-columns:1fr 1fr;
         }
         #expenses .toolbar.v176-expense-toolbar input{
           grid-column:1/-1;
+        }
+        #v203ExpenseCategorySummary{
+          padding:11px;
         }
       }
     `;
@@ -163,7 +256,8 @@
   function expenseCategoryTotals(list){
     const totals = new Map();
     list.forEach(x => {
-      totals.set(x.category, (totals.get(x.category) || 0) + (+x.amount || 0));
+      const category=x.category || 'Diğer';
+      totals.set(category, (totals.get(category) || 0) + (+x.amount || 0));
     });
     return [...totals.entries()].sort((a,b) => b[1] - a[1]);
   }
@@ -279,6 +373,72 @@
     });
   }
 
+  function ensureExpenseCategorySummary(){
+    const view=document.querySelector('#expenses');
+    const kpis=document.querySelector('#v176ExpenseKpis');
+    const toolbar=view?.querySelector('.toolbar');
+    if(!view || !kpis || !toolbar) return null;
+
+    let wrap=document.querySelector('#v203ExpenseCategorySummary');
+    if(wrap) return wrap;
+
+    wrap=document.createElement('section');
+    wrap.id='v203ExpenseCategorySummary';
+    wrap.innerHTML=`
+      <div class="v203-expense-category-head">
+        <strong>Kategori Özeti</strong>
+        <button type="button" class="v203-expense-category-reset" data-expense-category="all">Tümünü Göster</button>
+      </div>
+      <div id="v203ExpenseCategoryList"></div>
+    `;
+    kpis.insertAdjacentElement('afterend',wrap);
+
+    wrap.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-expense-category]');
+      if(!btn) return;
+
+      const select=document.querySelector('#v176ExpenseCategoryFilter');
+      const search=document.querySelector('#expenseSearch');
+      if(!select) return;
+
+      const requested=btn.dataset.expenseCategory || 'all';
+      const next=requested!=='all' && select.value===requested ? 'all' : requested;
+      select.value=next;
+      expenseQuickMode=next==='all'?'all':'category';
+      if(search) search.value='';
+      renderExpenses();
+    });
+
+    return wrap;
+  }
+
+  function renderExpenseCategorySummary(monthList){
+    ensureExpenseCategorySummary();
+    const listEl=document.querySelector('#v203ExpenseCategoryList');
+    if(!listEl) return;
+
+    const rows=expenseCategoryTotals(monthList);
+    const total=monthList.reduce((s,x)=>s+(+x.amount||0),0);
+    const active=document.querySelector('#v176ExpenseCategoryFilter')?.value || 'all';
+
+    if(!rows.length || total<=0){
+      listEl.innerHTML='<div class="v203-expense-category-empty">Seçili ayda kategori özeti oluşturacak harcama yok.</div>';
+      return;
+    }
+
+    listEl.innerHTML=rows.slice(0,5).map(([category,amount])=>{
+      const ratio=Math.max(0,Math.min(100,(amount/total)*100));
+      const isActive=active===category;
+      return `
+        <button type="button" class="v203-expense-category-row${isActive?' active':''}" data-expense-category="${esc(category)}" aria-pressed="${isActive?'true':'false'}">
+          <span class="v203-expense-category-name">${esc(category)} · %${Math.round(ratio)}</span>
+          <span class="v203-expense-category-amount">${money(amount)}</span>
+          <span class="v203-expense-category-track" aria-hidden="true"><span style="width:${ratio.toFixed(1)}%"></span></span>
+        </button>
+      `;
+    }).join('');
+  }
+
   function updateExpenseQuickCards(monthList){
     ensureExpenseQuickCards();
     const stats = expenseStats(monthList);
@@ -311,6 +471,7 @@
     populateMonths();
     ensureExpenseCategoryFilter();
     ensureExpenseQuickCards();
+    ensureExpenseCategorySummary();
 
     const q = (document.querySelector('#expenseSearch')?.value || '')
       .trim().toLocaleLowerCase('tr-TR');
@@ -345,12 +506,14 @@
     }
 
     updateExpenseQuickCards(monthList);
+    renderExpenseCategorySummary(monthList);
   }
 
   ensureV176Styles();
   ensurePaymentQuickCards();
   ensureExpenseCategoryFilter();
   ensureExpenseQuickCards();
+  ensureExpenseCategorySummary();
 
   renderPayments = renderPaymentsV176;
   renderExpenses = renderExpensesV176;
@@ -371,10 +534,10 @@
   renderPayments();
   renderExpenses();
 
-  // V1.7.7 yönetim panelini V1.7.6 katmanından yükle.
+  // Yönetim panelini mevcut zincirde yükle.
   if(!document.querySelector('script[data-v177-loader]')){
     const script = document.createElement('script');
-    script.src = 'v177-ui.js?v=177';
+    script.src = 'v177-ui.js?v=202';
     script.dataset.v177Loader = '1';
     document.head.appendChild(script);
   }
