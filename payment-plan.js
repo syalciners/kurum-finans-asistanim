@@ -1,5 +1,26 @@
-/* BS OFİS BÜTÇE - Kısmi ödeme / taksit planı V2 */
+/* BS OFİS BÜTÇE - Kısmi ödeme / taksit planı V2.1 */
 (() => {
+  // Dinamik UI modülleri paralel yüklenebildiği için bu modül en son devreye girer.
+  // Böylece v179 veya güncel ui.js paymentCard/debtCard davranışını sonradan ezemez.
+  if(!window.__bsOfisV179Loaded || !document.querySelector('#bsCurrentUiStyles')){
+    if(!window.__bsPaymentPlanV2Waiting){
+      window.__bsPaymentPlanV2Waiting=true;
+      const retry=()=>{
+        if(window.__bsOfisV179Loaded && document.querySelector('#bsCurrentUiStyles')){
+          window.__bsPaymentPlanV2Waiting=false;
+          const script=document.createElement('script');
+          script.src='payment-plan.js?v=193&final=1';
+          script.dataset.paymentPlanFinal='1';
+          document.head.appendChild(script);
+          return;
+        }
+        setTimeout(retry,80);
+      };
+      setTimeout(retry,80);
+    }
+    return;
+  }
+
   if(window.__bsPaymentPlanV2Loaded) return;
   window.__bsPaymentPlanV2Loaded=true;
 
