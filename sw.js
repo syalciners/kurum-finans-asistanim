@@ -1,22 +1,19 @@
-const CACHE='bs-ofis-butce-v184-20260812';
+const CACHE='bs-ofis-butce-ui190-20260812';
 const ASSETS=[
-  './?v=184',
-  './index.html?v=180',
+  './?v=190',
+  './index.html?v=190',
   './styles.css?v=176',
   './app.js?v=176',
   './v17-ui.js?v=176',
   './v175-ui.js?v=175',
-  './v176-ui.js?v=176',
+  './v176-ui.js?v=190',
   './v177-ui.js?v=177',
-  './v178-ui.js?v=180',
+  './v178-ui.js?v=178',
   './v179-ui.js?v=179',
-  './v180-ui.js?v=180',
-  './v181-ui.js?v=181',
-  './v182-ui.js?v=184',
-  './v184-ui.js?v=184',
-  './manifest.webmanifest?v=184',
-  './bs-budget-mark.svg?v=184',
-  './bs-budget-logo.svg?v=184'
+  './ui.js?v=190',
+  './manifest.webmanifest?v=190',
+  './bs-budget-mark.svg?v=190',
+  './bs-budget-logo.svg?v=190'
 ];
 
 self.addEventListener('install',e=>
@@ -54,7 +51,7 @@ self.addEventListener('fetch',e=>{
       })
       .catch(()=>
         caches.match(e.request)
-          .then(r=>r||caches.match('./?v=184')||caches.match('./index.html?v=180'))
+          .then(r=>r||caches.match('./?v=190')||caches.match('./index.html?v=190'))
       )
   );
 });
