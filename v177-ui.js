@@ -395,4 +395,12 @@
   };
 
   renderDashboardPanel();
+
+  // V1.7.8 hızlı işlemler modülünü yükle.
+  if(!document.querySelector('script[data-v178-loader]')){
+    const script = document.createElement('script');
+    script.src = 'v178-ui.js?v=178';
+    script.dataset.v178Loader = '1';
+    document.head.appendChild(script);
+  }
 })();
