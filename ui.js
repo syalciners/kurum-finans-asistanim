@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE - TEK GÜNCEL ARAYÜZ KATMANI */
+/* BS OFİS BÜTÇE V2.1.7 - TEK GÜNCEL ARAYÜZ KATMANI */
 (() => {
   if (window.__bsCurrentUiLoaded) return;
   window.__bsCurrentUiLoaded = true;
@@ -321,7 +321,7 @@
 
     const img=left.querySelector('img');
     if(img){
-      img.src='bs-budget-mark.svg?v=191';
+      img.src='bs-budget-mark-v194.svg?v=216';
       img.alt='BS Ofis Bütçe';
       img.className='bs-brand-mark';
       img.removeAttribute('style');
@@ -355,7 +355,7 @@
     }
 
     document.querySelectorAll('link[rel~="icon"],link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"]').forEach(link=>{
-      link.href='bs-budget-mark.svg?v=191';
+      link.href='bs-budget-mark-v194.svg?v=216';
     });
     const meta=document.querySelector('meta[name="theme-color"]');
     if(meta) meta.setAttribute('content','#F8FAFC');
@@ -475,6 +475,41 @@
     if(eyebrow && eyebrow.textContent!=='YÖNETİMİ') eyebrow.textContent='YÖNETİMİ';
   }
 
+  function hasCoreTitleTargets(){
+    return [
+      'appTitle','orgEyebrow','debtsPageTitle','incomesPageTitle',
+      'expensesPageTitle','calendarPageTitle','paymentsPageTitle','settingsPageTitle'
+    ].every(id=>document.getElementById(id));
+  }
+
+  function renderTitlesFallback(){
+    const configuredName=appConfig?.applicationName || 'BS Ofis Bütçe';
+    document.title=configuredName;
+
+    const appTitle=document.querySelector('#appTitle');
+    if(appTitle) appTitle.textContent=configuredName;
+
+    const eyebrow=document.querySelector('#orgEyebrow');
+    if(eyebrow){
+      eyebrow.textContent=(state?.budget?.orgName || 'ORTAK FİNANS').toLocaleUpperCase('tr-TR');
+    }
+
+    const pairs=[
+      ['debts','debtsPageTitle'],
+      ['incomes','incomesPageTitle'],
+      ['expenses','expensesPageTitle'],
+      ['calendar','calendarPageTitle'],
+      ['payments','paymentsPageTitle'],
+      ['settings','settingsPageTitle']
+    ];
+
+    pairs.forEach(([view,id])=>{
+      const el=document.getElementById(id);
+      const menu=typeof menuItem==='function' ? menuItem(view) : null;
+      if(el && menu) el.textContent=menu.label;
+    });
+  }
+
   function applyCurrentUi(){
     ensureStyles();
     applyBrand();
@@ -486,7 +521,8 @@
     if(typeof renderTitles==='function' && !renderTitles.__bsUiWrapped){
       const originalRenderTitles=renderTitles;
       const wrapped=function(){
-        originalRenderTitles();
+        if(hasCoreTitleTargets()) originalRenderTitles();
+        else renderTitlesFallback();
         keepBrandCopyStable();
       };
       wrapped.__bsUiWrapped=true;
