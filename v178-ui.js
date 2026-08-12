@@ -219,10 +219,10 @@
     document.head.appendChild(script);
   }
 
-  // Gelecek taksit planı: eski notları teknik alana taşır ve detayda gösterir.
+  // Gelecek taksit planı: teknik planı ve kullanıcı dostu taksit önizlemesini gösterir.
   if(!document.querySelector('script[data-payment-schedule-loader]')){
     const script = document.createElement('script');
-    script.src = 'payment-schedule.js?v=197';
+    script.src = 'payment-schedule.js?v=198';
     script.dataset.paymentScheduleLoader = '1';
     document.head.appendChild(script);
   }
