@@ -304,4 +304,12 @@
   }
 
   waitForPreviousLayers();
+
+  // V1.8.1 sade kurumsal tema katmanını yükle.
+  if(!document.querySelector('script[data-v181-loader]')){
+    const script=document.createElement('script');
+    script.src='v181-ui.js?v=181';
+    script.dataset.v181Loader='1';
+    document.head.appendChild(script);
+  }
 })();
