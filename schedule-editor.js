@@ -1,7 +1,7 @@
-/* BS OFİS BÜTÇE V2.2.5 - Kesin Taksit Planı form editörü */
+/* BS OFİS BÜTÇE V2.2.6 - Kesin Taksit Planı form editörü + hızlı aylık plan */
 (() => {
-  if(window.__bsScheduleEditorV225Loaded) return;
-  window.__bsScheduleEditorV225Loaded=true;
+  if(window.__bsScheduleEditorV226Loaded) return;
+  window.__bsScheduleEditorV226Loaded=true;
 
   const EPS=.005;
   const roundMoney=n=>Math.round((+n||0)*100)/100;
@@ -22,6 +22,24 @@
     return all.slice(Math.max(0,all.length-count));
   }
 
+  function monthlyDate(startDate,offset){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) return '';
+    const [y0,m0,d0]=startDate.split('-').map(Number);
+    const raw=(m0-1)+offset;
+    const y=y0+Math.floor(raw/12);
+    const m=((raw%12)+12)%12;
+    const lastDay=new Date(Date.UTC(y,m+1,0)).getUTCDate();
+    const d=Math.min(d0,lastDay);
+    return `${String(y).padStart(4,'0')}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+
+  function buildMonthlyRows(startDate,count,amount){
+    const n=Math.max(0,Math.min(120,Math.floor(+count||0)));
+    const a=roundMoney(amount);
+    if(!startDate||n<1||a<=EPS) return [];
+    return Array.from({length:n},(_,i)=>({date:monthlyDate(startDate,i),amount:a}));
+  }
+
   function ensureStyles(){
     if(document.querySelector('#bsScheduleEditorStyles')) return;
     const style=document.createElement('style');
@@ -34,6 +52,10 @@
       .bs-schedule-editor-body{padding:10px 12px 12px;border-top:1px solid #e8edf3;display:grid;gap:9px}
       .bs-schedule-editor-body[hidden]{display:none!important}
       .bs-schedule-label{display:grid;gap:5px;font-size:9px;font-weight:760;color:#64748b}.bs-schedule-label input{min-height:40px}
+      .bs-schedule-generator{padding:9px;border:1px solid #dbe7fb;border-radius:12px;background:#f8fbff;display:grid;gap:7px}
+      .bs-schedule-generator-head{display:grid;gap:1px}.bs-schedule-generator-head strong{font-size:10px;color:#0f172a}.bs-schedule-generator-head small{font-size:8.5px;color:#64748b;line-height:1.35}
+      .bs-schedule-generator-grid{display:grid;grid-template-columns:1.15fr .72fr .9fr;gap:6px}.bs-schedule-generator-grid label{display:grid;gap:4px;font-size:8px;font-weight:760;color:#64748b}.bs-schedule-generator-grid input{min-width:0;min-height:38px;padding:7px 8px;font-size:10.5px}
+      .bs-schedule-generate{min-height:35px;border:1px solid #b9cef8;border-radius:10px;background:#eff6ff;color:#2563eb;font-size:9px;font-weight:830;cursor:pointer}
       .bs-schedule-rows{display:grid;gap:7px;max-height:310px;overflow:auto;padding-right:2px}
       .bs-schedule-row{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr) 32px;gap:6px;align-items:center}
       .bs-schedule-row input{min-width:0;min-height:39px;padding:8px 9px;font-size:11px}
@@ -44,7 +66,7 @@
       .bs-schedule-summary{padding:8px 9px;border-radius:10px;background:#f8fafc;color:#475569;font-size:9px;font-weight:760;line-height:1.4}
       .bs-schedule-summary strong{color:#2563eb}
       .bs-schedule-empty{padding:9px;border:1px dashed #cbd5e1;border-radius:10px;color:#64748b;font-size:9px;line-height:1.4;text-align:center}
-      @media(max-width:520px){.bs-schedule-row{grid-template-columns:1fr .78fr 30px}.bs-schedule-editor-head{padding:10px}.bs-schedule-editor-body{padding:9px 10px 11px}}
+      @media(max-width:520px){.bs-schedule-row{grid-template-columns:1fr .78fr 30px}.bs-schedule-editor-head{padding:10px}.bs-schedule-editor-body{padding:9px 10px 11px}.bs-schedule-generator-grid{grid-template-columns:1fr 1fr}.bs-schedule-generator-grid label:first-child{grid-column:1/-1}}
     `;
     document.head.appendChild(style);
   }
@@ -132,6 +154,7 @@
     editor.className='bs-schedule-editor';
     editor.dataset.cleared='0';
     editor.dataset.hadSchedule=rows.length?'1':'0';
+    editor.dataset.generated='0';
     editor.innerHTML=`
       <div class="bs-schedule-editor-head">
         <div class="bs-schedule-editor-title">
@@ -144,6 +167,18 @@
         <label class="bs-schedule-label">Plan adı / sağlayıcı
           <input type="text" data-schedule-label maxlength="50" value="${esc(label)}" placeholder="Örn. Banka kredi planı">
         </label>
+        <div class="bs-schedule-generator">
+          <div class="bs-schedule-generator-head">
+            <strong>Hızlı aylık plan oluştur</strong>
+            <small>Başlangıç tarihi, taksit sayısı ve aylık tutardan satırları otomatik üretir. Gerekirse sonradan tek tek düzenleyebilirsin.</small>
+          </div>
+          <div class="bs-schedule-generator-grid">
+            <label>İlk ödeme tarihi<input type="date" data-generator-start></label>
+            <label>Taksit sayısı<input type="number" data-generator-count min="1" max="120" step="1" inputmode="numeric" placeholder="12"></label>
+            <label>Aylık tutar<input type="number" data-generator-amount min="0.01" step="0.01" inputmode="decimal" placeholder="5000"></label>
+          </div>
+          <button type="button" class="bs-schedule-generate">Aylık Planı Oluştur</button>
+        </div>
         <div class="bs-schedule-rows">${rows.map(rowHtml).join('')}</div>
         <div class="bs-schedule-empty" ${rows.length?'hidden':''}>İlk ödeme satırını ekleyerek başlayın.</div>
         <div class="bs-schedule-summary"></div>
@@ -165,10 +200,37 @@
       if(open && !rowsFromEditor(editor).length) addRow(editor);
     });
 
-    editor.querySelector('.bs-schedule-add').addEventListener('click',()=>addRow(editor));
+    editor.querySelector('.bs-schedule-generate').addEventListener('click',()=>{
+      const start=editor.querySelector('[data-generator-start]')?.value||'';
+      const count=editor.querySelector('[data-generator-count]')?.value||'';
+      const amount=editor.querySelector('[data-generator-amount]')?.value||'';
+      const generated=buildMonthlyRows(start,count,amount);
+
+      if(!generated.length){
+        toast('İlk ödeme tarihi, taksit sayısı ve aylık tutarı kontrol edin.');
+        return;
+      }
+
+      const existing=rowsFromEditor(editor);
+      if(existing.length && !confirm(`Mevcut ${existing.length} plan satırı yeni aylık planla değiştirilecek. Devam edilsin mi?`)){
+        return;
+      }
+
+      editor.dataset.cleared='0';
+      editor.dataset.generated='1';
+      editor.querySelector('.bs-schedule-rows').innerHTML=generated.map(rowHtml).join('');
+      updateSummary(editor);
+      toast(`${generated.length} taksitlik aylık plan oluşturuldu.`);
+    });
+
+    editor.querySelector('.bs-schedule-add').addEventListener('click',()=>{
+      editor.dataset.generated='0';
+      addRow(editor);
+    });
     editor.querySelector('.bs-schedule-clear').addEventListener('click',()=>{
       if(!confirm('Kesin taksit planını temizlemek istiyor musunuz?')) return;
       editor.dataset.cleared='1';
+      editor.dataset.generated='0';
       editor.querySelector('.bs-schedule-rows').innerHTML='';
       updateSummary(editor);
     });
@@ -177,15 +239,20 @@
       const btn=e.target.closest('.bs-schedule-remove');
       if(!btn) return;
       btn.closest('.bs-schedule-row')?.remove();
+      editor.dataset.generated='0';
       const anyRows=editor.querySelectorAll('.bs-schedule-row').length>0;
       editor.dataset.cleared=(!anyRows && editor.dataset.hadSchedule==='1')?'1':'0';
       updateSummary(editor);
     });
-    editor.addEventListener('input',()=>{
+    editor.addEventListener('input',e=>{
+      if(e.target.closest('.bs-schedule-generator')) return;
+      editor.dataset.generated='0';
       if(editor.querySelectorAll('.bs-schedule-row').length) editor.dataset.cleared='0';
       updateSummary(editor);
     });
-    editor.addEventListener('change',()=>{
+    editor.addEventListener('change',e=>{
+      if(e.target.closest('.bs-schedule-generator')) return;
+      editor.dataset.generated='0';
       if(editor.querySelectorAll('.bs-schedule-row').length) editor.dataset.cleared='0';
       updateSummary(editor);
     });
@@ -193,21 +260,21 @@
     updateSummary(editor);
   }
 
-  if(typeof openRecordDialog==='function' && !openRecordDialog.__bsScheduleEditorV225){
-    const originalOpenRecordDialogV225=openRecordDialog;
+  if(typeof openRecordDialog==='function' && !openRecordDialog.__bsScheduleEditorV226){
+    const originalOpenRecordDialogV226=openRecordDialog;
     const wrapped=function(module,record=null){
-      const result=originalOpenRecordDialogV225(module,record);
+      const result=originalOpenRecordDialogV226(module,record);
       if(module==='debts') installEditor(record||{});
       return result;
     };
-    wrapped.__bsScheduleEditorV225=true;
+    wrapped.__bsScheduleEditorV226=true;
     openRecordDialog=wrapped;
   }
 
-  if(typeof parseCustomValues==='function' && !parseCustomValues.__bsScheduleEditorV225){
-    const originalParseCustomValuesV225=parseCustomValues;
+  if(typeof parseCustomValues==='function' && !parseCustomValues.__bsScheduleEditorV226){
+    const originalParseCustomValuesV226=parseCustomValues;
     const wrapped=function(fd,module,oldCustom={}){
-      const out=originalParseCustomValuesV225(fd,module,oldCustom);
+      const out=originalParseCustomValuesV226(fd,module,oldCustom);
       if(module!=='debts') return out;
 
       const editor=document.querySelector('#recordFields .bs-schedule-editor');
@@ -226,14 +293,16 @@
       out.installment_schedule_total=totalRows(rows);
       out.remaining_installments=rows.length;
       out.plan_type='exact_schedule';
-      out.installment_schedule_source='uygulama_editoru_v225';
+      out.installment_schedule_source=editor.dataset.generated==='1'
+        ?'hizli_aylik_plan_v226'
+        :'uygulama_editoru_v226';
       if(label) out.installment_schedule_label=label;
       else delete out.installment_schedule_label;
       delete out.next_payment_after_current;
       delete out.next_payment_source;
       return out;
     };
-    wrapped.__bsScheduleEditorV225=true;
+    wrapped.__bsScheduleEditorV226=true;
     parseCustomValues=wrapped;
   }
 
