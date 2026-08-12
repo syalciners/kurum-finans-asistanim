@@ -202,4 +202,12 @@
     script.dataset.v179Loader = '1';
     document.head.appendChild(script);
   }
+
+  // V1.8.0 kurumsal tema modülünü yükle. Modül V1.7.9'un hazır olmasını bekler.
+  if(!document.querySelector('script[data-v180-loader]')){
+    const script = document.createElement('script');
+    script.src = 'v180-ui.js?v=180';
+    script.dataset.v180Loader = '1';
+    document.head.appendChild(script);
+  }
 })();
