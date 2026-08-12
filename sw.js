@@ -1,6 +1,6 @@
-const CACHE='bs-ofis-butce-ui206-20260812';
+const CACHE='bs-ofis-butce-ui207-20260812';
 const ASSETS=[
-  './?v=206',
+  './?v=207',
   './index.html?v=204',
   './styles.css?v=176',
   './app.js?v=176',
@@ -55,7 +55,7 @@ self.addEventListener('fetch',e=>{
       })
       .catch(()=>
         caches.match(e.request)
-          .then(r=>r||caches.match('./?v=206')||caches.match('./index.html?v=204'))
+          .then(r=>r||caches.match('./?v=207')||caches.match('./index.html?v=204'))
       )
   );
 });
