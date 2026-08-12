@@ -214,8 +214,16 @@
   // Kısmi ödeme / taksit planı iş mantığı.
   if(!document.querySelector('script[data-payment-plan-loader]')){
     const script = document.createElement('script');
-    script.src = 'payment-plan.js?v=192';
+    script.src = 'payment-plan.js?v=196';
     script.dataset.paymentPlanLoader = '1';
+    document.head.appendChild(script);
+  }
+
+  // Gelecek taksit planı: eski notları teknik alana taşır ve detayda gösterir.
+  if(!document.querySelector('script[data-payment-schedule-loader]')){
+    const script = document.createElement('script');
+    script.src = 'payment-schedule.js?v=197';
+    script.dataset.paymentScheduleLoader = '1';
     document.head.appendChild(script);
   }
 })();
