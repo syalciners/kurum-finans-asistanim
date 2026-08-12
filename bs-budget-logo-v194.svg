@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 230" role="img" aria-labelledby="title desc">
+  <title id="title">BS Ofis Bütçe Yönetimi</title>
+  <desc id="desc">Açık zeminlerde kullanılan mavi gümüş BS Ofis Bütçe Yönetimi yatay logosu.</desc>
+  <defs>
+    <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".42" stop-color="#F1F5FA"/>
+      <stop offset=".72" stop-color="#B7C7DA"/>
+      <stop offset="1" stop-color="#EEF4FB"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#42B4FF"/>
+      <stop offset=".5" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#173A8A"/>
+    </linearGradient>
+    <filter id="soft" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#1E3A8A" flood-opacity=".16"/>
+    </filter>
+  </defs>
+  <g transform="translate(6 9)" filter="url(#soft)">
+    <rect x="0" y="0" width="210" height="210" rx="48" fill="#F7FAFF" stroke="#C9DBF7" stroke-width="3"/>
+    <text x="16" y="140" fill="url(#silver)" stroke="#2563EB" stroke-width="3" font-family="Arial,Helvetica,sans-serif" font-size="116" font-weight="900" letter-spacing="-13">BS</text>
+    <path d="M30 158C74 179 126 181 169 158c16-8 29-19 40-33" fill="none" stroke="url(#blue)" stroke-width="9" stroke-linecap="round"/>
+    <g fill="url(#silver)" stroke="#4A6B98" stroke-width="1.5">
+      <path d="M119 146h15v35h-15z"/><path d="M141 131h15v50h-15z"/><path d="M163 111h15v70h-15z"/>
+    </g>
+    <text x="165" y="64" fill="url(#blue)" stroke="#FFFFFF" stroke-width="1.2" paint-order="stroke" font-family="Arial,Helvetica,sans-serif" font-size="47" font-weight="900">₺</text>
+  </g>
+  <line x1="250" y1="35" x2="250" y2="198" stroke="#2563EB" stroke-width="3" opacity=".42"/>
+  <text x="284" y="91" fill="url(#blue)" font-family="Arial,Helvetica,sans-serif" font-size="61" font-weight="900" letter-spacing="1">BS OFİS</text>
+  <text x="284" y="157" fill="#173A8A" font-family="Arial,Helvetica,sans-serif" font-size="61" font-weight="900" letter-spacing="1">BÜTÇE</text>
+  <text x="288" y="202" fill="#2563EB" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="850" letter-spacing="10">YÖNETİMİ</text>
+</svg>
