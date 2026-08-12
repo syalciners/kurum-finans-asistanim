@@ -194,36 +194,4 @@
     originalRenderDashboardV178();
     ensureQuickActions();
   };
-
-  // İşlevsel görsel/detay modülü.
-  if(!document.querySelector('script[data-v179-loader]')){
-    const script = document.createElement('script');
-    script.src = 'v179-ui.js?v=179';
-    script.dataset.v179Loader = '1';
-    document.head.appendChild(script);
-  }
-
-  // Marka ve tema tek güncel dosyada tutulur.
-  if(!document.querySelector('script[data-current-ui-loader]')){
-    const script = document.createElement('script');
-    script.src = 'ui.js?v=191';
-    script.dataset.currentUiLoader = '1';
-    document.head.appendChild(script);
-  }
-
-  // Kısmi ödeme / taksit planı iş mantığı.
-  if(!document.querySelector('script[data-payment-plan-loader]')){
-    const script = document.createElement('script');
-    script.src = 'payment-plan.js?v=200';
-    script.dataset.paymentPlanLoader = '1';
-    document.head.appendChild(script);
-  }
-
-  // Gelecek taksit planı: teknik planı ve kullanıcı dostu taksit önizlemesini gösterir.
-  if(!document.querySelector('script[data-payment-schedule-loader]')){
-    const script = document.createElement('script');
-    script.src = 'payment-schedule.js?v=198';
-    script.dataset.paymentScheduleLoader = '1';
-    document.head.appendChild(script);
-  }
 })();
