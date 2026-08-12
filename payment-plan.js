@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE - Kısmi ödeme / taksit planı V3 */
+/* BS OFİS BÜTÇE - Kısmi ödeme / taksit planı V4 */
 (() => {
   // Dinamik UI modülleri paralel yüklenebildiği için bu modül en son devreye girer.
   if(!window.__bsOfisV179Loaded || !document.querySelector('#bsCurrentUiStyles')){
@@ -8,7 +8,7 @@
         if(window.__bsOfisV179Loaded && document.querySelector('#bsCurrentUiStyles')){
           window.__bsPaymentPlanV3Waiting=false;
           const script=document.createElement('script');
-          script.src='payment-plan.js?v=196&final=1';
+          script.src='payment-plan.js?v=200&final=1';
           script.dataset.paymentPlanFinal='1';
           document.head.appendChild(script);
           return;
@@ -64,6 +64,88 @@
       .filter(d=>d.amount>EPS || (+d.minimum||0)<=0)
       .sort((a,b)=>a.date-b.date);
   };
+
+  function ensureCalendarPayStyles(){
+    if(document.querySelector('#bsCalendarPayStyles')) return;
+    const style=document.createElement('style');
+    style.id='bsCalendarPayStyles';
+    style.textContent=`
+      #calendarList .amount .bs-calendar-pay{
+        appearance:none;
+        display:block;
+        margin:7px 0 0 auto;
+        padding:6px 10px;
+        border:1px solid #c7d8ff;
+        border-radius:999px;
+        background:#eff6ff;
+        color:#2563eb;
+        font:800 10px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+        cursor:pointer;
+        -webkit-tap-highlight-color:transparent;
+      }
+      #calendarList .amount .bs-calendar-pay:active{
+        transform:scale(.97);
+        background:#dfeaff;
+      }
+      #calendarList .amount .bs-calendar-pay.partial{
+        border-color:#f2d59e;
+        background:#fff7e8;
+        color:#c97800;
+      }
+      @media(max-width:520px){
+        #calendarList .amount .bs-calendar-pay{padding:6px 9px;font-size:9px}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const originalDueCardPaymentPlan=dueCard;
+  dueCard=function(d){
+    const html=originalDueCardPaymentPlan(d);
+    if(!d?.id) return html;
+
+    const template=document.createElement('template');
+    template.innerHTML=html.trim();
+    const card=template.content.firstElementChild;
+    const amount=card?.querySelector('.amount');
+    if(!card||!amount) return html;
+
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className=`bs-calendar-pay${(+d.installmentPaid||0)>EPS?' partial':''}`;
+    btn.dataset.calendarPay=d.id;
+    btn.setAttribute('aria-label',`${d.name||'Borç'} için ödeme yap`);
+    btn.textContent=(+d.installmentPaid||0)>EPS?'Kalanı Öde':'Öde';
+    amount.appendChild(btn);
+
+    return card.outerHTML;
+  };
+
+  function bindCalendarPay(){
+    const list=document.querySelector('#calendarList');
+    if(!list||list.dataset.bsCalendarPayBound==='1') return;
+    list.dataset.bsCalendarPayBound='1';
+
+    list.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-calendar-pay]');
+      if(!btn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const debt=state.debts
+        .map(normalizeDebt)
+        .find(d=>d.id===btn.dataset.calendarPay);
+      if(!debt) return;
+
+      const remaining=currentInstallmentRemaining(debt);
+      openRecordDialog('payments',{
+        debtId:debt.id,
+        date:todayISO(),
+        amount:remaining>EPS?remaining:''
+      });
+    },true);
+  }
 
   function resolveLatestLocalPayment(debtId,paymentDate){
     for(let i=state.payments.length-1;i>=0;i--){
@@ -475,8 +557,20 @@
     }
   }
 
+  ensureCalendarPayStyles();
+  bindCalendarPay();
   setTimeout(enhancePaymentForm,0);
   setTimeout(refreshAfterRepair,0);
+
+  const originalRenderCalendarPaymentPlan=renderCalendar;
+  if(typeof originalRenderCalendarPaymentPlan==='function' && !originalRenderCalendarPaymentPlan.__bsCalendarPayWrapped){
+    const wrapped=function(){
+      originalRenderCalendarPaymentPlan();
+      bindCalendarPay();
+    };
+    wrapped.__bsCalendarPayWrapped=true;
+    renderCalendar=wrapped;
+  }
 
   // Yeni dueItems / kart görünümü ekrana hemen yansısın.
   try{
