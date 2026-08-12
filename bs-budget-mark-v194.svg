@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">BS Ofis Bütçe Yönetimi</title>
+  <desc id="desc">Açık zeminli mavi ve gümüş BS bütçe uygulama ikonu, Türk lirası ve yükselen grafik.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".55" stop-color="#F5F9FF"/>
+      <stop offset="1" stop-color="#EAF2FF"/>
+    </linearGradient>
+    <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".35" stop-color="#F3F7FC"/>
+      <stop offset=".67" stop-color="#B9C8DA"/>
+      <stop offset="1" stop-color="#EEF4FB"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#43B6FF"/>
+      <stop offset=".48" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#173A8A"/>
+    </linearGradient>
+    <filter id="soft" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1E3A8A" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect x="18" y="18" width="476" height="476" rx="108" fill="url(#bg)"/>
+  <rect x="25" y="25" width="462" height="462" rx="101" fill="none" stroke="#C9DBF7" stroke-width="4"/>
+  <path d="M55 95C141 43 318 42 450 91" fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round" opacity=".88"/>
+  <g filter="url(#soft)">
+    <text x="48" y="326" fill="url(#silver)" stroke="#2563EB" stroke-width="5" font-family="Arial,Helvetica,sans-serif" font-size="236" font-weight="900" letter-spacing="-26">BS</text>
+    <path d="M83 359C158 397 252 404 330 375c45-17 79-44 108-80" fill="none" stroke="url(#blue)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M82 352C159 388 251 394 324 367" fill="none" stroke="#FFFFFF" stroke-opacity=".88" stroke-width="6" stroke-linecap="round"/>
+    <g fill="url(#silver)" stroke="#4A6B98" stroke-width="2.5">
+      <path d="M291 337h34v72h-34z"/>
+      <path d="M338 305h34v104h-34z"/>
+      <path d="M385 262h34v147h-34z"/>
+    </g>
+    <text x="365" y="132" fill="url(#blue)" stroke="#FFFFFF" stroke-width="2" paint-order="stroke" font-family="Arial,Helvetica,sans-serif" font-size="90" font-weight="900">₺</text>
+  </g>
+  <rect x="18" y="18" width="476" height="476" rx="108" fill="none" stroke="#8FB8F4" stroke-width="7" opacity=".7"/>
+</svg>
