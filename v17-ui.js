@@ -1,15 +1,41 @@
-/* BS OFİS BÜTÇE V2.1.5 - Gelir ekranı ve sabit modül zinciri */
+/* BS OFİS BÜTÇE V2.1.6 - Gelir ekranı, yapılandırma migrasyonu ve sabit modül zinciri */
 (() => {
+  const LEGACY_APP_NAME = 'Borç ve Gelir Asistanım';
+  const CURRENT_APP_NAME = 'BS Ofis Bütçe';
+
+  if(defaultAppConfig?.applicationName === LEGACY_APP_NAME){
+    defaultAppConfig.applicationName = CURRENT_APP_NAME;
+  }
+
   const originalMergeAppConfigV17 = mergeAppConfig;
 
   mergeAppConfig = function(raw={}){
     const cfg = originalMergeAppConfigV17(raw);
     cfg.schemaVersion = 16;
+
+    if(!raw.applicationName || raw.applicationName === LEGACY_APP_NAME){
+      cfg.applicationName = CURRENT_APP_NAME;
+    }
+
     return cfg;
   };
 
+  let appConfigMigrated = false;
+
   if(appConfig && appConfig.schemaVersion !== 16){
     appConfig.schemaVersion = 16;
+    appConfigMigrated = true;
+  }
+
+  if(
+    appConfig &&
+    (!appConfig.applicationName || appConfig.applicationName === LEGACY_APP_NAME)
+  ){
+    appConfig.applicationName = CURRENT_APP_NAME;
+    appConfigMigrated = true;
+  }
+
+  if(appConfigMigrated){
     saveAppConfig(false);
   }
 
