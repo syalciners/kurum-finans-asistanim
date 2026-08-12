@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.0.3 - Ödemeler ve Harcamalar UX */
+/* BS OFİS BÜTÇE V2.0.5 - Ödemeler ve Harcamalar UX */
 (() => {
   let expenseQuickMode = 'all';
 
@@ -16,13 +16,18 @@
         justify-content:space-between;
         gap:10px;
         align-items:center;
-        margin:2px 2px 10px;
+        margin:2px 0 10px;
+        padding:9px 11px;
+        border:1px solid #f2d59e;
+        border-radius:12px;
+        background:#fff9ef;
         color:var(--muted);
-        font-size:11px;
+        font-size:10px;
       }
       .v176-expense-note strong{
-        color:var(--ink);
-        font-size:11px;
+        color:#b96a00;
+        font-size:10px;
+        font-weight:850;
       }
 
       /* V203: seçili ay için sade, tıklanabilir kategori özeti. */
@@ -75,9 +80,7 @@
         cursor:pointer;
         -webkit-tap-highlight-color:transparent;
       }
-      .v203-expense-category-row:hover{
-        background:#f8fafc;
-      }
+      .v203-expense-category-row:hover{background:#f8fafc}
       .v203-expense-category-row.active{
         background:#fff7e8;
         border-color:#f2d59e;
@@ -114,6 +117,52 @@
         font-size:10px;
       }
 
+      /* V205: Harcama kartlarının alt bilgisi tek bakışta okunur. */
+      #expenseList .list-card[data-expense] .main{
+        gap:5px;
+      }
+      #expenseList .list-card[data-expense] .main>strong{
+        font-size:12px;
+        line-height:1.25;
+      }
+      #expenseList .v205-expense-meta{
+        display:flex;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:5px;
+        color:var(--muted);
+        font-size:9px;
+        line-height:1.2;
+      }
+      #expenseList .v205-expense-date{
+        white-space:nowrap;
+      }
+      #expenseList .v205-expense-category-pill{
+        display:inline-flex;
+        align-items:center;
+        max-width:190px;
+        padding:3px 7px;
+        border-radius:999px;
+        background:#fff3df;
+        color:#b96a00;
+        font-size:8px;
+        font-weight:850;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      #expenseList .v205-expense-added{
+        white-space:nowrap;
+      }
+      #expenseList .amount .v205-expense-method{
+        display:block;
+        margin-top:4px;
+        color:var(--muted);
+        font-size:8px;
+        font-weight:700;
+        white-space:nowrap;
+      }
+
       @media(max-width:480px){
         #expenses .toolbar.v176-expense-toolbar{
           grid-template-columns:1fr 1fr;
@@ -121,9 +170,8 @@
         #expenses .toolbar.v176-expense-toolbar input{
           grid-column:1/-1;
         }
-        #v203ExpenseCategorySummary{
-          padding:11px;
-        }
+        #v203ExpenseCategorySummary{padding:11px}
+        #expenseList .v205-expense-category-pill{max-width:140px}
       }
     `;
     document.head.appendChild(style);
@@ -439,6 +487,30 @@
     }).join('');
   }
 
+  function decorateExpenseCards(list){
+    const byId=new Map(list.map(x=>[x.id,x]));
+    document.querySelectorAll('#expenseList [data-expense]').forEach(card=>{
+      const x=byId.get(card.dataset.expense);
+      if(!x) return;
+
+      const small=card.querySelector('.main small');
+      if(small){
+        small.className='v205-expense-meta';
+        small.innerHTML=`
+          <span class="v205-expense-date">${parseDate(x.date).toLocaleDateString('tr-TR')}</span>
+          <span class="v205-expense-category-pill">${esc(x.category||'Diğer')}</span>
+          ${x.addedBy?`<span class="v205-expense-added">${esc(x.addedBy)}</span>`:''}
+        `;
+      }
+
+      const method=card.querySelector('.amount small');
+      if(method){
+        method.className='v205-expense-method';
+        method.textContent=x.method||'—';
+      }
+    });
+  }
+
   function updateExpenseQuickCards(monthList){
     ensureExpenseQuickCards();
     const stats = expenseStats(monthList);
@@ -503,6 +575,8 @@
         (list.length
           ? list.map(expenseCard).join('')
           : empty('Bu filtrede harcama yok.'));
+
+      decorateExpenseCards(list);
     }
 
     updateExpenseQuickCards(monthList);
@@ -537,7 +611,7 @@
   // Yönetim panelini mevcut zincirde yükle.
   if(!document.querySelector('script[data-v177-loader]')){
     const script = document.createElement('script');
-    script.src = 'v177-ui.js?v=202';
+    script.src = 'v177-ui.js?v=204';
     script.dataset.v177Loader = '1';
     document.head.appendChild(script);
   }
