@@ -189,4 +189,12 @@
   }
 
   applyV181();
+
+  // V1.8.2 kullanıcı dostu sade tema katmanını yükle.
+  if(!document.querySelector('script[data-v182-loader]')){
+    const script=document.createElement('script');
+    script.src='v182-ui.js?v=182';
+    script.dataset.v182Loader='1';
+    document.head.appendChild(script);
+  }
 })();
