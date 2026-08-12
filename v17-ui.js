@@ -75,6 +75,15 @@
         line-height:1.15;
         white-space:nowrap;
       }
+      .income-distribution{
+        display:block;
+        margin-top:4px;
+        color:#536078!important;
+        line-height:1.35;
+      }
+      .income-bs-card{
+        cursor:default;
+      }
       @media(max-width:380px){
         .income-owner-kpis{gap:6px}
         .income-owner-kpi{padding:9px 6px}
@@ -85,20 +94,16 @@
     document.head.appendChild(style);
   }
 
-  function updateOwnerCards(){
+  function updateOwnerCards(monthList){
     ensureOwnerCards();
 
-    const selectedMonth = document.querySelector('#incomeMonth')?.value || monthKey();
     const totals = Object.fromEntries(ownerOrder.map(owner => [owner, 0]));
 
-    state.incomes
-      .map(normalizeIncome)
-      .filter(x => x.date?.startsWith(selectedMonth))
-      .forEach(x => {
-        if(Object.prototype.hasOwnProperty.call(totals, x.owner)){
-          totals[x.owner] += Number(x.amount) || 0;
-        }
-      });
+    monthList.forEach(x => {
+      if(Object.prototype.hasOwnProperty.call(totals, x.owner)){
+        totals[x.owner] += Number(x.amount) || 0;
+      }
+    });
 
     ownerOrder.forEach(owner => {
       const el = document.querySelector('#' + ownerIds[owner]);
@@ -108,14 +113,157 @@
     });
   }
 
+  function ownerShortName(owner){
+    return owner === 'Kurum Kasası' ? 'Kurum' : owner;
+  }
+
+  function isBsIncome(x){
+    return !!(
+      x.sourceRecordId &&
+      (x.automatic || x.source)
+    );
+  }
+
+  function groupIncomeRows(rows){
+    const groups = new Map();
+
+    rows.forEach(x => {
+      if(!isBsIncome(x)){
+        groups.set('manual:' + x.id, {
+          kind:'manual',
+          key:'manual:' + x.id,
+          rows:[x],
+          date:x.date,
+          createdAt:x.createdAt || '',
+          type:x.type,
+          student:x.student,
+          amount:Number(x.amount) || 0,
+          owners:[x.owner]
+        });
+        return;
+      }
+
+      const key = 'bs:' + x.sourceRecordId;
+
+      if(!groups.has(key)){
+        groups.set(key, {
+          kind:'bs',
+          key,
+          sourceRecordId:x.sourceRecordId,
+          rows:[],
+          date:x.date,
+          createdAt:x.createdAt || '',
+          type:x.type,
+          student:x.student,
+          amount:0,
+          owners:[]
+        });
+      }
+
+      const g = groups.get(key);
+      g.rows.push(x);
+      g.amount += Number(x.amount) || 0;
+      g.owners.push(x.owner);
+
+      if((x.createdAt || '') > g.createdAt){
+        g.createdAt = x.createdAt || '';
+      }
+    });
+
+    return [...groups.values()].map(g => ({
+      ...g,
+      owners:[...new Set(g.owners)]
+    }));
+  }
+
+  function bsIncomeCard(group){
+    const ownerTotals = {};
+
+    group.rows.forEach(x => {
+      ownerTotals[x.owner] =
+        (ownerTotals[x.owner] || 0) +
+        (Number(x.amount) || 0);
+    });
+
+    const distribution = ownerOrder
+      .filter(owner => (ownerTotals[owner] || 0) > 0)
+      .map(owner => `${ownerShortName(owner)} ${money(ownerTotals[owner])}`)
+      .join(' · ');
+
+    const lesson =
+      group.type === 'Özel Ders' && group.student
+        ?` · ${group.student}`
+        :'';
+
+    return `
+      <article class="list-card income-bs-card">
+        <div class="main">
+          <strong>${esc(group.type)}${esc(lesson)}</strong>
+          <small>
+            ${parseDate(group.date).toLocaleDateString('tr-TR')} · BS Ofis
+          </small>
+          <small class="income-distribution">
+            Dağılım: ${esc(distribution)}
+          </small>
+        </div>
+
+        <div class="amount">
+          ${money(group.amount)}
+        </div>
+      </article>
+    `;
+  }
+
+  function groupedIncomeCard(group){
+    if(group.kind === 'bs'){
+      return bsIncomeCard(group);
+    }
+
+    return incomeCard(group.rows[0]);
+  }
+
+  function renderIncomesV17(){
+    populateIncomeMonths();
+
+    const month = document.querySelector('#incomeMonth')?.value || monthKey();
+    const owner = document.querySelector('#incomeOwnerFilter')?.value || 'all';
+    const type = document.querySelector('#incomeTypeFilter')?.value || 'all';
+
+    const monthList = state.incomes
+      .map(normalizeIncome)
+      .filter(x => x.date?.startsWith(month));
+
+    document.querySelector('#incomeMonthlyTotal').textContent =
+      money(monthList.reduce((s,x) => s + x.amount, 0));
+
+    document.querySelector('#incomeLessonTotal').textContent =
+      money(
+        monthList
+          .filter(x => x.type === 'Özel Ders')
+          .reduce((s,x) => s + x.amount, 0)
+      );
+
+    updateOwnerCards(monthList);
+
+    const grouped = groupIncomeRows(monthList)
+      .filter(g =>
+        (owner === 'all' || g.owners.includes(owner)) &&
+        (type === 'all' || g.type === type)
+      )
+      .sort((a,b) =>
+        `${b.date}${b.createdAt}`.localeCompare(`${a.date}${a.createdAt}`)
+      );
+
+    document.querySelector('#incomeList').innerHTML =
+      grouped.length
+        ? grouped.map(groupedIncomeCard).join('')
+        : empty('Bu filtrede gelir kaydı yok.');
+  }
+
   ensureOwnerCardStyles();
   ensureOwnerCards();
 
-  const originalRenderIncomes = renderIncomes;
-  renderIncomes = function(){
-    originalRenderIncomes();
-    updateOwnerCards();
-  };
+  renderIncomes = renderIncomesV17;
 
   const ownerFilter = document.querySelector('#incomeOwnerFilter');
   const typeFilter = document.querySelector('#incomeTypeFilter');
