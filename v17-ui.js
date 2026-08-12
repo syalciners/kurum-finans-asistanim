@@ -64,15 +64,17 @@
         transition:border-color .15s ease, background .15s ease, transform .15s ease;
         -webkit-tap-highlight-color:transparent;
       }
-      .income-owner-kpi:active{
-        transform:scale(.98);
+      .income-owner-kpi:active,
+      .income-bs-card:active{
+        transform:scale(.985);
       }
       .income-owner-kpi.active{
         border-color:#8eb1ff;
         background:#eef4ff;
         box-shadow:0 0 0 2px rgba(36,107,253,.08);
       }
-      .income-owner-kpi:focus-visible{
+      .income-owner-kpi:focus-visible,
+      .income-bs-card:focus-visible{
         outline:2px solid #8eb1ff;
         outline-offset:2px;
       }
@@ -101,7 +103,16 @@
         line-height:1.35;
       }
       .income-bs-card{
-        cursor:default;
+        cursor:pointer;
+        transition:transform .15s ease;
+        -webkit-tap-highlight-color:transparent;
+      }
+      .income-share-note{
+        display:block;
+        margin-top:4px;
+        color:var(--accent)!important;
+        font-weight:700;
+        line-height:1.35;
       }
       @media(max-width:380px){
         .income-owner-kpis{gap:6px}
@@ -202,47 +213,70 @@
     }));
   }
 
-  function bsIncomeCard(group){
-    const ownerTotals = {};
+  function ownerTotalsForGroup(group){
+    const totals = {};
 
     group.rows.forEach(x => {
-      ownerTotals[x.owner] =
-        (ownerTotals[x.owner] || 0) +
+      totals[x.owner] =
+        (totals[x.owner] || 0) +
         (Number(x.amount) || 0);
     });
 
-    const distribution = ownerOrder
+    return totals;
+  }
+
+  function distributionText(group){
+    const ownerTotals = ownerTotalsForGroup(group);
+
+    return ownerOrder
       .filter(owner => (ownerTotals[owner] || 0) > 0)
       .map(owner => `${ownerShortName(owner)} ${money(ownerTotals[owner])}`)
       .join(' · ');
+  }
+
+  function bsIncomeCard(group, activeOwner='all'){
+    const ownerTotals = ownerTotalsForGroup(group);
+    const filteredShare = activeOwner !== 'all'
+      ? Number(ownerTotals[activeOwner]) || 0
+      : group.amount;
 
     const lesson =
       group.type === 'Özel Ders' && group.student
         ?` · ${group.student}`
         :'';
 
+    const detailLine = activeOwner === 'all'
+      ? `Dağılım: ${distributionText(group)}`
+      : `${ownerShortName(activeOwner)} payı: ${money(filteredShare)} · Tahsilat toplamı: ${money(group.amount)}`;
+
     return `
-      <article class="list-card income-bs-card">
+      <article
+        class="list-card income-bs-card"
+        data-bs-payment="${esc(group.sourceRecordId)}"
+        role="button"
+        tabindex="0"
+        aria-label="${esc(group.student || group.type)} tahsilat detayını aç"
+      >
         <div class="main">
           <strong>${esc(group.type)}${esc(lesson)}</strong>
           <small>
             ${parseDate(group.date).toLocaleDateString('tr-TR')} · BS Ofis
           </small>
-          <small class="income-distribution">
-            Dağılım: ${esc(distribution)}
+          <small class="${activeOwner === 'all' ? 'income-distribution' : 'income-share-note'}">
+            ${esc(detailLine)}
           </small>
         </div>
 
         <div class="amount">
-          ${money(group.amount)}
+          ${money(filteredShare)}
         </div>
       </article>
     `;
   }
 
-  function groupedIncomeCard(group){
+  function groupedIncomeCard(group, activeOwner='all'){
     if(group.kind === 'bs'){
-      return bsIncomeCard(group);
+      return bsIncomeCard(group, activeOwner);
     }
 
     return incomeCard(group.rows[0]);
@@ -282,7 +316,7 @@
 
     document.querySelector('#incomeList').innerHTML =
       grouped.length
-        ? grouped.map(groupedIncomeCard).join('')
+        ? grouped.map(g => groupedIncomeCard(g, owner)).join('')
         : empty('Bu filtrede gelir kaydı yok.');
   }
 
@@ -322,9 +356,96 @@
     });
   }
 
+  function findBsGroup(paymentId){
+    return groupIncomeRows(
+      state.incomes.map(normalizeIncome)
+    ).find(g => g.kind === 'bs' && g.sourceRecordId === paymentId);
+  }
+
+  function openBsIncomeDetail(group){
+    if(!group){
+      return;
+    }
+
+    const ownerTotals = ownerTotalsForGroup(group);
+    const rows = [
+      ['Öğrenci', group.student || '—'],
+      ['Tahsilat tarihi', parseDate(group.date).toLocaleDateString('tr-TR')],
+      ['Toplam tahsilat', money(group.amount)]
+    ];
+
+    ownerOrder.forEach(owner => {
+      if((ownerTotals[owner] || 0) > 0){
+        rows.push([ownerShortName(owner) + ' payı', money(ownerTotals[owner])]);
+      }
+    });
+
+    rows.push(['Kaynak', 'BS Ofis']);
+
+    const dialog = document.querySelector('#detailDialog');
+    const content = document.querySelector('#detailContent');
+
+    if(!dialog || !content){
+      return;
+    }
+
+    content.innerHTML = `
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">BS OFİS TAHSİLATI</p>
+          <h3>${esc(group.student || group.type)}</h3>
+        </div>
+        <button type="button" class="icon-btn close-detail">×</button>
+      </div>
+      <div class="detail-grid">
+        ${rows.map(([label,value]) => `
+          <div class="detail-row">
+            <span>${esc(label)}</span>
+            <strong>${esc(value)}</strong>
+          </div>
+        `).join('')}
+      </div>
+      <p class="muted">Bu kayıt BS Ofis'ten otomatik gelir. Finans uygulamasında düzenlenmez veya silinmez.</p>
+    `;
+
+    dialog.showModal();
+  }
+
+  function bindBsIncomeDetails(){
+    const list = document.querySelector('#incomeList');
+    if(!list || list.dataset.bsDetailBound === '1'){
+      return;
+    }
+
+    list.dataset.bsDetailBound = '1';
+
+    const openFromTarget = target => {
+      const card = target.closest('[data-bs-payment]');
+      if(!card){
+        return;
+      }
+      openBsIncomeDetail(findBsGroup(card.dataset.bsPayment));
+    };
+
+    list.addEventListener('click', e => openFromTarget(e.target));
+
+    list.addEventListener('keydown', e => {
+      if(!['Enter', ' '].includes(e.key)){
+        return;
+      }
+      const card = e.target.closest('[data-bs-payment]');
+      if(!card){
+        return;
+      }
+      e.preventDefault();
+      openBsIncomeDetail(findBsGroup(card.dataset.bsPayment));
+    });
+  }
+
   ensureOwnerCardStyles();
   ensureOwnerCards();
   bindOwnerCardActions();
+  bindBsIncomeDetails();
 
   renderIncomes = renderIncomesV17;
 
