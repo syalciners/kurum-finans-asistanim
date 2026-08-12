@@ -1,4 +1,4 @@
-const CACHE='bs-ofis-butce-ui212-pwa-20260812';
+const CACHE='bs-ofis-butce-ui212-modules-20260812';
 const ASSETS=[
   './?v=212',
   './index.html?v=212',
