@@ -156,4 +156,12 @@
     originalRenderDashboardV178();
     ensureQuickActions();
   };
+
+  // V1.7.9 görsel iyileştirme modülünü yükle.
+  if(!document.querySelector('script[data-v179-loader]')){
+    const script = document.createElement('script');
+    script.src = 'v179-ui.js?v=179';
+    script.dataset.v179Loader = '1';
+    document.head.appendChild(script);
+  }
 })();
