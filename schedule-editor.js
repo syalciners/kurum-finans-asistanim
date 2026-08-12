@@ -108,6 +108,15 @@
     box.lastElementChild?.querySelector('[data-schedule-date]')?.focus();
   }
 
+  function clearScheduleFromCustom(out){
+    delete out.installment_schedule;
+    delete out.installment_schedule_total;
+    delete out.installment_schedule_label;
+    delete out.installment_schedule_provider;
+    delete out.installment_schedule_source;
+    if(out.plan_type==='exact_schedule'||out.plan_type==='exact_bank_schedule') delete out.plan_type;
+  }
+
   function installEditor(record={}){
     const fields=document.querySelector('#recordFields');
     if(!fields || fields.querySelector('.bs-schedule-editor')) return;
@@ -122,6 +131,7 @@
     const editor=document.createElement('section');
     editor.className='bs-schedule-editor';
     editor.dataset.cleared='0';
+    editor.dataset.hadSchedule=rows.length?'1':'0';
     editor.innerHTML=`
       <div class="bs-schedule-editor-head">
         <div class="bs-schedule-editor-title">
@@ -167,15 +177,16 @@
       const btn=e.target.closest('.bs-schedule-remove');
       if(!btn) return;
       btn.closest('.bs-schedule-row')?.remove();
-      editor.dataset.cleared='0';
+      const anyRows=editor.querySelectorAll('.bs-schedule-row').length>0;
+      editor.dataset.cleared=(!anyRows && editor.dataset.hadSchedule==='1')?'1':'0';
       updateSummary(editor);
     });
     editor.addEventListener('input',()=>{
-      editor.dataset.cleared='0';
+      if(editor.querySelectorAll('.bs-schedule-row').length) editor.dataset.cleared='0';
       updateSummary(editor);
     });
     editor.addEventListener('change',()=>{
-      editor.dataset.cleared='0';
+      if(editor.querySelectorAll('.bs-schedule-row').length) editor.dataset.cleared='0';
       updateSummary(editor);
     });
 
@@ -202,17 +213,12 @@
       const editor=document.querySelector('#recordFields .bs-schedule-editor');
       if(!editor) return out;
 
-      if(editor.dataset.cleared==='1'){
-        delete out.installment_schedule;
-        delete out.installment_schedule_total;
-        delete out.installment_schedule_label;
-        delete out.installment_schedule_provider;
-        delete out.installment_schedule_source;
-        if(out.plan_type==='exact_schedule'||out.plan_type==='exact_bank_schedule') delete out.plan_type;
+      const rows=rowsFromEditor(editor);
+      if(editor.dataset.cleared==='1' || (!rows.length && editor.dataset.hadSchedule==='1')){
+        clearScheduleFromCustom(out);
         return out;
       }
 
-      const rows=rowsFromEditor(editor);
       if(!rows.length) return out;
 
       const label=editor.querySelector('[data-schedule-label]')?.value.trim()||'';
