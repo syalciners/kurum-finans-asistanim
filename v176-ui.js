@@ -661,12 +661,4 @@
 
   renderPayments();
   renderExpenses();
-
-  // Yönetim panelini mevcut zincirde yükle.
-  if(!document.querySelector('script[data-v177-loader]')){
-    const script = document.createElement('script');
-    script.src = 'v177-ui.js?v=204';
-    script.dataset.v177Loader = '1';
-    document.head.appendChild(script);
-  }
 })();
