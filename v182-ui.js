@@ -184,7 +184,13 @@
       logo.removeAttribute('style');
     }
 
-    left.querySelector('.v180-original-brand-copy')?.remove();
+    // UYUM: app.js bulut senkronu #appTitle ve orgEyebrow alanlarını kullanıyor.
+    // Eski marka kopyasını DOM'dan silme; V1.8.0 CSS'i onu görünmez tutuyor.
+    const legacyCopy=left.querySelector('.v180-original-brand-copy');
+    if(legacyCopy){
+      legacyCopy.setAttribute('aria-hidden','true');
+    }
+
     left.querySelector('.v182-brand-copy')?.remove();
 
     const copy=document.createElement('div');
