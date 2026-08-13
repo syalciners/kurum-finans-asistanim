@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.3.8 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.3.9 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -155,7 +155,7 @@
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=238', {updateViaCache:'none'})
+      .register('./sw.js?v=239', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
@@ -177,9 +177,9 @@
   }
 
   function loadPaymentEditor(){
-    if(window.__bsPaymentEditorV238Loaded || document.querySelector('script[data-bs-payment-editor]')) return;
+    if(window.__bsPaymentEditorV239Loaded || document.querySelector('script[data-bs-payment-editor]')) return;
     const script=document.createElement('script');
-    script.src='./payment-editor.js?v=238';
+    script.src='./payment-editor.js?v=239';
     script.dataset.bsPaymentEditor='1';
     document.body.appendChild(script);
   }
