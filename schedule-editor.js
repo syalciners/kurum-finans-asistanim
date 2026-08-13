@@ -1,6 +1,7 @@
-/* BS OFİS BÜTÇE V2.2.6 - Kesin Taksit Planı form editörü + hızlı aylık plan */
+/* BS OFİS BÜTÇE V2.3.2 - Kesin Taksit Planı ana editörü */
 (() => {
-  if(window.__bsScheduleEditorV226Loaded) return;
+  if(window.__bsScheduleEditorV232Loaded) return;
+  window.__bsScheduleEditorV232Loaded=true;
   window.__bsScheduleEditorV226Loaded=true;
 
   const EPS=.005;
@@ -11,15 +12,61 @@
     .sort((a,b)=>a.date.localeCompare(b.date));
   const totalRows=rows=>roundMoney(rows.reduce((s,x)=>s+(+x.amount||0),0));
 
+  function normalizeRecord(record={}){
+    try{return typeof normalizeDebt==='function'?normalizeDebt(record):record;}
+    catch(_e){return record||{};}
+  }
+
   function activeSchedule(record={}){
-    const all=cloneRows(record.custom?.installment_schedule);
+    const d=normalizeRecord(record);
+    const all=cloneRows(d.custom?.installment_schedule);
     if(!all.length) return [];
 
-    const rem=record.custom?.remaining_installments;
+    const rem=d.custom?.remaining_installments;
     if(rem===''||rem==null||Number.isNaN(+rem)) return all;
 
     const count=Math.max(0,Math.min(all.length,Math.floor(+rem)));
     return all.slice(Math.max(0,all.length-count));
+  }
+
+  function planState(record={}){
+    const d=normalizeRecord(record);
+    const exact=activeSchedule(d);
+    const remRaw=d.custom?.remaining_installments;
+    const remaining=remRaw===''||remRaw==null||Number.isNaN(+remRaw)
+      ?null
+      :Math.max(0,Math.floor(+remRaw));
+
+    let summary=null;
+    try{
+      summary=typeof window.bsDebtPlanSummary==='function'
+        ?window.bsDebtPlanSummary(d)
+        :null;
+    }catch(_e){summary=null;}
+
+    const summaryRows=Array.isArray(summary?.rows)?summary.rows:[];
+    const enginePlan=!!(
+      summary &&
+      summary.kind!=='closed' &&
+      summary.kind!=='unknown' &&
+      summaryRows.length>0
+    );
+    const fieldPlan=!!(
+      d.status!=='closed' &&
+      d.dueDate &&
+      +d.minimum>EPS &&
+      remaining!=null &&
+      remaining>0
+    );
+
+    return {
+      d,
+      exact,
+      remaining,
+      summary,
+      hasExact:exact.length>0,
+      hasPlan:exact.length>0 || enginePlan || fieldPlan
+    };
   }
 
   function monthlyDate(startDate,offset){
@@ -53,9 +100,11 @@
       .bs-schedule-editor-body[hidden]{display:none!important}
       .bs-schedule-label{display:grid;gap:5px;font-size:9px;font-weight:760;color:#64748b}.bs-schedule-label input{min-height:40px}
       .bs-schedule-generator{padding:9px;border:1px solid #dbe7fb;border-radius:12px;background:#f8fbff;display:grid;gap:7px}
+      .bs-schedule-generator[hidden]{display:none!important}
       .bs-schedule-generator-head{display:grid;gap:1px}.bs-schedule-generator-head strong{font-size:10px;color:#0f172a}.bs-schedule-generator-head small{font-size:8.5px;color:#64748b;line-height:1.35}
       .bs-schedule-generator-grid{display:grid;grid-template-columns:1.15fr .72fr .9fr;gap:6px}.bs-schedule-generator-grid label{display:grid;gap:4px;font-size:8px;font-weight:760;color:#64748b}.bs-schedule-generator-grid input{min-width:0;min-height:38px;padding:7px 8px;font-size:10.5px}
       .bs-schedule-generate{min-height:35px;border:1px solid #b9cef8;border-radius:10px;background:#eff6ff;color:#2563eb;font-size:9px;font-weight:830;cursor:pointer}
+      .bs-schedule-rebuild{min-height:34px;padding:7px 10px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:#475569;font-size:9px;font-weight:820;cursor:pointer}
       .bs-schedule-rows{display:grid;gap:7px;max-height:310px;overflow:auto;padding-right:2px}
       .bs-schedule-row{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr) 32px;gap:6px;align-items:center}
       .bs-schedule-row input{min-width:0;min-height:39px;padding:8px 9px;font-size:11px}
@@ -91,19 +140,28 @@
       .sort((a,b)=>a.date.localeCompare(b.date));
   }
 
+  function editorHasPlan(editor){
+    if(!editor || editor.dataset.cleared==='1') return false;
+    return editor.dataset.basePlan==='1' || rowsFromEditor(editor).length>0;
+  }
+
   function updateSummary(editor){
     if(!editor) return;
     const rows=rowsFromEditor(editor);
     const sum=totalRows(rows);
     const summary=editor.querySelector('.bs-schedule-summary');
     const empty=editor.querySelector('.bs-schedule-empty');
+    const clear=editor.querySelector('.bs-schedule-clear');
 
     if(summary){
       summary.innerHTML=rows.length
         ?`<strong>${rows.length} ödeme</strong> · toplam <strong>${money(sum)}</strong> · ilk ödeme ${parseDate(rows[0].date).toLocaleDateString('tr-TR')}`
-        :'Henüz plan satırı yok.';
+        :(editor.dataset.basePlan==='1'
+          ?'Mevcut taksit planı kayıtlı. Kesin tarih/tutar satırları eklemek istersen planı açabilirsin.'
+          :'Henüz plan satırı yok.');
     }
-    if(empty) empty.hidden=rows.length>0;
+    if(empty) empty.hidden=rows.length>0 || editor.dataset.basePlan==='1';
+    if(clear) clear.hidden=rows.length===0;
 
     const form=document.querySelector('#recordForm');
     if(!form || form.querySelector('[name="module"]')?.value!=='debts') return;
@@ -139,31 +197,72 @@
     if(out.plan_type==='exact_schedule'||out.plan_type==='exact_bank_schedule') delete out.plan_type;
   }
 
+  function configureGenerator(editor,ps){
+    const generator=editor.querySelector('.bs-schedule-generator');
+    if(!generator) return;
+
+    const head=generator.querySelector('.bs-schedule-generator-head strong');
+    const small=generator.querySelector('.bs-schedule-generator-head small');
+    const start=generator.querySelector('[data-generator-start]');
+    const count=generator.querySelector('[data-generator-count]');
+    const amount=generator.querySelector('[data-generator-amount]');
+
+    if(ps.hasExact){
+      generator.hidden=true;
+      const rebuild=document.createElement('button');
+      rebuild.type='button';
+      rebuild.className='bs-schedule-rebuild';
+      rebuild.textContent='Planı Yeniden Oluştur';
+      generator.insertAdjacentElement('beforebegin',rebuild);
+      rebuild.addEventListener('click',()=>{
+        generator.hidden=!generator.hidden;
+        rebuild.textContent=generator.hidden?'Planı Yeniden Oluştur':'Yeniden Oluşturmayı Kapat';
+      });
+      return;
+    }
+
+    generator.hidden=false;
+    if(ps.hasPlan){
+      if(head) head.textContent='Mevcut planı kesinleştir';
+      if(small) small.textContent='Mevcut aylık plan bilgilerini gerçek tarih ve tutar satırlarına dönüştürür. Kaydetmeden önce satırları kontrol edebilirsin.';
+      if(start) start.value=ps.d.dueDate||'';
+      if(count && ps.remaining>0) count.value=String(ps.remaining);
+      if(amount && +ps.d.minimum>EPS) amount.value=String(+ps.d.minimum);
+    }
+  }
+
   function installEditor(record={}){
     const fields=document.querySelector('#recordFields');
     if(!fields || fields.querySelector('.bs-schedule-editor')) return;
 
-    const rows=activeSchedule(record);
+    const ps=planState(record);
+    const rows=ps.exact;
     const label=String(
-      record.custom?.installment_schedule_label
-      ||record.custom?.installment_schedule_provider
+      ps.d.custom?.installment_schedule_label
+      ||ps.d.custom?.installment_schedule_provider
       ||''
     );
+    const planCount=ps.remaining!=null?ps.remaining:rows.length;
 
     const editor=document.createElement('section');
     editor.className='bs-schedule-editor';
     editor.dataset.cleared='0';
     editor.dataset.hadSchedule=rows.length?'1':'0';
+    editor.dataset.basePlan=ps.hasPlan?'1':'0';
     editor.dataset.generated='0';
     editor.innerHTML=`
       <div class="bs-schedule-editor-head">
         <div class="bs-schedule-editor-title">
           <strong>Kesin Taksit Planı</strong>
-          <small>${rows.length?`${rows.length} kayıtlı ödeme · plan alanları otomatik eşitlenir`:'Banka veya kredi planını tarih ve tutar satırlarıyla tanımla'}</small>
+          <small>${ps.hasExact
+            ?`${planCount||rows.length} kesin ödeme kayıtlı · tarih ve tutarlar düzenlenebilir`
+            :ps.hasPlan
+              ?`${planCount?`${planCount} taksitlik `:''}mevcut plan kayıtlı`
+              :'Banka veya kredi planını tarih ve tutar satırlarıyla tanımla'}</small>
         </div>
-        <button type="button" class="bs-schedule-editor-toggle" aria-expanded="${rows.length?'true':'false'}">${rows.length?'Planı Kapat':'Plan Ekle'}</button>
+        <button type="button" class="bs-schedule-editor-toggle" aria-expanded="false">${ps.hasPlan?'Planı Düzenle':'Plan Ekle'}</button>
       </div>
-      <div class="bs-schedule-editor-body" ${rows.length?'':'hidden'}>
+      <div class="bs-schedule-editor-body" hidden>
         <label class="bs-schedule-label">Plan adı / sağlayıcı
           <input type="text" data-schedule-label maxlength="50" value="${esc(label)}" placeholder="Örn. Banka kredi planı">
         </label>
@@ -180,7 +279,7 @@
           <button type="button" class="bs-schedule-generate">Aylık Planı Oluştur</button>
         </div>
         <div class="bs-schedule-rows">${rows.map(rowHtml).join('')}</div>
-        <div class="bs-schedule-empty" ${rows.length?'hidden':''}>İlk ödeme satırını ekleyerek başlayın.</div>
+        <div class="bs-schedule-empty">İlk ödeme satırını ekleyerek başlayın.</div>
         <div class="bs-schedule-summary"></div>
         <div class="bs-schedule-actions">
           <button type="button" class="bs-schedule-add">＋ Ödeme Satırı</button>
@@ -189,6 +288,7 @@
       </div>`;
 
     fields.appendChild(editor);
+    configureGenerator(editor,ps);
 
     const body=editor.querySelector('.bs-schedule-editor-body');
     const toggle=editor.querySelector('.bs-schedule-editor-toggle');
@@ -196,8 +296,8 @@
       const open=body.hidden;
       body.hidden=!open;
       toggle.setAttribute('aria-expanded',open?'true':'false');
-      toggle.textContent=open?'Planı Kapat':(rowsFromEditor(editor).length?'Planı Düzenle':'Plan Ekle');
-      if(open && !rowsFromEditor(editor).length) addRow(editor);
+      toggle.textContent=open?'Planı Kapat':(editorHasPlan(editor)?'Planı Düzenle':'Plan Ekle');
+      if(open && !ps.hasPlan && !rowsFromEditor(editor).length) addRow(editor);
     });
 
     editor.querySelector('.bs-schedule-generate').addEventListener('click',()=>{
@@ -212,11 +312,10 @@
       }
 
       const existing=rowsFromEditor(editor);
-      if(existing.length && !confirm(`Mevcut ${existing.length} plan satırı yeni aylık planla değiştirilecek. Devam edilsin mi?`)){
-        return;
-      }
+      if(existing.length && !confirm(`Mevcut ${existing.length} plan satırı yeni aylık planla değiştirilecek. Devam edilsin mi?`)) return;
 
       editor.dataset.cleared='0';
+      editor.dataset.basePlan='1';
       editor.dataset.generated='1';
       editor.querySelector('.bs-schedule-rows').innerHTML=generated.map(rowHtml).join('');
       updateSummary(editor);
@@ -227,10 +326,12 @@
       editor.dataset.generated='0';
       addRow(editor);
     });
+
     editor.querySelector('.bs-schedule-clear').addEventListener('click',()=>{
       if(!confirm('Kesin taksit planını temizlemek istiyor musunuz?')) return;
       editor.dataset.cleared='1';
       editor.dataset.generated='0';
+      editor.dataset.basePlan=ps.hasExact?'0':(ps.hasPlan?'1':'0');
       editor.querySelector('.bs-schedule-rows').innerHTML='';
       updateSummary(editor);
     });
@@ -241,40 +342,53 @@
       btn.closest('.bs-schedule-row')?.remove();
       editor.dataset.generated='0';
       const anyRows=editor.querySelectorAll('.bs-schedule-row').length>0;
-      editor.dataset.cleared=(!anyRows && editor.dataset.hadSchedule==='1')?'1':'0';
+      if(anyRows){
+        editor.dataset.cleared='0';
+        editor.dataset.basePlan='1';
+      }else if(editor.dataset.hadSchedule==='1'){
+        editor.dataset.cleared='1';
+        editor.dataset.basePlan='0';
+      }
       updateSummary(editor);
     });
+
     editor.addEventListener('input',e=>{
       if(e.target.closest('.bs-schedule-generator')) return;
       editor.dataset.generated='0';
-      if(editor.querySelectorAll('.bs-schedule-row').length) editor.dataset.cleared='0';
+      if(editor.querySelectorAll('.bs-schedule-row').length){
+        editor.dataset.cleared='0';
+        editor.dataset.basePlan='1';
+      }
       updateSummary(editor);
     });
     editor.addEventListener('change',e=>{
       if(e.target.closest('.bs-schedule-generator')) return;
       editor.dataset.generated='0';
-      if(editor.querySelectorAll('.bs-schedule-row').length) editor.dataset.cleared='0';
+      if(editor.querySelectorAll('.bs-schedule-row').length){
+        editor.dataset.cleared='0';
+        editor.dataset.basePlan='1';
+      }
       updateSummary(editor);
     });
 
     updateSummary(editor);
   }
 
-  if(typeof openRecordDialog==='function' && !openRecordDialog.__bsScheduleEditorV226){
-    const originalOpenRecordDialogV226=openRecordDialog;
+  if(typeof openRecordDialog==='function' && !openRecordDialog.__bsScheduleEditorV232){
+    const originalOpenRecordDialogV232=openRecordDialog;
     const wrapped=function(module,record=null){
-      const result=originalOpenRecordDialogV226(module,record);
+      const result=originalOpenRecordDialogV232(module,record);
       if(module==='debts') installEditor(record||{});
       return result;
     };
-    wrapped.__bsScheduleEditorV226=true;
+    wrapped.__bsScheduleEditorV232=true;
     openRecordDialog=wrapped;
   }
 
-  if(typeof parseCustomValues==='function' && !parseCustomValues.__bsScheduleEditorV226){
-    const originalParseCustomValuesV226=parseCustomValues;
+  if(typeof parseCustomValues==='function' && !parseCustomValues.__bsScheduleEditorV232){
+    const originalParseCustomValuesV232=parseCustomValues;
     const wrapped=function(fd,module,oldCustom={}){
-      const out=originalParseCustomValuesV226(fd,module,oldCustom);
+      const out=originalParseCustomValuesV232(fd,module,oldCustom);
       if(module!=='debts') return out;
 
       const editor=document.querySelector('#recordFields .bs-schedule-editor');
@@ -294,15 +408,15 @@
       out.remaining_installments=rows.length;
       out.plan_type='exact_schedule';
       out.installment_schedule_source=editor.dataset.generated==='1'
-        ?'hizli_aylik_plan_v226'
-        :'uygulama_editoru_v226';
+        ?'hizli_aylik_plan_v232'
+        :'uygulama_editoru_v232';
       if(label) out.installment_schedule_label=label;
       else delete out.installment_schedule_label;
       delete out.next_payment_after_current;
       delete out.next_payment_source;
       return out;
     };
-    wrapped.__bsScheduleEditorV226=true;
+    wrapped.__bsScheduleEditorV232=true;
     parseCustomValues=wrapped;
   }
 
