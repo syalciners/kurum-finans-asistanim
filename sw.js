@@ -1,4 +1,4 @@
-const CACHE='bs-ofis-butce-ui240-payment-replay-20260813';
+const CACHE='bs-ofis-butce-ui243-live-freeze-20260814';
 const ASSETS=[
   './?v=240',
   './index.html?v=240',
@@ -21,6 +21,8 @@ const ASSETS=[
   './v230-mobile-dialog.js?v=235',
   './v234-shell-lock.js?v=237',
   './v237-modal-footer.js?v=237',
+  './v241-payment-modal-scroll-lock.js?v=241',
+  './v242-payment-save-ui.js?v=242',
   './manifest.webmanifest?v=240',
   './bs-budget-mark-v194.svg?v=195',
   './bs-budget-logo-v194.svg',
