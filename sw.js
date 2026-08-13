@@ -1,10 +1,10 @@
-const CACHE='bs-ofis-butce-ui233-mobile-horizontal-lock-20260813';
+const CACHE='bs-ofis-butce-ui234-fixed-shell-20260813';
 const ASSETS=[
-  './?v=233',
-  './index.html?v=233',
+  './?v=234',
+  './index.html?v=234',
   './styles.css?v=219',
   './app.js?v=176',
-  './core-compat.js?v=233',
+  './core-compat.js?v=234',
   './v17-ui.js?v=218',
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
@@ -18,7 +18,8 @@ const ASSETS=[
   './debt-balance.js?v=223',
   './schedule-editor.js?v=232',
   './v230-mobile-dialog.js?v=233',
-  './manifest.webmanifest?v=233',
+  './v234-shell-lock.js?v=234',
+  './manifest.webmanifest?v=234',
   './bs-budget-mark-v194.svg?v=195',
   './bs-budget-logo-v194.svg',
   './bs-budget-mark.svg?v=194',
@@ -53,6 +54,6 @@ self.addEventListener('fetch',e=>{
         caches.open(CACHE).then(c=>c.put(e.request,copy));
         return r;
       })
-      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=233')||caches.match('./index.html?v=233')))
+      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=234')||caches.match('./index.html?v=234')))
   );
 });
