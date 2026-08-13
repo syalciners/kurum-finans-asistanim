@@ -1,14 +1,16 @@
-/* BS OFİS BÜTÇE V2.3.1 - Mobil dialog güvenli geri dönüş */
+/* BS OFİS BÜTÇE V2.3.3 - Mobil dialog ve yatay taşma güvenliği */
 (() => {
-  if(window.__bsV231MobileDialogLoaded) return;
-  window.__bsV231MobileDialogLoaded=true;
+  if(window.__bsV233MobileDialogLoaded) return;
+  window.__bsV233MobileDialogLoaded=true;
 
   function ensureStyles(){
-    if(document.querySelector('#bsV231MobileDialogStyles')) return;
+    if(document.querySelector('#bsV233MobileDialogStyles')) return;
     const style=document.createElement('style');
-    style.id='bsV231MobileDialogStyles';
+    style.id='bsV233MobileDialogStyles';
     style.textContent=`
-      /* V229 sticky müdahalesini geri al: native dialog davranışı korunur. */
+      html,body{max-width:100%;overflow-x:hidden!important}
+
+      /* Detay: native dialog davranışı korunur. */
       #detailDialog .dialog-form{position:relative!important}
       #detailDialog .dialog-head{
         position:static!important;
@@ -40,6 +42,104 @@
         -webkit-tap-highlight-color:transparent!important;
       }
       #detailDialog .bs-detail-bottom-close:active{background:#f8fafc!important}
+
+      /* Düzenleme formu: yalnız dikey kayar, yatay taşma yok. */
+      #recordDialog{
+        width:min(620px,calc(100vw - 24px))!important;
+        max-width:calc(100vw - 24px)!important;
+        max-height:calc(100dvh - 24px)!important;
+        padding:0!important;
+        overflow:hidden!important;
+        overscroll-behavior-x:none!important;
+      }
+      #recordDialog .dialog-form{
+        width:100%!important;
+        max-width:100%!important;
+        min-width:0!important;
+        max-height:calc(100dvh - 24px)!important;
+        overflow-y:auto!important;
+        overflow-x:hidden!important;
+        overscroll-behavior-x:none!important;
+        box-sizing:border-box!important;
+      }
+      #recordDialog .dialog-head,
+      #recordDialog #recordFields,
+      #recordDialog #recordFields > *,
+      #recordDialog .stack,
+      #recordDialog .stack > *,
+      #recordDialog label,
+      #recordDialog input,
+      #recordDialog select,
+      #recordDialog textarea,
+      #recordDialog button,
+      #recordDialog .bs-schedule-editor,
+      #recordDialog .bs-schedule-editor-head,
+      #recordDialog .bs-schedule-editor-body,
+      #recordDialog .bs-schedule-generator,
+      #recordDialog .bs-schedule-generator-grid,
+      #recordDialog .bs-schedule-rows,
+      #recordDialog .bs-schedule-row{
+        max-width:100%!important;
+        min-width:0!important;
+        box-sizing:border-box!important;
+      }
+      #recordDialog input,
+      #recordDialog select,
+      #recordDialog textarea{
+        width:100%!important;
+      }
+      #recordDialog textarea{
+        overflow-wrap:anywhere!important;
+        word-break:break-word!important;
+      }
+      #recordDialog .dialog-head h3,
+      #recordDialog .bs-schedule-editor-title{
+        min-width:0!important;
+        overflow-wrap:anywhere!important;
+      }
+
+      @media(max-width:520px){
+        #recordDialog{
+          width:calc(100vw - 24px)!important;
+          max-width:calc(100vw - 24px)!important;
+          margin:auto!important;
+        }
+        #recordDialog .dialog-form{
+          padding:16px!important;
+        }
+        #recordDialog .dialog-head{
+          gap:10px!important;
+        }
+        #recordDialog .dialog-head h3{
+          font-size:20px!important;
+          line-height:1.15!important;
+        }
+        #recordDialog .dialog-head .close-dialog{
+          flex:0 0 38px!important;
+          width:38px!important;
+          height:38px!important;
+        }
+        #recordDialog .bs-schedule-generator-grid{
+          grid-template-columns:minmax(0,1fr)!important;
+        }
+        #recordDialog .bs-schedule-generator-grid label:first-child{
+          grid-column:auto!important;
+        }
+        #recordDialog .bs-schedule-row{
+          grid-template-columns:minmax(0,1fr) 36px!important;
+        }
+        #recordDialog .bs-schedule-row [data-schedule-date]{
+          grid-column:1/-1!important;
+        }
+        #recordDialog .bs-schedule-row [data-schedule-amount]{
+          grid-column:1!important;
+        }
+        #recordDialog .bs-schedule-remove{
+          grid-column:2!important;
+          width:36px!important;
+          height:36px!important;
+        }
+      }
     `;
     document.head.appendChild(style);
   }
@@ -59,24 +159,64 @@
     content.appendChild(button);
   }
 
+  function resetRecordHorizontal(){
+    const dialog=document.querySelector('#recordDialog');
+    const form=document.querySelector('#recordForm');
+    const fields=document.querySelector('#recordFields');
+    [dialog,form,fields].forEach(el=>{
+      if(el && el.scrollLeft!==0) el.scrollLeft=0;
+    });
+  }
+
   ensureStyles();
 
-  if(typeof showDetail==='function' && !showDetail.__bsV231SafeDialog){
-    const originalShowDetailV231=showDetail;
+  if(typeof showDetail==='function' && !showDetail.__bsV233SafeDialog){
+    const originalShowDetailV233=showDetail;
     const wrapped=function(module,record){
-      const result=originalShowDetailV231(module,record);
+      const result=originalShowDetailV233(module,record);
       queueMicrotask(ensureBottomClose);
       return result;
     };
-    wrapped.__bsV231SafeDialog=true;
+    wrapped.__bsV233SafeDialog=true;
     showDetail=wrapped;
   }
 
-  const content=document.querySelector('#detailContent');
-  if(content){
+  const detailContent=document.querySelector('#detailContent');
+  if(detailContent){
     const observer=new MutationObserver(()=>queueMicrotask(ensureBottomClose));
-    observer.observe(content,{childList:true,subtree:false});
+    observer.observe(detailContent,{childList:true,subtree:false});
   }
 
+  const recordDialog=document.querySelector('#recordDialog');
+  if(recordDialog){
+    const openObserver=new MutationObserver(()=>{
+      if(recordDialog.open){
+        requestAnimationFrame(()=>{
+          resetRecordHorizontal();
+          requestAnimationFrame(resetRecordHorizontal);
+        });
+      }
+    });
+    openObserver.observe(recordDialog,{attributes:true,attributeFilter:['open']});
+
+    recordDialog.addEventListener('scroll',()=>{
+      if(recordDialog.scrollLeft) recordDialog.scrollLeft=0;
+    },{passive:true});
+  }
+
+  document.querySelector('#recordForm')?.addEventListener('scroll',e=>{
+    if(e.currentTarget.scrollLeft) e.currentTarget.scrollLeft=0;
+  },{passive:true});
+
+  document.addEventListener('click',e=>{
+    if(e.target.closest('.bs-schedule-editor-toggle')){
+      requestAnimationFrame(resetRecordHorizontal);
+    }
+  },true);
+
+  window.addEventListener('resize',resetRecordHorizontal,{passive:true});
+  window.visualViewport?.addEventListener('resize',resetRecordHorizontal,{passive:true});
+
   ensureBottomClose();
+  resetRecordHorizontal();
 })();
