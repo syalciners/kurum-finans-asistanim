@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.3.6 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.3.7 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -155,7 +155,7 @@
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=236', {updateViaCache:'none'})
+      .register('./sw.js?v=237', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
@@ -171,7 +171,7 @@
   function loadShellLock(){
     if(document.querySelector('script[data-bs-shell-lock]')) return;
     const script=document.createElement('script');
-    script.src='./v234-shell-lock.js?v=234';
+    script.src='./v234-shell-lock.js?v=237';
     script.dataset.bsShellLock='1';
     document.body.appendChild(script);
   }
