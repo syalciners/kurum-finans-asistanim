@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.3.4 - Sabit üst bar ve alt sekme kabuğu */
+/* BS OFİS BÜTÇE V2.3.7 - Sabit uygulama kabuğu ve modal işlem yükleyicisi */
 (() => {
   if(window.__bsV234ShellLockLoaded) return;
   window.__bsV234ShellLockLoaded=true;
@@ -78,6 +78,14 @@
     }
   }
 
+  function loadModalFooter(){
+    if(window.__bsV237ModalFooterLoaded || document.querySelector('script[data-bs-modal-footer]')) return;
+    const script=document.createElement('script');
+    script.src='./v237-modal-footer.js?v=237';
+    script.dataset.bsModalFooter='1';
+    document.body.appendChild(script);
+  }
+
   let raf=0;
   function scheduleMeasure(){
     cancelAnimationFrame(raf);
@@ -89,6 +97,7 @@
 
   ensureStyles();
   scheduleMeasure();
+  loadModalFooter();
   window.addEventListener('load',scheduleMeasure,{once:true});
   window.addEventListener('resize',scheduleMeasure,{passive:true});
   window.addEventListener('orientationchange',scheduleMeasure,{passive:true});
