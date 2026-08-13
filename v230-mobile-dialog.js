@@ -1,26 +1,28 @@
-/* BS OFİS BÜTÇE V2.3.3 - Mobil dialog ve yatay taşma güvenliği */
+/* BS OFİS BÜTÇE V2.3.5 - Mobil dialog, yatay taşma ve sabit modal başlıkları */
 (() => {
-  if(window.__bsV233MobileDialogLoaded) return;
-  window.__bsV233MobileDialogLoaded=true;
+  if(window.__bsV235MobileDialogLoaded) return;
+  window.__bsV235MobileDialogLoaded=true;
 
   function ensureStyles(){
-    if(document.querySelector('#bsV233MobileDialogStyles')) return;
+    if(document.querySelector('#bsV235MobileDialogStyles')) return;
     const style=document.createElement('style');
-    style.id='bsV233MobileDialogStyles';
+    style.id='bsV235MobileDialogStyles';
     style.textContent=`
       html,body{max-width:100%;overflow-x:hidden!important}
 
-      /* Detay: native dialog davranışı korunur. */
+      /* Detay başlığı: içerik kayarken başlık + kapatma sabit kalır. */
       #detailDialog .dialog-form{position:relative!important}
       #detailDialog .dialog-head{
-        position:static!important;
-        top:auto!important;
-        z-index:auto!important;
-        background:transparent!important;
+        position:sticky!important;
+        top:0!important;
+        z-index:120!important;
+        background:#fff!important;
         backdrop-filter:none!important;
         -webkit-backdrop-filter:none!important;
-        padding:0!important;
-        border-bottom:0!important;
+        padding:0 0 12px!important;
+        margin-bottom:12px!important;
+        border-bottom:1px solid #eef2f7!important;
+        box-shadow:0 8px 14px -16px rgba(15,23,42,.55)!important;
       }
       #detailDialog .dialog-head .close-detail{
         visibility:visible!important;
@@ -62,6 +64,19 @@
         overscroll-behavior-x:none!important;
         box-sizing:border-box!important;
       }
+
+      /* Kaydı Düzenle başlığı: form alanları kayarken üstte sabit kalır. */
+      #recordDialog .dialog-head{
+        position:sticky!important;
+        top:0!important;
+        z-index:120!important;
+        background:#fff!important;
+        padding:2px 0 12px!important;
+        margin-bottom:12px!important;
+        border-bottom:1px solid #eef2f7!important;
+        box-shadow:0 8px 14px -16px rgba(15,23,42,.55)!important;
+      }
+
       #recordDialog .dialog-head,
       #recordDialog #recordFields,
       #recordDialog #recordFields > *,
@@ -170,14 +185,14 @@
 
   ensureStyles();
 
-  if(typeof showDetail==='function' && !showDetail.__bsV233SafeDialog){
-    const originalShowDetailV233=showDetail;
+  if(typeof showDetail==='function' && !showDetail.__bsV235SafeDialog){
+    const originalShowDetailV235=showDetail;
     const wrapped=function(module,record){
-      const result=originalShowDetailV233(module,record);
+      const result=originalShowDetailV235(module,record);
       queueMicrotask(ensureBottomClose);
       return result;
     };
-    wrapped.__bsV233SafeDialog=true;
+    wrapped.__bsV235SafeDialog=true;
     showDetail=wrapped;
   }
 
