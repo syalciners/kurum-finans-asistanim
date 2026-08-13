@@ -2,9 +2,16 @@
 
 BS Ofis için mobil öncelikli, ortak bulut verili finans yönetim PWA'sı.
 
-## Güncel durum — V1.7 çekirdek / UI190
+## Güncel durum — V1 kabul adayı / UI V237
+
+Uygulamanın V1 işlev kapsamı tamamlanmıştır. Bundan sonra yeni özellik eklemek yerine yalnız gerçek kullanımda ortaya çıkan hata ve veri bütünlüğü sorunları düzeltilmelidir.
+
+Çalışan ana kapsam:
 
 - Kurum borçları ve borç ödemeleri
+- Kısmi ödeme ve taksit ilerletme
+- Sabit, kademeli ve kesin tarih/tutar taksit planları
+- Taksit planından otomatik kalan borç hesabı
 - Kurum harcamaları
 - Manuel gelir kayıtları
 - BS Ofis `StudentPayments` tahsilatlarının otomatik gelir aktarımı
@@ -16,6 +23,25 @@ BS Ofis için mobil öncelikli, ortak bulut verili finans yönetim PWA'sı.
 - Supabase ortak bulut modu
 - PWA / iPhone ana ekran kullanımı
 - JSON yerel yedekleme
+- Sabit üst bar ve sabit 5 sekmeli alt navigasyon
+- Mobilde yatay kaymanın engellenmesi
+- Detay ve düzenleme modallarında sabit başlık
+- Uzun düzenleme formlarında sabit `Kaydet` düğmesi
+
+## V1 kabul adayı sürüm zinciri
+
+Ana giriş dosyası ve PWA paketi V237 üzerinde sabitlenmiştir.
+
+- `index.html` → `core-compat.js?v=237`
+- `debt-balance.js?v=236`
+- `schedule-editor.js?v=232`
+- `v230-mobile-dialog.js?v=235`
+- `v234-shell-lock.js?v=237`
+- `v237-modal-footer.js?v=237`
+- `manifest.webmanifest` → `start_url: ./?v=237`
+- `sw.js` → V237 cache paketi
+
+Eski görünüm katmanları yalnız halen çalışan işlevsel bağımlılık oldukları ölçüde korunur. Yeni geliştirmelerde üst üste yeni tema yamaları eklenmemelidir.
 
 ## BS Ofis gelir kuralı
 
@@ -27,45 +53,61 @@ Gelir sahipliği, `Lessons` tablosundaki `DersDurumu = Yapıldı` kayıtlarına 
 - `TCH-002` → Başak
 - diğer öğretmenler → Kurum Kasası
 
-Örnek: Efe Bulut 8.000 ₺ tahsilat → Süleyman 4.000 ₺ + Kurum Kasası 4.000 ₺. Kullanıcı ekranında tahsilat tek 8.000 ₺ kart olarak görünür.
+Bir öğrenci hem Başak hem Süleyman ile çalışıyorsa otomatik gelir sahibi ataması yapılmaz; kayıt kontrol gerektiren durum olarak ele alınır.
 
-## Frontend mimarisi
+Veritabanında dağıtım parçalı olabilir ancak kullanıcı arayüzünde aynı `PaymentID` tek tahsilat olarak görünür.
 
-Görsel mimari 12.08.2026 tarihinde sadeleştirilmiştir. Marka ve tema artık üst üste sürüm dosyalarıyla değil, tek bir güncel katmanla yönetilir.
+## Borç ve taksit planı standardı
 
-Çalışan zincir:
+- Kısmi ödeme mevcut taksiti azaltır; taksit tamamen kapanmadan vade gereksiz yere ilerlemez.
+- Tam ödeme mevcut taksiti kapatır ve sonraki vadeye geçer.
+- Fazla ödeme sonraki taksitlere aktarılabilir.
+- Kesin plan varsa tarih/tutar satırları genel tahminden önceliklidir.
+- Manuel kalan borç girilmemiş ve plan güvenilir ise toplam bakiye plandan otomatik hesaplanır.
+- Otomatik hesaplanan bakiye düzenleme formunda yanıltıcı `0` olarak gösterilmez.
+- Ödeme sonrası kalan toplam borç negatif olamaz ve sıfırlandığında borç kapanır.
 
-1. `app.js` — temel veri, form, bulut ve kayıt işlevleri
-2. `v17-ui.js` — V1.7 gelir görünümü ve BS Ofis tahsilat gruplanması
-3. `v176-ui.js` → `v177-ui.js` → `v178-ui.js` → `v179-ui.js` — doğrulanmış işlevsel UX modülleri
-4. `ui.js` — **tek güncel marka, renk, responsive ve görsel tema katmanı**
+## Mobil kullanıcı deneyimi standardı
 
-Eski `v180-ui.js`, `v181-ui.js`, `v182-ui.js` ve `v184-ui.js` tema dosyaları kaldırılmıştır. Yeniden bağlanmamalıdır. Üst bardaki `#appTitle` ve `#orgEyebrow` DOM elemanları bulut/sistem uyumluluğu için korunur; görsel tema bu elemanları silmemelidir.
-
-Güncel tasarım standardı: açık `#F8FAFC` zemin, beyaz kartlar, ana eylem/aktif durumda `#2563EB`, pozitif/gelir vurgusunda teal, yaklaşan/kalan ödemede turuncu ve gecikmede kırmızı. Marka ikonu `bs-budget-mark.svg`, yatay marka dosyası `bs-budget-logo.svg`.
+- Açık arka plan ve beyaz kartlar
+- Ana vurgu `#2563EB`
+- Pozitif/gelir için yeşil/teal, yaklaşan/kalan için turuncu, kritik/gecikmiş için kırmızı
+- Alt navigasyonda yalnız 5 ana sekme: Özet, Borçlar, Ödemeler, Gelirler, Takvim
+- Üst bar ve alt navigasyon ekran hareketinden bağımsız sabittir
+- Sayfa içeriği yalnız dikey kayar; yatay kaydırma kapalıdır
+- Detay ve düzenleme pencerelerinde başlık sabittir
+- Uzun düzenleme formlarında `Kaydet` altta erişilebilir kalır
+- Teknik alanlar günlük kullanıcıya gösterilmez
 
 ## Supabase migrasyonları
 
-Mevcut çalışan sistemin gelir tarafındaki sürüm zinciri:
+Gelir tarafındaki temel sürüm zinciri:
 
-1. `v1.5_gelirler.sql` — `gelirler` tablosunu oluşturur.
-2. `v1.6_supabase_entegrasyon.sql` — BS Ofis kaynak alanlarını ve Kurum Kasası desteğini ekler.
-3. `v1.7_gelir_dagitim.sql` — aynı `PaymentID`'nin farklı gelir sahiplerine bölünebilmesini sağlar.
+1. `v1.5_gelirler.sql`
+2. `v1.6_supabase_entegrasyon.sql`
+3. `v1.7_gelir_dagitim.sql`
 
-> **Önemli:** `kurulum.sql` eski temel kurulum dosyasıdır. Tek başına güncel V1.7 sistemini sıfırdan kurmaz; `gelirler` ve `uygulama_ayarlari` yapısının tamamını içermez. Yeni bir Supabase projesinde yalnız `kurulum.sql` çalıştırılarak V1.7 kurulmuş kabul edilmemelidir.
+`kurulum.sql` eski temel kurulum dosyasıdır; tek başına güncel V1.7 sistemini sıfırdan kurmaz.
 
 ## Apps Script V1.7 yedekleri
 
-- `BSOfisFinansAktarim_V17_KuruTest.gs` — hiçbir veri yazmadan gelir dağılımını hesaplar.
-- `BSOfisFinansAktarim_V17_EfeGercekTest.gs` — Efe Bulut tahsilatıyla kontrollü gerçek kayıt testidir.
-- `BSOfisFinansAktarim_V17_Canli.gs` — doğrulanmış canlı senkron ve 5 dakikalık tetikleyici fonksiyonlarıdır.
+- `BSOfisFinansAktarim_V17_KuruTest.gs` — yazmadan dağılım hesabı
+- `BSOfisFinansAktarim_V17_EfeGercekTest.gs` — kontrollü gerçek kayıt testi
+- `BSOfisFinansAktarim_V17_Canli.gs` — canlı senkron ve tetikleyici
 
-Canlı Apps Script projesinde temel V1.6 yardımcı fonksiyonları ile bu V1.7 dosyaları birlikte çalışır. Secret/service-role değerleri GitHub'a yazılmaz.
+Secret/service-role değerleri GitHub'a yazılmaz.
 
 ## Güvenlik
 
-Supabase tablolarında RLS kullanılmalıdır. Frontend yalnız publishable/anon key kullanır. `service_role` veya Apps Script secret değerleri hiçbir zaman frontend'e veya public GitHub deposuna eklenmemelidir.
+Supabase tablolarında RLS kullanılmalıdır. Frontend yalnız publishable/anon key kullanır. `service_role`, Apps Script secret veya özel anahtarlar public GitHub deposuna eklenmez.
 
-## Teknik not
+## Geliştirme sınırı
 
-Güncel geliştirme ve test durumu `GELISTIRME_NOTLARI_2026-08-12.md` dosyasında tutulur.
+V1 kabul adayından sonra:
+
+1. Yeni özellik eklenmez.
+2. Finans çekirdeği ve doğrulanmış V1.7 gelir dağıtımı yalnız kritik hata varsa değiştirilir.
+3. Gerçek kullanımda çıkan mobil UX veya veri bütünlüğü sorunları kontrollü olarak düzeltilir.
+4. Büyük tasarım veya mimari geliştirmeler ayrı sonraki sürüme bırakılır.
+
+Güncel kapanış notu: `GELISTIRME_NOTLARI_2026-08-13.md`.
