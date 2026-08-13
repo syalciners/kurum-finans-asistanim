@@ -1,6 +1,7 @@
-/* BS OFİS BÜTÇE V2.3.8 - Ödeme düzenleme / güvenli silme */
+/* BS OFİS BÜTÇE V2.3.9 - Ödeme düzenleme / güvenli silme / eski kayıt uyumluluğu */
 (() => {
-  if(window.__bsPaymentEditorV238Loaded) return;
+  if(window.__bsPaymentEditorV239Loaded) return;
+  window.__bsPaymentEditorV239Loaded=true;
   window.__bsPaymentEditorV238Loaded=true;
 
   const EPS=.005;
@@ -19,7 +20,8 @@
     'installment_remaining_after','completed_installments','unapplied_amount',
     'debt_balance_v1','debt_balance_tracked','debt_balance_source',
     'debt_balance_before','debt_balance_after','debt_balance_applied',
-    'debt_balance_unapplied_amount','payment_undo_v238'
+    'debt_balance_unapplied_amount','payment_undo_v238','payment_undo_v239',
+    'legacy_latest_undo_v239'
   ];
 
   const own=(o,k)=>Object.prototype.hasOwnProperty.call(o||{},k);
@@ -42,7 +44,7 @@
     });
 
     return {
-      version:1,
+      version:2,
       minimum:roundMoney(d.minimum),
       dueDate:d.dueDate||'',
       balance:roundMoney(d.balance),
@@ -77,10 +79,16 @@
     return p;
   }
 
+  function undoSnapshot(rawPayment){
+    const c=paymentCustom(rawPayment);
+    const snap=c.payment_undo_v239||c.payment_undo_v238;
+    return snap && (+snap.version===1 || +snap.version===2) ? snap : null;
+  }
+
   function reversible(rawPayment){
     const c=paymentCustom(rawPayment);
     return !!(
-      c.payment_undo_v238?.version===1 ||
+      undoSnapshot(rawPayment) ||
       c.payment_plan_v3 ||
       c.payment_plan_v2
     );
@@ -89,13 +97,14 @@
   function rollbackFromMetadata(rawDebt,rawPayment){
     const p=normalizePayment(rawPayment);
     const meta=p.custom||{};
+    const snap=undoSnapshot(p);
 
-    if(meta.payment_undo_v238?.version===1){
-      return restoreUndo(rawDebt,meta.payment_undo_v238);
+    if(snap){
+      return restoreUndo(rawDebt,snap);
     }
 
     if(!reversible(p)){
-      throw new Error('Bu eski ödeme güvenli geri alma bilgisi taşımıyor. Taksit planını bozmamak için otomatik silme/düzenleme durduruldu.');
+      throw new Error('Bu eski ödeme güvenli geri alma bilgisi taşımıyor.');
     }
 
     const d=normalizeDebt(rawDebt);
@@ -118,7 +127,7 @@
 
     if(completed>0 && afterMinimum>EPS){
       custom.next_payment_after_current=roundMoney(afterMinimum);
-      custom.next_payment_source='payment_rollback_v238';
+      custom.next_payment_source='payment_rollback_v239';
     }
 
     if(meta.debt_balance_tracked===true && Number.isFinite(+meta.debt_balance_before)){
@@ -126,12 +135,104 @@
       custom.balance_source=meta.debt_balance_source==='plan'?'taksit_plani_v222':'kayitli';
     }
 
-    d.minimum=roundMoney(beforeMinimum);
+    d.minimum=roundMoney(beforeMinimum||d.minimum);
     if(own(meta,'installment_due_date')) d.dueDate=meta.installment_due_date||'';
     d.status='active';
     d.custom=custom;
     d.updatedAt=new Date().toISOString();
     return d;
+  }
+
+  function planSummary(raw){
+    try{
+      return typeof window.bsDebtPlanSummary==='function'
+        ?window.bsDebtPlanSummary(raw)
+        :null;
+    }catch(_e){
+      return null;
+    }
+  }
+
+  function exactSchedule(raw){
+    const d=normalizeDebt(raw);
+    const arr=d.custom?.installment_schedule;
+    if(!Array.isArray(arr)) return [];
+    return arr
+      .map(x=>({date:String(x?.date||''),amount:roundMoney(x?.amount)}))
+      .filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)&&x.amount>EPS)
+      .sort((a,b)=>a.date.localeCompare(b.date));
+  }
+
+  function synthesizeLatestLegacyUndo(rawDebt,rawPayment){
+    const d=normalizeDebt(rawDebt);
+    const p=normalizePayment(rawPayment);
+    const custom={...(d.custom||{})};
+    const present=[];
+    const values={};
+    const summary=planSummary(d);
+    const schedule=exactSchedule(d);
+    const remRaw=custom.remaining_installments;
+    const hasRem=remRaw!=='' && remRaw!=null && !Number.isNaN(+remRaw);
+    const currentRem=hasRem?Math.max(0,Math.floor(+remRaw)):null;
+
+    let beforeMinimum=Math.max(0,roundMoney(d.minimum));
+    let beforeDue=d.dueDate||'';
+    let beforeRem=currentRem;
+    let safe=false;
+
+    if(schedule.length && hasRem){
+      beforeRem=Math.min(schedule.length,currentRem+1);
+      const offset=Math.max(0,schedule.length-beforeRem);
+      const row=schedule[offset];
+      if(row){
+        beforeMinimum=row.amount;
+        beforeDue=row.date;
+        safe=true;
+      }
+    }else if(d.frequency==='oneoff'){
+      beforeRem=hasRem?Math.max(1,currentRem):currentRem;
+      safe=true;
+    }else if(d.frequency==='monthly' && (summary?.kind==='fixed' || hasRem)){
+      beforeRem=hasRem?currentRem+1:currentRem;
+      if(d.dueDate){
+        const currentDue=parseDate(d.dueDate);
+        const candidate=addMonths(currentDue,-1);
+        const paymentDay=parseDate(p.date);
+        const sevenDaysBefore=new Date(candidate.getTime()-7*86400000);
+        if(paymentDay>=sevenDaysBefore && paymentDay<currentDue){
+          beforeDue=candidate.toISOString().slice(0,10);
+        }
+      }
+      safe=true;
+    }
+
+    if(!safe) return null;
+
+    if(hasRem){
+      present.push('remaining_installments');
+      values.remaining_installments=beforeRem;
+    }
+
+    if(own(custom,'balance_source')){
+      present.push('balance_source');
+      values.balance_source=clone(custom.balance_source);
+    }
+
+    let beforeBalance=Math.max(0,roundMoney(d.balance));
+    if(beforeBalance>EPS){
+      beforeBalance=roundMoney(beforeBalance+p.amount);
+    }
+
+    return {
+      version:2,
+      minimum:beforeMinimum,
+      dueDate:beforeDue,
+      balance:beforeBalance,
+      status:'active',
+      customPresent:present,
+      customValues:values,
+      legacyLatest:true
+    };
   }
 
   function paymentOrderForDebt(debtId){
@@ -143,7 +244,26 @@
         created:String(raw?.createdAt??raw?.olusturma_zamani??'')
       }))
       .filter(x=>x.p.debtId===debtId)
-      .sort((a,b)=>a.created.localeCompare(b.created)||a.index-b.index);
+      .sort((a,b)=>
+        String(a.p.date||'').localeCompare(String(b.p.date||'')) ||
+        a.created.localeCompare(b.created) ||
+        a.index-b.index
+      );
+  }
+
+  function withSyntheticLatestUndo(rawDebt,affected){
+    if(affected.length!==1 || reversible(affected[0].raw)) return affected;
+
+    const snap=synthesizeLatestLegacyUndo(rawDebt,affected[0].raw);
+    if(!snap) return affected;
+
+    const raw=clone(affected[0].raw);
+    const custom=paymentCustom(raw);
+    custom.payment_undo_v239=snap;
+    custom.legacy_latest_undo_v239=true;
+    raw.custom=custom;
+
+    return [{...affected[0],raw,p:normalizePayment(raw)}];
   }
 
   function buildRecalculation(targetId,replacement=null){
@@ -157,10 +277,17 @@
     const pos=ordered.findIndex(x=>x.p.id===targetId);
     if(pos<0) throw new Error('Ödeme sırası belirlenemedi.');
 
-    const affected=ordered.slice(pos);
+    let affected=ordered.slice(pos);
+    affected=withSyntheticLatestUndo(rawDebt,affected);
+
     const unsupported=affected.find(x=>!reversible(x.raw));
     if(unsupported){
-      throw new Error('Bu ödeme veya sonrasındaki eski bir ödeme güvenli geri alma bilgisi taşımıyor. Finansal planın bozulmaması için işlem yapılmadı.');
+      const isTarget=unsupported.p.id===targetId;
+      throw new Error(
+        isTarget
+          ?'Bu çok eski ödeme için güvenli geri alma başlangıcı oluşturulamadı. Önce bu borcun plan bilgilerini kontrol etmem gerekiyor.'
+          :'Bu ödemenin ardından eski biçimde kaydedilmiş başka ödemeler var. Önce daha yeni ödemelerden başlanmalı.'
+      );
     }
 
     let debt=normalizeDebt(clone(rawDebt));
@@ -179,7 +306,7 @@
 
     return {
       originalDebt:normalizeDebt(clone(rawDebt)),
-      affectedOriginals:affected.map(x=>normalizePayment(clone(x.raw))),
+      affectedOriginals:ordered.slice(pos).map(x=>normalizePayment(clone(x.raw))),
       updatedDebt:normalizeDebt(debt),
       updatedPayments
     };
@@ -294,28 +421,28 @@
   }
 
   function installPaymentDetailActions(){
-    if(typeof showDetail!=='function' || showDetail.__bsPaymentEditorV238) return;
-    const originalShowDetailV238=showDetail;
+    if(typeof showDetail!=='function' || showDetail.__bsPaymentEditorV239) return;
+    const originalShowDetailV239=showDetail;
     const wrapped=function(module,record){
-      const result=originalShowDetailV238(module,record);
+      const result=originalShowDetailV239(module,record);
       if(module==='payments'){
         const actions=document.querySelector('#detailContent .detail-actions');
         if(actions){
           actions.innerHTML=`
-            <button type="button" class="secondary" data-v238-payment-edit="${esc(record.id)}">Düzenle</button>
-            <button type="button" class="danger-btn" data-v238-payment-delete="${esc(record.id)}">Sil</button>
+            <button type="button" class="secondary" data-v239-payment-edit="${esc(record.id)}">Düzenle</button>
+            <button type="button" class="danger-btn" data-v239-payment-delete="${esc(record.id)}">Sil</button>
           `;
         }
       }
       return result;
     };
-    wrapped.__bsPaymentEditorV238=true;
+    wrapped.__bsPaymentEditorV239=true;
     showDetail=wrapped;
   }
 
   function installUndoCapture(){
-    if(typeof applyPaymentPlan!=='function' || applyPaymentPlan.__bsPaymentUndoV238) return;
-    const originalApplyPaymentPlanV238=applyPaymentPlan;
+    if(typeof applyPaymentPlan!=='function' || applyPaymentPlan.__bsPaymentUndoV239) return;
+    const originalApplyPaymentPlanV239=applyPaymentPlan;
     const wrapped=function(raw,paymentDate,explicitAmount=null,paymentRecord=null){
       let target=paymentRecord;
       if(!target && explicitAmount==null && raw){
@@ -328,37 +455,37 @@
 
       if(target){
         const custom=paymentCustom(target);
-        if(!custom.payment_undo_v238){
-          custom.payment_undo_v238=captureUndo(raw);
+        if(!custom.payment_undo_v239 && !custom.payment_undo_v238){
+          custom.payment_undo_v239=captureUndo(raw);
           target.custom=custom;
         }
       }
 
-      return originalApplyPaymentPlanV238(raw,paymentDate,explicitAmount,paymentRecord||target);
+      return originalApplyPaymentPlanV239(raw,paymentDate,explicitAmount,paymentRecord||target);
     };
-    wrapped.__bsPaymentUndoV238=true;
+    wrapped.__bsPaymentUndoV239=true;
     applyPaymentPlan=wrapped;
   }
 
   function installEvents(){
-    if(window.__bsPaymentEditorV238Events) return;
-    window.__bsPaymentEditorV238Events=true;
+    if(window.__bsPaymentEditorV239Events) return;
+    window.__bsPaymentEditorV239Events=true;
 
     document.addEventListener('click',e=>{
-      const edit=e.target.closest('[data-v238-payment-edit]');
+      const edit=e.target.closest('[data-v239-payment-edit]');
       if(edit){
         e.preventDefault();
         e.stopPropagation();
-        const p=state.payments.map(normalizePayment).find(x=>x.id===edit.dataset.v238PaymentEdit);
+        const p=state.payments.map(normalizePayment).find(x=>x.id===edit.dataset.v239PaymentEdit);
         if(p) openPaymentEdit(p);
         return;
       }
 
-      const del=e.target.closest('[data-v238-payment-delete]');
+      const del=e.target.closest('[data-v239-payment-delete]');
       if(del){
         e.preventDefault();
         e.stopPropagation();
-        deletePayment(del.dataset.v238PaymentDelete,del);
+        deletePayment(del.dataset.v239PaymentDelete,del);
       }
     },true);
 
