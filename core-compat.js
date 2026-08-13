@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.3.1 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.3.2 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -155,31 +155,16 @@
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=231', {updateViaCache:'none'})
+      .register('./sw.js?v=232', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
 
-  function loadV231MobileDialog(){
-    if(document.querySelector('script[data-bs-v231-mobile-dialog]')) return;
+  function loadMobileDialogSafety(){
+    if(document.querySelector('script[data-bs-mobile-dialog-safety]')) return;
     const script=document.createElement('script');
-    script.src='./v230-mobile-dialog.js?v=231';
-    script.dataset.bsV231MobileDialog='1';
-    document.body.appendChild(script);
-  }
-
-  function loadV229Fixes(){
-    const existing=document.querySelector('script[data-bs-v229-fixes]');
-    if(existing){
-      if(window.__bsV229FixesLoaded) loadV231MobileDialog();
-      else existing.addEventListener('load',loadV231MobileDialog,{once:true});
-      return;
-    }
-
-    const script=document.createElement('script');
-    script.src='./v229-fixes.js?v=229';
-    script.dataset.bsV229Fixes='1';
-    script.addEventListener('load',loadV231MobileDialog,{once:true});
+    script.src='./v230-mobile-dialog.js?v=232';
+    script.dataset.bsMobileDialogSafety='1';
     document.body.appendChild(script);
   }
 
@@ -187,5 +172,5 @@
   installViewStateGuard();
   installSafeTitleRenderer();
   refreshServiceWorker();
-  setTimeout(loadV229Fixes,0);
+  setTimeout(loadMobileDialogSafety,0);
 })();
