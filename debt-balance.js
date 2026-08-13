@@ -1,6 +1,7 @@
-/* BS OFİS BÜTÇE V2.2.3 - Ödeme / toplam borç bakiyesi bütünlüğü */
+/* BS OFİS BÜTÇE V2.3.6 - Ödeme / toplam borç bakiyesi bütünlüğü */
 (() => {
-  if(window.__bsDebtBalanceV222Loaded) return;
+  if(window.__bsDebtBalanceV236Loaded) return;
+  window.__bsDebtBalanceV236Loaded=true;
   window.__bsDebtBalanceV222Loaded=true;
 
   const EPS=.005;
@@ -53,43 +54,91 @@
     };
   }
 
+  function isAutoBalance(d,resolved){
+    const source=String(d?.custom?.balance_source||'').toLowerCase();
+    if(source==='taksit_plani_v222' || source==='plan') return true;
+
+    if((+d?.balance||0)<=EPS && resolved?.tracked && resolved.source==='plan') return true;
+
+    const exactPlan=!!(
+      d?.custom?.plan_type==='exact_schedule' ||
+      d?.custom?.plan_type==='exact_bank_schedule' ||
+      Array.isArray(d?.custom?.installment_schedule)
+    );
+    const summaryTotal=roundMoney(resolved?.summary?.total||0);
+    const stored=roundMoney(d?.balance||0);
+    return !!(
+      exactPlan &&
+      resolved?.summary?.safe &&
+      summaryTotal>EPS &&
+      stored>EPS &&
+      Math.abs(stored-summaryTotal)<=.01
+    );
+  }
+
   function ensureBalanceFieldVisible(){
     const field=appConfig?.fields?.debts?.builtIns?.find(x=>x.id==='balance');
     if(field) field.visible=true;
   }
 
   function installBalanceFormField(){
-    if(typeof openRecordDialog!=='function' || openRecordDialog.__bsDebtBalanceFormV222) return;
+    if(typeof openRecordDialog!=='function' || openRecordDialog.__bsDebtBalanceFormV236) return;
 
-    const originalOpenRecordDialogV222=openRecordDialog;
+    const originalOpenRecordDialogV236=openRecordDialog;
     const wrapped=function(module,record=null){
       if(module==='debts') ensureBalanceFieldVisible();
-      const result=originalOpenRecordDialogV222(module,record);
+      const result=originalOpenRecordDialogV236(module,record);
 
       if(module==='debts'){
         const input=document.querySelector('#recordForm [name="balance"]');
         const label=input?.closest('label');
-        if(label && !label.querySelector('.bs-balance-field-hint')){
-          const hint=document.createElement('small');
-          hint.className='bs-balance-field-hint';
-          hint.style.cssText='color:#64748b;font-size:10px;font-weight:600;line-height:1.35';
-          hint.textContent='İsteğe bağlıdır. Boşsa sistem tutarlı taksit planından toplam bakiyeyi otomatik hesaplar.';
-          label.appendChild(hint);
+        const d=record?normalizeDebt(record):null;
+        const resolved=d?resolveBalance(d):null;
+        const automatic=!!(d && isAutoBalance(d,resolved));
+
+        if(input){
+          delete input.dataset.bsAutoBalance;
+          input.placeholder='';
+
+          if(automatic){
+            input.value='';
+            input.dataset.bsAutoBalance='1';
+            input.placeholder=resolved?.amount>EPS
+              ?`Otomatik: ${money(resolved.amount)}`
+              :'Otomatik hesaplanır';
+          }
+        }
+
+        if(label){
+          let hint=label.querySelector('.bs-balance-field-hint');
+          if(!hint){
+            hint=document.createElement('small');
+            hint.className='bs-balance-field-hint';
+            hint.style.cssText='color:#64748b;font-size:10px;font-weight:600;line-height:1.35';
+            label.appendChild(hint);
+          }
+
+          hint.textContent=automatic
+            ?resolved?.amount>EPS
+              ?`Otomatik hesaplanan kalan borç: ${money(resolved.amount)}. Manuel tutar girmek istersen bu alanı kullanabilirsin.`
+              :'Bu borcun toplam bakiyesi taksit planından otomatik hesaplanır.'
+            :'İsteğe bağlıdır. Boşsa sistem tutarlı taksit planından toplam bakiyeyi otomatik hesaplar.';
         }
       }
       return result;
     };
 
+    wrapped.__bsDebtBalanceFormV236=true;
     wrapped.__bsDebtBalanceFormV222=true;
     openRecordDialog=wrapped;
   }
 
   function installDebtDetailBalance(){
-    if(typeof showDetail!=='function' || showDetail.__bsDebtBalanceDetailV222) return;
+    if(typeof showDetail!=='function' || showDetail.__bsDebtBalanceDetailV236) return;
 
-    const originalShowDetailV222=showDetail;
+    const originalShowDetailV236=showDetail;
     const wrapped=function(module,record){
-      originalShowDetailV222(module,record);
+      originalShowDetailV236(module,record);
       if(module!=='debts') return;
 
       const d=normalizeDebt(record);
@@ -97,19 +146,15 @@
       const grid=document.querySelector('#detailContent .detail-grid');
       if(!grid || grid.querySelector('.bs-debt-balance-row')) return;
 
-      const exactBankPlan=(
-        d.custom?.plan_type==='exact_bank_schedule'
-        ||Array.isArray(d.custom?.installment_schedule)
-      );
-
+      const automatic=isAutoBalance(d,resolved);
       let value='Tanımlanmadı';
       let color='#c97800';
       let suffix='';
 
       if((+d.balance||0)>EPS){
         value=money(Math.max(0,+d.balance||0));
-        color=exactBankPlan?'#2563eb':'';
-        if(exactBankPlan){
+        color=automatic?'#2563eb':'';
+        if(automatic){
           suffix=' <small style="font-size:8px;color:#64748b;font-weight:700">(otomatik)</small>';
         }
       }else if(resolved.tracked && resolved.source==='plan'){
@@ -129,12 +174,13 @@
       grid.prepend(row);
     };
 
+    wrapped.__bsDebtBalanceDetailV236=true;
     wrapped.__bsDebtBalanceDetailV222=true;
     showDetail=wrapped;
   }
 
   function install(){
-    if(window.__bsDebtBalanceV222Installed) return;
+    if(window.__bsDebtBalanceV236Installed) return;
 
     if(
       !window.__bsPaymentPlanV3Loaded ||
@@ -145,7 +191,7 @@
       return;
     }
 
-    const originalApplyPaymentPlanV222=applyPaymentPlan;
+    const originalApplyPaymentPlanV236=applyPaymentPlan;
 
     applyPaymentPlan=function(raw,paymentDate,explicitAmount=null,paymentRecord=null){
       if(!raw) return raw;
@@ -164,7 +210,7 @@
       );
 
       if(paymentAmount<=0){
-        return originalApplyPaymentPlanV222(raw,paymentDate,explicitAmount,paymentRecord);
+        return originalApplyPaymentPlanV236(raw,paymentDate,explicitAmount,paymentRecord);
       }
 
       const resolved=resolveBalance(before);
@@ -172,7 +218,6 @@
       const balanceTracked=resolved.tracked;
       const planAmount=balanceTracked?Math.min(paymentAmount,balanceBefore):paymentAmount;
 
-      // Kademeli planda tam geçiş ayındaysak V4 motoruna sonraki taksit tutarını bildir.
       if(resolved.summary?.safe && resolved.summary.kind==='phased'){
         const rows=resolved.summary.rows||[];
         const current=rows[0]?.planned||0;
@@ -185,7 +230,7 @@
         }
       }
 
-      const result=originalApplyPaymentPlanV222(raw,paymentDate,planAmount,rawPayment||paymentRecord);
+      const result=originalApplyPaymentPlanV236(raw,paymentDate,planAmount,rawPayment||paymentRecord);
 
       if(!balanceTracked){
         markPayment(rawPayment,{
@@ -236,7 +281,9 @@
       return result;
     };
 
+    applyPaymentPlan.__bsDebtBalanceV236=true;
     applyPaymentPlan.__bsDebtBalanceV222=true;
+    window.__bsDebtBalanceV236Installed=true;
     window.__bsDebtBalanceV222Installed=true;
     installBalanceFormField();
     installDebtDetailBalance();
