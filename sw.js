@@ -1,4 +1,4 @@
-const CACHE='bs-ofis-butce-ui243-live-freeze-20260814';
+const CACHE='bs-ofis-butce-ui244-monthly-report-20260815';
 const ASSETS=[
   './?v=240',
   './index.html?v=240',
@@ -23,6 +23,7 @@ const ASSETS=[
   './v237-modal-footer.js?v=237',
   './v241-payment-modal-scroll-lock.js?v=241',
   './v242-payment-save-ui.js?v=242',
+  './v244-monthly-report.js?v=244',
   './manifest.webmanifest?v=240',
   './bs-budget-mark-v194.svg?v=195',
   './bs-budget-logo-v194.svg',
