@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.4.5 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.4.6 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -155,7 +155,7 @@
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=245', {updateViaCache:'none'})
+      .register('./sw.js?v=246', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
@@ -216,6 +216,14 @@
     document.body.appendChild(script);
   }
 
+  function loadDirectPdfReport(){
+    if(window.__bsDirectPdfReportV246Loaded || document.querySelector('script[data-bs-direct-pdf-report]')) return;
+    const script=document.createElement('script');
+    script.src='./v246-direct-pdf-report.js?v=246';
+    script.dataset.bsDirectPdfReport='1';
+    document.body.appendChild(script);
+  }
+
   migrateConfig();
   installViewStateGuard();
   installSafeTitleRenderer();
@@ -227,4 +235,5 @@
   setTimeout(loadPaymentSaveUi,0);
   setTimeout(loadMonthlyReport,0);
   setTimeout(loadReportPrintFix,0);
+  setTimeout(loadDirectPdfReport,0);
 })();
