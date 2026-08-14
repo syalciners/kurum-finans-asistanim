@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.4.4 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.4.5 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -155,7 +155,7 @@
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=244', {updateViaCache:'none'})
+      .register('./sw.js?v=245', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
@@ -208,6 +208,14 @@
     document.body.appendChild(script);
   }
 
+  function loadReportPrintFix(){
+    if(window.__bsReportPrintFixV245Loaded || document.querySelector('script[data-bs-report-print-fix]')) return;
+    const script=document.createElement('script');
+    script.src='./v245-report-print-fix.js?v=245';
+    script.dataset.bsReportPrintFix='1';
+    document.body.appendChild(script);
+  }
+
   migrateConfig();
   installViewStateGuard();
   installSafeTitleRenderer();
@@ -218,4 +226,5 @@
   setTimeout(loadPaymentModalScrollLock,0);
   setTimeout(loadPaymentSaveUi,0);
   setTimeout(loadMonthlyReport,0);
+  setTimeout(loadReportPrintFix,0);
 })();
