@@ -1,4 +1,4 @@
-const CACHE='bs-ofis-butce-ui245-report-print-fix-20260815';
+const CACHE='bs-ofis-butce-ui246-direct-pdf-20260815';
 const ASSETS=[
   './?v=240',
   './index.html?v=240',
@@ -25,6 +25,7 @@ const ASSETS=[
   './v242-payment-save-ui.js?v=242',
   './v244-monthly-report.js?v=244',
   './v245-report-print-fix.js?v=245',
+  './v246-direct-pdf-report.js?v=246',
   './manifest.webmanifest?v=240',
   './bs-budget-mark-v194.svg?v=195',
   './bs-budget-logo-v194.svg',
