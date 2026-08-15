@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-labelledby="title desc">
+  <title id="title">BS Ofis Bütçe Yönetimi - Tek renk beyaz</title>
+  <desc id="desc">Koyu zemin için tek renk beyaz kurumsal logo.</desc>
+  <g fill="#FFFFFF">
+    <g transform="translate(18 18) scale(1.42)">
+      <path fill-rule="evenodd" d="M5 7H42C58 7 66 15 66 28C66 38 61 44 51 48C63 51 70 59 70 71C70 87 60 94 42 94H5V7ZM18 19V41H39C47 41 52 37 52 30C52 23 47 19 39 19H18ZM18 53V82H40C49 82 54 77 54 68C54 58 49 53 40 53H18Z"/>
+      <path d="M113 18C102 10 85 8 73 13C61 18 55 27 58 37C60 47 69 52 81 55L91 58C98 60 101 64 100 69C99 75 91 79 82 78C73 77 65 74 58 69L50 81C59 89 70 94 82 95C99 96 113 88 116 75C120 61 111 52 96 48L85 45C78 43 75 40 76 36C77 31 83 28 91 29C98 29 104 32 109 36L113 18Z"/>
+      <path d="M4 89C28 82 44 65 59 47C76 27 93 14 117 10" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"/>
+    </g>
+    <rect x="204" y="35" width="2" height="110"/>
+    <text x="244" y="82" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif" font-size="60" font-weight="800" letter-spacing="-1.5">BS Ofis</text>
+    <text x="246" y="127" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif" font-size="31" font-weight="700" letter-spacing="-0.5">Bütçe Yönetimi</text>
+  </g>
+</svg>
