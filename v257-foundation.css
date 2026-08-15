@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.7.3 - Tek temel mobil/marka katmanı
+/* BS OFİS BÜTÇE V2.5.7.4 - Tek temel mobil/marka katmanı
    Final header, okunabilirlik, sabit uygulama kabuğu ve ortak dinamik UI yapıları. */
 
 :root{
@@ -141,8 +141,13 @@ button,input,select,textarea{
   line-height:1!important;
   font-weight:850!important;
   letter-spacing:.16em!important;
-  color:#2563EB!important;
+  color:#0F172A!important;
   white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.app-shell > .topbar #orgEyebrow:empty{
+  display:none!important;
 }
 
 /* Okunabilirlik tabanı. */
