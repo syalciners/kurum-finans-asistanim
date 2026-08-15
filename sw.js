@@ -1,3 +1,4 @@
+// V257.4 final header settings build
 const CACHE='bs-ofis-butce-v2574-header-settings-20260815';
 const ASSETS=[
   './?v=2574',
