@@ -1,5 +1,6 @@
-/* BS OFIS BUTCE V2.5.0 - Odemeler ekrani son gorsel polish
-   Yalnizca sunum katmani. Odeme, taksit, replay ve Supabase davranisini degistirmez. */
+/* BS OFIS BUTCE V2.5.9.6 - Odemeler ekrani son gorsel polish
+   Yalnizca sunum katmani. Odeme, taksit, replay ve Supabase davranisini degistirmez.
+   V259.6: Donem secimi yalnizca ust KPI kartlarindan yapilir; eski dropdown gorunmez tutulur. */
 
 #payments{
   padding-top:1px;
@@ -67,20 +68,9 @@
   color:#2563EB!important;
 }
 
-/* Donem filtresi */
+/* Donem filtresi: teknik durum tutucu DOM'da kalir; kullaniciya ikinci kontrol gosterilmez. */
 #payments .payment-filter-row{
-  margin:-1px 0 12px!important;
-}
-#payments .payment-filter-row select{
-  min-width:128px!important;
-  min-height:40px!important;
-  padding:8px 34px 8px 11px!important;
-  border-radius:11px!important;
-  border-color:#D7E0EB!important;
-  background-color:#fff!important;
-  color:#475569!important;
-  font-size:10.5px!important;
-  font-weight:760!important;
+  display:none!important;
 }
 
 /* Odeme listesi */
@@ -180,12 +170,6 @@
   }
   #payments #v176PaymentKpis .v175-quick-card strong{
     font-size:15px!important;
-  }
-  #payments .payment-filter-row{
-    justify-content:flex-end!important;
-  }
-  #payments .payment-filter-row select{
-    min-width:118px!important;
   }
   #payments #paymentList .v179-payment-card,
   #payments #paymentList .list-card{
