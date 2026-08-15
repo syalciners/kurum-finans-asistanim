@@ -49,7 +49,7 @@
   line-height:1.12!important;
 }
 
-/* Marka bari hedef mockup oranina yaklastir */
+/* Marka bari */
 .app-shell > .topbar{
   min-height:72px!important;
 }
@@ -60,15 +60,16 @@
   }
 
   .app-shell > .topbar{
-    min-height:68px!important;
-    padding-top:11px!important;
-    padding-bottom:10px!important;
+    min-height:72px!important;
+    padding-top:10px!important;
+    padding-bottom:9px!important;
     margin-bottom:13px!important;
   }
 
   .app-shell > .topbar .bs-brand-mark{
-    width:38px!important;
-    height:38px!important;
+    width:44px!important;
+    height:44px!important;
+    flex-basis:44px!important;
   }
 
   .app-shell > .bottom-nav{
@@ -82,5 +83,13 @@
   .app-shell > .bottom-nav .nav-btn{
     min-height:50px!important;
     height:50px!important;
+  }
+}
+
+@media(max-width:380px){
+  .app-shell > .topbar .bs-brand-mark{
+    width:40px!important;
+    height:40px!important;
+    flex-basis:40px!important;
   }
 }
