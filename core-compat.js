@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.9.1 - Merkezi uyumluluk ve başlangıç katmanı */
+/* BS OFİS BÜTÇE V2.5.9.2 - Merkezi uyumluluk ve başlangıç katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -258,6 +258,7 @@
     const modules = [
       ['./v258-education-income-sync.js?v=258','__bsEducationIncomeSyncV258Loaded'],
       ['./v2584-income-themes.js?v=2584','__bsIncomeThemesV2584Loaded'],
+      ['./v2592-income-other-description.js?v=2592','__bsIncomeOtherDescriptionV2592Loaded'],
       ['./v2585-payment-owner-label.js?v=2586','__bsPaymentOwnerLabelV2586Loaded'],
       ['./v2587-debt-owner-colors.js?v=2587','__bsDebtOwnerColorsV2587Loaded'],
       ['./v230-mobile-dialog.js?v=2571','__bsV235MobileDialogLoaded'],
@@ -273,7 +274,7 @@
       try{
         await loadScript(src,marker);
       }catch(error){
-        console.error('V259.1 opsiyonel modül yükleme hatası:',error);
+        console.error('V259.2 opsiyonel modül yükleme hatası:',error);
       }
     }
   }
