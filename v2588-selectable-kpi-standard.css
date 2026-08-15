@@ -1,0 +1,72 @@
+/* BS OFİS BÜTÇE V2.5.8.8 - Seçilebilir üst KPI kart standardı
+   Yalnızca seçim görünümünü standardize eder.
+   Gelirler ve Takvim zaten yeterince belirgin olduğundan değiştirilmez. */
+
+/* ---------------------------------------------------------
+   ÖDEMELER
+   Dönem kartlarında sürekli üst şerit + güçlü seçili durum.
+   --------------------------------------------------------- */
+#payments #v176PaymentKpis .v175-quick-card{
+  position:relative!important;
+  overflow:hidden!important;
+}
+
+#payments #v176PaymentKpis [data-payment-quick="current"]{
+  border-top:3px solid #2563EB!important;
+}
+#payments #v176PaymentKpis [data-payment-quick="previous"]{
+  border-top:3px solid #7EA6FF!important;
+}
+#payments #v176PaymentKpis [data-payment-quick="all"]{
+  border-top:3px solid #CBD5E1!important;
+}
+
+/* Seçim bütün dönemlerde aynı ana mavi ile açıkça okunur. */
+#payments #v176PaymentKpis .v175-quick-card.active{
+  border-color:#9FBCFF!important;
+  border-top-color:#2563EB!important;
+  background:linear-gradient(180deg,#F8FBFF 0%,#F2F7FF 100%)!important;
+  box-shadow:0 0 0 2px rgba(37,99,235,.10),0 4px 12px rgba(37,99,235,.07)!important;
+}
+#payments #v176PaymentKpis .v175-quick-card.active span,
+#payments #v176PaymentKpis .v175-quick-card.active strong,
+#payments #v176PaymentKpis .v175-quick-card.active small{
+  color:#2563EB!important;
+}
+
+/* ---------------------------------------------------------
+   BORÇLAR
+   Mevcut semantik şeritler korunur; aktif seçim belirginleşir.
+   --------------------------------------------------------- */
+#debts #v175DebtKpis [data-debt-quick="active"].active{
+  border-color:#91DED3!important;
+  background:linear-gradient(180deg,#F7FFFD 0%,#EDFCF9 100%)!important;
+  box-shadow:0 0 0 2px rgba(20,184,166,.10),0 4px 12px rgba(20,184,166,.06)!important;
+}
+#debts #v175DebtKpis [data-debt-quick="active"].active span,
+#debts #v175DebtKpis [data-debt-quick="active"].active strong,
+#debts #v175DebtKpis [data-debt-quick="active"].active small{
+  color:#0F8F83!important;
+}
+
+#debts #v175DebtKpis [data-debt-quick="month"].active{
+  border-color:#9FBCFF!important;
+  background:linear-gradient(180deg,#F8FBFF 0%,#F2F7FF 100%)!important;
+  box-shadow:0 0 0 2px rgba(37,99,235,.10),0 4px 12px rgba(37,99,235,.06)!important;
+}
+#debts #v175DebtKpis [data-debt-quick="month"].active span,
+#debts #v175DebtKpis [data-debt-quick="month"].active strong,
+#debts #v175DebtKpis [data-debt-quick="month"].active small{
+  color:#2563EB!important;
+}
+
+#debts #v175DebtKpis [data-debt-quick="overdue"].active{
+  border-color:#F5A5AB!important;
+  background:linear-gradient(180deg,#FFF9F9 0%,#FFF2F3 100%)!important;
+  box-shadow:0 0 0 2px rgba(239,68,68,.09),0 4px 12px rgba(239,68,68,.055)!important;
+}
+#debts #v175DebtKpis [data-debt-quick="overdue"].active span,
+#debts #v175DebtKpis [data-debt-quick="overdue"].active strong,
+#debts #v175DebtKpis [data-debt-quick="overdue"].active small{
+  color:#DC2626!important;
+}
