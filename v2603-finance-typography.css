@@ -307,6 +307,15 @@ textarea,
   letter-spacing:-.02em!important;
 }
 
+.app-shell #debts #debtList .amount .bs-v2598-remaining{
+  font-size:var(--bs-type-amount)!important;
+  line-height:1.15!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:-.02em!important;
+  font-variant-numeric:tabular-nums lining-nums;
+  font-feature-settings:"tnum" 1,"lnum" 1;
+}
+
 .amount small,
 #debts #debtList .amount small,
 #payments #paymentList .amount small,
