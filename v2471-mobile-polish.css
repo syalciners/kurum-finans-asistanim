@@ -7,3 +7,8 @@
 @import url('./v251-incomes-polish.css?v=251');
 @import url('./v252-calendar-polish.css?v=252');
 @import url('./v257-foundation.css?v=257');
+
+/* index.html eski src taşısa bile ilk boyamada yalnız final header mark görünür. */
+.app-shell > .topbar .bs-brand-mark{
+  content:url('./bs-budget-header-mark-v256.svg?v=257')!important;
+}
