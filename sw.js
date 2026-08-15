@@ -1,8 +1,8 @@
-// V259.3 Üst bar ve alt sekme ortak floating bar standardı build
-const CACHE='bs-ofis-butce-v2593-ustbar-sekme-standardi-20260815';
+// V259.4 Otomatik Eğitim gelirlerini istemci yazımından koruma build
+const CACHE='bs-ofis-butce-v2594-otomatik-gelir-push-koruma-20260815';
 const ASSETS=[
-  './?v=2593',
-  './index.html?v=2593',
+  './?v=2594',
+  './index.html?v=2594',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2593',
@@ -82,6 +82,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2593') || caches.match('./index.html?v=2593')))
+        .then(response => response || caches.match('./?v=2594') || caches.match('./index.html?v=2594')))
   );
 });
