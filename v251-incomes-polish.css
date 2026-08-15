@@ -1,0 +1,201 @@
+/* BS OFIS BUTCE V2.5.1 - Gelirler ekrani son gorsel polish
+   Yalnizca sunum katmani. Gelir dagitimi, PaymentID gruplama ve BS Ofis entegrasyonunu degistirmez. */
+
+#incomes{
+  padding-top:1px;
+}
+
+#incomes .page-title{
+  margin-bottom:12px!important;
+}
+#incomes .page-title .primary{
+  min-height:38px!important;
+  padding:9px 13px!important;
+  border-radius:11px!important;
+  font-size:11px!important;
+}
+
+/* Ust KPI kartlari */
+#incomes .kpi-grid,
+#incomes [class*="income-kpi"]{
+  gap:8px!important;
+}
+#incomes .kpi{
+  min-height:78px!important;
+  padding:12px 13px!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  border:1px solid #E2E8F0!important;
+  box-shadow:0 2px 9px rgba(15,23,42,.03)!important;
+}
+#incomes .kpi span{
+  color:#6F7E92!important;
+  font-size:8.5px!important;
+  font-weight:830!important;
+  letter-spacing:.025em!important;
+}
+#incomes .kpi strong{
+  margin-top:2px!important;
+  color:#0F8F83!important;
+  font-size:18px!important;
+  line-height:1.05!important;
+  font-weight:860!important;
+  letter-spacing:-.03em!important;
+}
+#incomes .kpi small{
+  color:#8A98AB!important;
+  font-size:8.5px!important;
+}
+
+/* Gelir sahibi kartlari */
+#incomes #incomeOwnerKpis{
+  gap:7px!important;
+  margin:-3px 0 12px!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi{
+  min-height:64px!important;
+  padding:10px 10px 9px!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  border:1px solid #E2E8F0!important;
+  box-shadow:0 2px 8px rgba(15,23,42,.025)!important;
+  text-align:left!important;
+  align-content:center!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi span{
+  color:#718096!important;
+  font-size:8.5px!important;
+  font-weight:830!important;
+  letter-spacing:.025em!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi strong{
+  margin-top:2px!important;
+  color:#172033!important;
+  font-size:15px!important;
+  line-height:1.08!important;
+  font-weight:860!important;
+  letter-spacing:-.025em!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi.active{
+  background:linear-gradient(180deg,#fff 0%,#FBFFFE 100%)!important;
+  border-color:#BCEAE3!important;
+  box-shadow:inset 0 3px 0 #14B8A6,0 2px 8px rgba(20,184,166,.04)!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi.active span,
+#incomes #incomeOwnerKpis .income-owner-kpi.active strong{
+  color:#0F8F83!important;
+}
+
+/* Filtreler */
+#incomes .toolbar.debt-toolbar{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+  margin-bottom:12px!important;
+}
+#incomes .toolbar.debt-toolbar select{
+  min-width:0!important;
+  min-height:40px!important;
+  padding:8px 28px 8px 10px!important;
+  border-radius:11px!important;
+  color:#475569!important;
+  font-size:10px!important;
+  font-weight:740!important;
+}
+
+/* Gelir kartlari */
+#incomes #incomeList{
+  gap:9px!important;
+}
+#incomes #incomeList .list-card,
+#incomes #incomeList .income-bs-card{
+  min-height:76px!important;
+  padding:13px 14px!important;
+  border-radius:15px!important;
+  border:1px solid #E2E8F0!important;
+  border-left:3px solid #5BC9BC!important;
+  background:#fff!important;
+  box-shadow:0 2px 9px rgba(15,23,42,.03)!important;
+  gap:12px!important;
+}
+#incomes #incomeList .list-card:hover,
+#incomes #incomeList .income-bs-card:hover{
+  border-color:#C8DDD9!important;
+  border-left-color:#14B8A6!important;
+  box-shadow:0 4px 13px rgba(15,23,42,.045)!important;
+}
+#incomes #incomeList .main{
+  gap:4px!important;
+}
+#incomes #incomeList .main>strong{
+  color:#172033!important;
+  font-size:12.5px!important;
+  line-height:1.25!important;
+  font-weight:830!important;
+  letter-spacing:-.012em!important;
+}
+#incomes #incomeList .main small{
+  color:#78869A!important;
+  font-size:9px!important;
+  line-height:1.28!important;
+}
+#incomes #incomeList .amount{
+  color:#0F8F83!important;
+  font-size:15px!important;
+  line-height:1.1!important;
+  font-weight:870!important;
+  letter-spacing:-.025em!important;
+}
+#incomes #incomeList .income-distribution{
+  margin-top:2px!important;
+  color:#718096!important;
+  font-size:8.5px!important;
+  line-height:1.3!important;
+}
+#incomes #incomeList .income-share-note{
+  width:max-content!important;
+  max-width:100%!important;
+  margin-top:3px!important;
+  padding:3px 7px!important;
+  border-radius:999px!important;
+  background:#ECFDF9!important;
+  color:#0F8F83!important;
+  border:1px solid #D6F5EF!important;
+  font-size:8px!important;
+  font-weight:820!important;
+  line-height:1.15!important;
+}
+
+#incomes #incomeList .empty{
+  padding:22px 16px!important;
+  border-radius:15px!important;
+  color:#7A8799!important;
+  font-size:10px!important;
+  box-shadow:none!important;
+}
+
+@media(max-width:520px){
+  #incomes #incomeOwnerKpis{
+    gap:6px!important;
+  }
+  #incomes #incomeOwnerKpis .income-owner-kpi{
+    min-height:60px!important;
+    padding:9px 8px!important;
+  }
+  #incomes #incomeOwnerKpis .income-owner-kpi strong{
+    font-size:14px!important;
+  }
+  #incomes .toolbar.debt-toolbar{
+    grid-template-columns:1fr 1fr!important;
+  }
+  #incomes .toolbar.debt-toolbar #incomeMonth{
+    grid-column:1/-1!important;
+  }
+  #incomes #incomeList .list-card,
+  #incomes #incomeList .income-bs-card{
+    min-height:72px!important;
+    padding:12px 13px!important;
+  }
+  #incomes #incomeList .amount{
+    font-size:14px!important;
+  }
+}
