@@ -1,8 +1,8 @@
-// V260.7 - Gelir katman sadeleştirme canlı önbelleği
-const CACHE='bs-ofis-butce-v2607-gelir-katman-20260816';
+// V260.7.1 - Gelir katman sadeleştirme canlı önbelleği
+const CACHE='bs-ofis-butce-v26071-gelir-katman-20260816';
 const ASSETS=[
-  './?v=2607',
-  './index.html?v=2607',
+  './?v=26071',
+  './index.html?v=26071',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2607',
@@ -86,6 +86,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2607') || caches.match('./index.html?v=2607')))
+        .then(response => response || caches.match('./?v=26071') || caches.match('./index.html?v=26071')))
   );
 });
