@@ -1,8 +1,8 @@
-// V260.4 - Nötr renk standardı canlı önbelleği
-const CACHE='bs-ofis-butce-v2604-renk-20260816';
+// V260.4.1 - Nötr renk standardı canlı önbelleği
+const CACHE='bs-ofis-butce-v26041-renk-20260816';
 const ASSETS=[
-  './?v=2604',
-  './index.html?v=2604',
+  './?v=26041',
+  './index.html?v=26041',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2604',
@@ -86,6 +86,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2604') || caches.match('./index.html?v=2604')))
+        .then(response => response || caches.match('./?v=26041') || caches.match('./index.html?v=26041')))
   );
 });
