@@ -1,6 +1,9 @@
 /* BS OFIS BUTCE V2.4.7.1 - Mobil oran ve sabit navigasyon polish
    Yalnizca sunum katmani; veri, DOM davranisi ve finans motorlarina dokunmaz. */
 
+/* V248 Ozet son polish - yalniz gorsel katman */
+@import url('./v248-dashboard-polish.css?v=248');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
