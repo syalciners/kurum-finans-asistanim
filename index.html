@@ -8,20 +8,22 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BS OFİS BÜTÇE" />
-  <title>BS OFİS BÜTÇE</title>
-  <link rel="manifest" href="manifest.webmanifest?v=2563" />
-  <link rel="icon" type="image/svg+xml" href="bs-budget-app-icon-v256.svg?v=2563" />
-  <link rel="apple-touch-icon" href="bs-budget-app-icon-v256.svg?v=2563" />
-  <link rel="apple-touch-icon-precomposed" href="bs-budget-app-icon-v256.svg?v=2563" />
+  <title>BS Ofis Bütçe</title>
+
+  <link rel="manifest" href="manifest.webmanifest?v=257" />
+  <link rel="icon" type="image/svg+xml" href="bs-budget-app-icon-v256.svg?v=257" />
+  <link rel="apple-touch-icon" href="bs-budget-app-icon-v256.svg?v=257" />
+  <link rel="apple-touch-icon-precomposed" href="bs-budget-app-icon-v256.svg?v=257" />
+
   <link rel="stylesheet" href="styles.css?v=219" />
-  <link rel="stylesheet" data-bs-design-system href="v247-design-system.css?v=247" />
-  <link rel="stylesheet" data-bs-mobile-polish href="v2471-mobile-polish.css?v=2563" />
+  <link rel="stylesheet" href="v247-design-system.css?v=247" />
+  <link rel="stylesheet" href="v2471-mobile-polish.css?v=257" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-        <img class="bs-brand-mark" src="bs-budget-mark-v194.svg?v=195" alt="BS Ofis Bütçe" width="40" height="40" />
+        <img class="bs-brand-mark" src="bs-budget-header-mark-v256.svg?v=257" alt="BS Ofis" width="44" height="44" />
         <div class="bs-brand-copy" style="min-width:0;">
           <p class="eyebrow" id="orgEyebrow">YÖNETİMİ</p>
           <h1 id="appTitle">BS Ofis Bütçe</h1>
@@ -29,13 +31,20 @@
       </div>
       <div class="top-actions">
         <span id="syncBadge" class="status-badge offline">Yerel</span>
-        <button id="settingsShortcut" class="icon-btn" data-open="settings" title="Ayarlar" aria-label="Ayarlar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h-.1A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v-.1A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.16.36.37.7.6 1 .28.34.67.56 1.1.6h.1v4h-.1c-.43.04-.82.26-1.1.6-.23.3-.44.64-.6 1Z"/></svg></button>
-        <button id="installBtn" class="icon-btn hidden" title="Uygulamayı yükle" aria-label="Uygulamayı yükle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg></button>
+        <button id="settingsShortcut" class="icon-btn" data-open="settings" title="Ayarlar" aria-label="Ayarlar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h-.1A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v-.1A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.16.36.37.7.6 1 .28.34.67.56 1.1.6h.1v4h-.1c-.43.04-.82.26-1.1.6-.23.3-.44.64-.6 1Z"/></svg>
+        </button>
+        <button id="installBtn" class="icon-btn hidden" title="Uygulamayı yükle" aria-label="Uygulamayı yükle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+        </button>
       </div>
     </header>
 
     <div id="authBanner" class="auth-banner">
-      <div><strong>Ortak kullanım hazır</strong><span>İki telefonda aynı veriler için bulut bağlantısını tamamlayın.</span></div>
+      <div>
+        <strong>Ortak kullanım hazır</strong>
+        <span>İki telefonda aynı veriler için bulut bağlantısını tamamlayın.</span>
+      </div>
       <button id="openCloudSetup" class="secondary small">Bağla</button>
     </div>
 
@@ -47,49 +56,75 @@
           <article class="summary-card paid"><span>Bu Ay Ödendi</span><strong id="monthPaid">₺0</strong><small>kaydedilen ödemeler</small></article>
           <article class="summary-card remaining"><span>Kalan Ödeme</span><strong id="monthRemaining">₺0</strong><small>bu ay için kalan</small></article>
         </div>
+
         <div class="section-head"><h2>Finans Asistanı</h2><button class="link-btn" data-open="calendar">Takvim</button></div>
         <article id="assistantCard" class="assistant-card"></article>
+
         <div class="section-head"><h2>Yaklaşan Ödemeler</h2><button class="link-btn" data-open="calendar">Tümü</button></div>
         <div id="upcomingMini" class="list"></div>
+
         <div class="section-head"><h2>Son Yapılan Ödemeler</h2><button class="link-btn" data-open="payments">Tümünü Gör</button></div>
         <div id="recentPayments" class="list"></div>
       </section>
 
       <section id="debts" class="view">
-        <div class="page-title"><div><p class="eyebrow">BORÇ YÖNETİMİ</p><h2 id="debtsPageTitle">Borçlar</h2></div><button id="addDebtBtn" class="primary small">＋ Borç</button></div>
-        <div class="toolbar debt-toolbar"><input id="debtSearch" placeholder="Borç ara…" /><select id="debtOwnerFilter"><option value="all">Herkes</option><option value="Süleyman">Süleyman</option><option value="Başak">Başak</option></select><select id="debtFilter"><option value="active">Aktif</option><option value="all">Tümü</option><option value="closed">Kapanan</option></select></div>
+        <div class="page-title">
+          <div><p class="eyebrow">BORÇ YÖNETİMİ</p><h2 id="debtsPageTitle">Borçlar</h2></div>
+          <button id="addDebtBtn" class="primary small">＋ Borç</button>
+        </div>
+        <div class="toolbar debt-toolbar">
+          <input id="debtSearch" placeholder="Borç ara…" />
+          <select id="debtOwnerFilter"><option value="all">Herkes</option><option value="Süleyman">Süleyman</option><option value="Başak">Başak</option></select>
+          <select id="debtFilter"><option value="active">Aktif</option><option value="all">Tümü</option><option value="closed">Kapanan</option></select>
+        </div>
         <div id="debtList" class="list"></div>
       </section>
 
       <section id="incomes" class="view">
-        <div class="page-title"><div><p class="eyebrow">GELİR TAKİBİ</p><h2 id="incomesPageTitle">Gelirler</h2></div><button id="addIncomeBtn" class="primary small">＋ Gelir</button></div>
+        <div class="page-title">
+          <div><p class="eyebrow">GELİR TAKİBİ</p><h2 id="incomesPageTitle">Gelirler</h2></div>
+          <button id="addIncomeBtn" class="primary small">＋ Gelir</button>
+        </div>
         <div class="kpi-grid">
           <article class="kpi"><span>Seçili Ay Toplam</span><strong id="incomeMonthlyTotal">₺0</strong><small>kaydedilen tüm gelirler</small></article>
           <article class="kpi"><span>Özel Ders Geliri</span><strong id="incomeLessonTotal">₺0</strong><small>seçili aydaki özel dersler</small></article>
         </div>
-        <div class="toolbar debt-toolbar"><select id="incomeOwnerFilter"><option value="all">Herkes</option><option value="Başak">Başak</option><option value="Süleyman">Süleyman</option><option value="Kurum Kasası">Kurum Kasası</option></select><select id="incomeTypeFilter"><option value="all">Tüm gelir türleri</option><option value="Maaş">Maaş</option><option value="Özel Ders">Özel Ders</option><option value="Kira Geliri">Kira Geliri</option></select><select id="incomeMonth"></select></div>
+        <div class="toolbar debt-toolbar">
+          <select id="incomeOwnerFilter"><option value="all">Herkes</option><option value="Başak">Başak</option><option value="Süleyman">Süleyman</option><option value="Kurum Kasası">Kurum Kasası</option></select>
+          <select id="incomeTypeFilter"><option value="all">Tüm gelir türleri</option><option value="Maaş">Maaş</option><option value="Özel Ders">Özel Ders</option><option value="Kira Geliri">Kira Geliri</option></select>
+          <select id="incomeMonth"></select>
+        </div>
         <div id="incomeList" class="list"></div>
       </section>
 
       <section id="expenses" class="view">
-        <div class="page-title"><div><p class="eyebrow">KURUM GİDERLERİ</p><h2 id="expensesPageTitle">Harcamalar</h2></div><button id="addExpenseBtn" class="primary small">＋ Harcama</button></div>
+        <div class="page-title">
+          <div><p class="eyebrow">KURUM GİDERLERİ</p><h2 id="expensesPageTitle">Harcamalar</h2></div>
+          <button id="addExpenseBtn" class="primary small">＋ Harcama</button>
+        </div>
         <div class="toolbar"><input id="expenseSearch" placeholder="Harcama ara…" /><select id="expenseMonth"></select></div>
         <div id="expenseList" class="list"></div>
       </section>
 
       <section id="calendar" class="view">
-        <div class="page-title"><div><p class="eyebrow">ÖDEME TAKVİMİ</p><h2 id="calendarPageTitle">Yaklaşanlar</h2></div></div>
+        <div class="page-title"><div><p class="eyebrow">ÖDEME TAKVİMİ</p><h2 id="calendarPageTitle">Takvim</h2></div></div>
         <div id="calendarList" class="list"></div>
       </section>
 
       <section id="payments" class="view">
-        <div class="page-title"><div><p class="eyebrow">BORÇ ÖDEMELERİ</p><h2 id="paymentsPageTitle">Ödemeler</h2></div><button id="addPaymentBtn" class="primary small">＋ Ödeme</button></div>
-        <div class="payment-filter-row"><select id="paymentPeriodFilter" aria-label="Ödeme dönemi"><option value="current">Bu Ay</option><option value="previous">Geçen Ay</option><option value="all">Tümü</option></select></div>
+        <div class="page-title">
+          <div><p class="eyebrow">BORÇ ÖDEMELERİ</p><h2 id="paymentsPageTitle">Ödemeler</h2></div>
+          <button id="addPaymentBtn" class="primary small">＋ Ödeme</button>
+        </div>
+        <div class="payment-filter-row">
+          <select id="paymentPeriodFilter" aria-label="Ödeme dönemi"><option value="current">Bu Ay</option><option value="previous">Geçen Ay</option><option value="all">Tümü</option></select>
+        </div>
         <div id="paymentList" class="list"></div>
       </section>
 
       <section id="settings" class="view">
         <div class="page-title"><div><p class="eyebrow">AYARLAR</p><h2 id="settingsPageTitle">Uygulama Ayarları</h2></div></div>
+
         <form id="budgetForm" class="panel form-grid">
           <h3>Bütçe</h3>
           <label>Kurum adı<input name="orgName" placeholder="Örn. BS Ofis" /></label>
@@ -97,15 +132,18 @@
           <label>Korunacak nakit rezervi<input name="reserve" inputmode="decimal" type="number" min="0" step="0.01" /></label>
           <button class="primary" type="submit">Kaydet</button>
         </form>
+
         <div class="panel stack">
           <div class="setting-head"><div><h3>Uygulama Görünümü</h3><p class="muted">İsimler ve menüler iki telefonda ortak güncellenir.</p></div></div>
           <label>Uygulama başlığı<input id="applicationName" maxlength="40" placeholder="BS OFİS BÜTÇE" /></label>
           <button id="saveApplicationName" class="secondary">Başlığı Kaydet</button>
         </div>
+
         <div class="panel stack">
           <div class="setting-head"><div><h3>Menü Düzeni</h3><p class="muted">Alt menüdeki bölümleri değiştir, göster/gizle ve sırala. Ayarlar sağ üstte sabittir.</p></div></div>
           <div id="menuManager" class="config-list"></div>
         </div>
+
         <div class="panel stack">
           <div class="setting-head"><div><h3>Form Alanları</h3><p class="muted">Gereksiz alanları gizle; yeni özel alanlar ekle. Sistem için zorunlu alanlar silinemez.</p></div></div>
           <label>Düzenlenecek bölüm<select id="fieldModuleSelect"><option value="debts">Borçlar</option><option value="expenses">Harcamalar</option><option value="payments">Ödemeler</option></select></label>
@@ -113,23 +151,27 @@
           <div class="subsection-title"><strong>Özel Alanlar</strong><button id="addCustomFieldBtn" class="secondary small">＋ Yeni Alan</button></div>
           <div id="customFieldManager" class="config-list"></div>
         </div>
+
         <div class="panel stack">
           <div class="setting-head"><div><h3>Gelir Ayarları</h3><p class="muted">Özel ders geliri seçildiğinde görünecek öğrenci isimlerini buradan yönet.</p></div></div>
           <label>Özel ders öğrencileri<textarea id="incomeStudents" rows="7" placeholder="Her satıra bir öğrenci adı"></textarea></label>
           <button id="saveIncomeStudentsBtn" class="secondary">Öğrenci Listesini Kaydet</button>
         </div>
+
         <div class="panel stack">
           <div class="setting-head"><div><h3>Liste Seçenekleri</h3><p class="muted">Harcama kategorilerini ve ödeme yöntemlerini satır satır düzenleyebilirsin.</p></div></div>
           <label>Harcama kategorileri<textarea id="expenseCategories" rows="7"></textarea></label>
           <label>Ödeme yöntemleri<textarea id="paymentMethods" rows="5"></textarea></label>
           <button id="saveListsBtn" class="secondary">Liste Seçeneklerini Kaydet</button>
         </div>
+
         <div class="panel stack">
           <h3>Bu Telefon</h3>
           <label>İşlemleri yapan kişi<input id="deviceName" placeholder="Örn. Süleyman" /></label>
           <button id="saveDeviceName" class="secondary">Telefon adını kaydet</button>
           <p class="muted">Bu ad yalnız işlem geçmişinde “ekleyen” bilgisini göstermek için bu cihazda tutulur.</p>
         </div>
+
         <div class="panel stack">
           <h3>Ortak Bulut</h3>
           <div id="cloudSummary" class="cloud-summary"></div>
@@ -137,6 +179,7 @@
           <button id="syncNowBtn" class="secondary">Şimdi Senkronize Et</button>
           <button id="logoutBtn" class="danger-btn hidden">Kurum Hesabından Çık</button>
         </div>
+
         <div class="panel stack">
           <h3>Veri Yedeği</h3>
           <button id="exportBtn" class="secondary">JSON Yedeği İndir</button>
@@ -214,22 +257,21 @@
   </dialog>
 
   <div id="toast" class="toast"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=176"></script>
-  <script src="core-compat.js?v=2563"></script>
 
-  <!-- V240: ödeme motoru -> genel plan -> kesin plan -> bakiye -> plan editörü; ödeme geçmişi güvenli başlangıçtan yeniden oynatılır. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js?v=257"></script>
   <script src="v17-ui.js?v=218"></script>
   <script src="v175-ui.js?v=175"></script>
   <script src="v176-ui.js?v=218"></script>
   <script src="v177-ui.js?v=214"></script>
   <script src="v178-ui.js?v=214"></script>
   <script src="v179-ui.js?v=179"></script>
-  <script src="ui.js?v=217"></script>
+  <script src="ui.js?v=257"></script>
   <script src="payment-plan.js?v=200"></script>
   <script src="payment-schedule.js?v=222"></script>
   <script src="exact-schedule.js?v=224"></script>
   <script src="debt-balance.js?v=236"></script>
   <script src="schedule-editor.js?v=232"></script>
+  <script src="core-compat.js?v=257"></script>
 </body>
 </html>
