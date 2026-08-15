@@ -1,8 +1,8 @@
-// V257.4 final header settings build
-const CACHE='bs-ofis-butce-v2574-header-settings-20260815';
+// V258 Eğitim Supabase gelir senkron build
+const CACHE='bs-ofis-butce-v258-egitim-gelir-20260815';
 const ASSETS=[
-  './?v=2574',
-  './index.html?v=2574',
+  './?v=258',
+  './index.html?v=258',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2574',
@@ -13,7 +13,8 @@ const ASSETS=[
   './v252-calendar-polish.css?v=252',
   './v257-foundation.css?v=2574',
   './app.js?v=257',
-  './core-compat.js?v=2574',
+  './core-compat.js?v=258',
+  './v258-education-income-sync.js?v=258',
   './v17-ui.js?v=218',
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
@@ -71,6 +72,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2574') || caches.match('./index.html?v=2574')))
+        .then(response => response || caches.match('./?v=258') || caches.match('./index.html?v=258')))
   );
 });
