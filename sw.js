@@ -1,83 +1,76 @@
-const CACHE='bs-ofis-butce-ui2563-first-paint-cleanup-20260815';
+const CACHE='bs-ofis-butce-v257-cleanup-20260815';
 const ASSETS=[
-  './?v=2563',
-  './index.html?v=2563',
+  './?v=257',
+  './index.html?v=257',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2563',
+  './v2471-mobile-polish.css?v=257',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v250-payments-polish.css?v=250',
   './v251-incomes-polish.css?v=251',
   './v252-calendar-polish.css?v=252',
-  './v253-branding.css?v=253',
-  './v254-mobile-readability.css?v=254',
-  './v256-brand-freeze.css?v=2561',
+  './v257-foundation.css?v=257',
   './app.js?v=176',
-  './core-compat.js?v=2563',
+  './core-compat.js?v=257',
   './v17-ui.js?v=218',
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
   './v177-ui.js?v=214',
   './v178-ui.js?v=214',
   './v179-ui.js?v=179',
-  './ui.js?v=217',
+  './ui.js?v=257',
   './payment-plan.js?v=200',
   './payment-schedule.js?v=222',
   './exact-schedule.js?v=224',
   './debt-balance.js?v=236',
   './schedule-editor.js?v=232',
   './payment-editor-v240.js?v=240',
-  './v230-mobile-dialog.js?v=235',
-  './v234-shell-lock.js?v=237',
-  './v237-modal-footer.js?v=237',
+  './v230-mobile-dialog.js?v=257',
+  './v234-shell-lock.js?v=257',
   './v241-payment-modal-scroll-lock.js?v=241',
   './v242-payment-save-ui.js?v=242',
   './v244-monthly-report.js?v=244',
   './v245-report-print-fix.js?v=245',
   './v246-direct-pdf-report.js?v=246',
-  './manifest.webmanifest?v=2563',
-  './bs-budget-app-icon-v256.svg?v=2563',
-  './bs-budget-header-mark-v256.svg?v=2561',
-  './bs-budget-horizontal-logo-v256.svg?v=2561',
-  './bs-budget-horizontal-logo-v256-mono-dark.svg?v=2561',
-  './bs-budget-horizontal-logo-v256-mono-white.svg?v=2561',
-  './bs-budget-app-icon-v253.svg?v=253',
-  './bs-budget-header-mark-v255.svg?v=255',
-  './bs-budget-logo-v194.svg?v=194',
-  './bs-budget-mark-v194.svg?v=195',
-  './bs-budget-mark.svg?v=194',
-  './bs-budget-logo.svg?v=194'
+  './manifest.webmanifest?v=257',
+  './bs-budget-app-icon-v256.svg?v=257',
+  './bs-budget-header-mark-v256.svg?v=257',
+  './bs-budget-horizontal-logo-v256.svg?v=257',
+  './bs-budget-horizontal-logo-v256-mono-dark.svg?v=257',
+  './bs-budget-horizontal-logo-v256-mono-white.svg?v=257',
+  './bs-budget-mark-v194.svg?v=195'
 ];
 
-self.addEventListener('install',e=>
-  e.waitUntil(
+self.addEventListener('install',event => {
+  event.waitUntil(
     caches.open(CACHE)
-      .then(c=>c.addAll(ASSETS))
-      .then(()=>self.skipWaiting())
-  )
-);
+      .then(cache => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
+  );
+});
 
-self.addEventListener('activate',e=>
-  e.waitUntil(
+self.addEventListener('activate',event => {
+  event.waitUntil(
     caches.keys()
-      .then(keys=>Promise.all(
-        keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))
+      .then(keys => Promise.all(
+        keys.filter(key => key !== CACHE).map(key => caches.delete(key))
       ))
-      .then(()=>self.clients.claim())
-  )
-);
+      .then(() => self.clients.claim())
+  );
+});
 
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET' || new URL(e.request.url).origin!==location.origin) return;
+self.addEventListener('fetch',event => {
+  if(event.request.method !== 'GET' || new URL(event.request.url).origin !== location.origin) return;
 
-  e.respondWith(
-    fetch(e.request,{cache:'no-store'})
-      .then(r=>{
-        const copy=r.clone();
-        caches.open(CACHE).then(c=>c.put(e.request,copy));
-        return r;
+  event.respondWith(
+    fetch(event.request,{cache:'no-store'})
+      .then(response => {
+        const copy = response.clone();
+        caches.open(CACHE).then(cache => cache.put(event.request,copy));
+        return response;
       })
-      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=2563')||caches.match('./index.html?v=2563')))
+      .catch(() => caches.match(event.request)
+        .then(response => response || caches.match('./?v=257') || caches.match('./index.html?v=257')))
   );
 });
