@@ -1,0 +1,48 @@
+/* BS OFİS BÜTÇE V2.5.8.6 - Ödeme kartlarında borç sahibi renkleri
+   Yalnızca Ödemeler ekranının sunum katmanı.
+   Başak = pembe, Süleyman = mavi, Kurum = turkuaz. */
+
+/* Başak */
+#payments #paymentList .list-card.payment-owner-basak,
+#payments #paymentList .v179-payment-card.payment-owner-basak{
+  border-left-color:#EC4899!important;
+  background:linear-gradient(90deg,#FDF2F8 0%,#FFFFFF 18%)!important;
+}
+#payments #paymentList .list-card.payment-owner-basak .amount,
+#payments #paymentList .v179-payment-card.payment-owner-basak .amount{
+  color:#BE185D!important;
+}
+#payments #paymentList .list-card.payment-owner-basak:hover,
+#payments #paymentList .v179-payment-card.payment-owner-basak:hover{
+  border-left-color:#DB2777!important;
+}
+
+/* Süleyman */
+#payments #paymentList .list-card.payment-owner-suleyman,
+#payments #paymentList .v179-payment-card.payment-owner-suleyman{
+  border-left-color:#2563EB!important;
+  background:linear-gradient(90deg,#EFF6FF 0%,#FFFFFF 18%)!important;
+}
+#payments #paymentList .list-card.payment-owner-suleyman .amount,
+#payments #paymentList .v179-payment-card.payment-owner-suleyman .amount{
+  color:#1D4ED8!important;
+}
+#payments #paymentList .list-card.payment-owner-suleyman:hover,
+#payments #paymentList .v179-payment-card.payment-owner-suleyman:hover{
+  border-left-color:#1D4ED8!important;
+}
+
+/* Kurum */
+#payments #paymentList .list-card.payment-owner-kurum,
+#payments #paymentList .v179-payment-card.payment-owner-kurum{
+  border-left-color:#14B8A6!important;
+  background:linear-gradient(90deg,#ECFDF9 0%,#FFFFFF 18%)!important;
+}
+#payments #paymentList .list-card.payment-owner-kurum .amount,
+#payments #paymentList .v179-payment-card.payment-owner-kurum .amount{
+  color:#0F8F83!important;
+}
+#payments #paymentList .list-card.payment-owner-kurum:hover,
+#payments #paymentList .v179-payment-card.payment-owner-kurum:hover{
+  border-left-color:#0F8F83!important;
+}
