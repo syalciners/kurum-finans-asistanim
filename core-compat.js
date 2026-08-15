@@ -215,7 +215,6 @@
       ['./v241-payment-modal-scroll-lock.js?v=241','__bsV241PaymentModalScrollLockLoaded'],
       ['./v242-payment-save-ui.js?v=242','__bsV242PaymentSaveUiLoaded'],
       ['./v244-monthly-report.js?v=244','__bsMonthlyReportV244Loaded'],
-      ['./v245-report-print-fix.js?v=245','__bsReportPrintFixV245Loaded'],
       ['./v246-direct-pdf-report.js?v=246','__bsDirectPdfReportV246Loaded']
     ];
 
