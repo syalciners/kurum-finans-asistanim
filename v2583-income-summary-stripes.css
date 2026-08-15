@@ -1,7 +1,10 @@
-/* BS OFIS BUTCE V2.5.8.3 - Gelir ozet kartlari ust renk seritleri
-   Yalnizca sunum katmani. Tahsilat/liste kartlari renklenmez.
-   Secili Ay Toplami = turkuaz, Ozel Ders Geliri = mavi,
-   Basak = pembe, Suleyman = mavi, Kurum = turkuaz. */
+/* BS OFIS BUTCE V2.6.0.6 - Gelir KPI semantik üst şeritleri
+   Tek renk = tek anlam:
+   - Seçili Ay Toplam: nötr
+   - Özel Ders Geliri: turuncu
+   - Başak: pembe
+   - Süleyman: mavi
+   - Kurum: nötr */
 
 /* Ustteki iki ana KPI karti */
 #incomes .kpi-grid .kpi{
@@ -18,10 +21,10 @@
   pointer-events:none;
 }
 #incomes .kpi-grid .kpi:nth-child(1)::before{
-  background:#14B8A6!important;
+  background:transparent!important;
 }
 #incomes .kpi-grid .kpi:nth-child(2)::before{
-  background:#2563EB!important;
+  background:#F59E0B!important;
 }
 
 /* Gelir sahibi ozet kartlari */
@@ -45,5 +48,5 @@
   background:#2563EB!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"]::before{
-  background:#14B8A6!important;
+  background:transparent!important;
 }
