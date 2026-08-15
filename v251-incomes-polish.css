@@ -1,6 +1,6 @@
-/* BS OFIS BUTCE V2.6.0.5 - Gelirler ekrani temel gorsel katmani
+/* BS OFIS BUTCE V2.6.0.7 - Gelirler ekrani nötr temel gorsel katmani
    Yalnizca sunum katmani. Gelir dagitimi, PaymentID gruplama ve BS Ofis entegrasyonunu degistirmez.
-   Liste kartlari varsayilan olarak nötrdür; sahiplik ve gelir türü renkleri tema katmaninda uygulanir. */
+   Bu dosya semantik renk vermez; sahiplik ve gelir türü renkleri v2581/v2583/v2584 katmanlarinda uygulanir. */
 
 #incomes{
   padding-top:1px;
@@ -16,7 +16,7 @@
   font-size:11px!important;
 }
 
-/* Ust KPI kartlari */
+/* Ust KPI kartlari: yalniz nötr temel. */
 #incomes .kpi-grid,
 #incomes [class*="income-kpi"]{
   gap:8px!important;
@@ -30,25 +30,25 @@
   box-shadow:0 2px 9px rgba(15,23,42,.03)!important;
 }
 #incomes .kpi span{
-  color:#6F7E92!important;
+  color:#64748B!important;
   font-size:8.5px!important;
   font-weight:830!important;
   letter-spacing:.025em!important;
 }
 #incomes .kpi strong{
   margin-top:2px!important;
-  color:#0F8F83!important;
+  color:#0F172A!important;
   font-size:18px!important;
   line-height:1.05!important;
   font-weight:860!important;
   letter-spacing:-.03em!important;
 }
 #incomes .kpi small{
-  color:#8A98AB!important;
+  color:#94A3B8!important;
   font-size:8.5px!important;
 }
 
-/* Gelir sahibi kartlari */
+/* Gelir sahibi kartlari: nötr taban; sahiplik rengi sonraki tema katmanlarinda. */
 #incomes #incomeOwnerKpis{
   gap:7px!important;
   margin:-3px 0 12px!important;
@@ -64,27 +64,29 @@
   align-content:center!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi span{
-  color:#718096!important;
+  color:#64748B!important;
   font-size:8.5px!important;
   font-weight:830!important;
   letter-spacing:.025em!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi strong{
   margin-top:2px!important;
-  color:#172033!important;
+  color:#0F172A!important;
   font-size:15px!important;
   line-height:1.08!important;
   font-weight:860!important;
   letter-spacing:-.025em!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi.active{
-  background:linear-gradient(180deg,#fff 0%,#FBFFFE 100%)!important;
-  border-color:#BCEAE3!important;
-  box-shadow:inset 0 3px 0 #14B8A6,0 2px 8px rgba(20,184,166,.04)!important;
+  background:#FFFFFF!important;
+  border-color:#CBD5E1!important;
+  box-shadow:0 0 0 2px rgba(15,23,42,.05),0 4px 12px rgba(15,23,42,.04)!important;
 }
-#incomes #incomeOwnerKpis .income-owner-kpi.active span,
+#incomes #incomeOwnerKpis .income-owner-kpi.active span{
+  color:#64748B!important;
+}
 #incomes #incomeOwnerKpis .income-owner-kpi.active strong{
-  color:#0F8F83!important;
+  color:#0F172A!important;
 }
 
 /* Filtreler */
