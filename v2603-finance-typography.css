@@ -1,0 +1,441 @@
+/* BS OFİS BÜTÇE V2.6.0.3 TEST - Finans tipografi standardı
+   Yalnızca yazı ailesi, ölçüsü, ağırlığı, satır yüksekliği ve rakam hizası.
+   Renk, yerleşim, boyutlandırma, görünürlük ve davranış değiştirmez. */
+
+:root{
+  --bs-type-page:28px;
+  --bs-type-section:18px;
+  --bs-type-card-title:16px;
+  --bs-type-body:14px;
+  --bs-type-meta:13px;
+  --bs-type-label:12px;
+  --bs-type-control:15px;
+  --bs-type-amount:18px;
+  --bs-type-kpi:24px;
+  --bs-weight-regular:400;
+  --bs-weight-medium:500;
+  --bs-weight-semibold:600;
+  --bs-weight-bold:700;
+}
+
+body,
+button,
+input,
+select,
+textarea{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important;
+}
+
+body{
+  font-size:var(--bs-type-body)!important;
+  line-height:1.45!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+button,
+input,
+select,
+textarea{
+  font-weight:var(--bs-weight-medium)!important;
+}
+
+.amount,
+.summary-card strong,
+.kpi strong,
+.v175-quick-card strong,
+.v177-balance-main strong,
+.v177-flow-card strong,
+.income-owner-kpi strong{
+  font-variant-numeric:tabular-nums lining-nums;
+  font-feature-settings:"tnum" 1,"lnum" 1;
+}
+
+/* Marka ve sayfa başlıkları */
+.app-shell > .topbar #appTitle{
+  font-size:17px!important;
+  line-height:1.12!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:-.02em!important;
+}
+
+.app-shell > .topbar #orgEyebrow{
+  font-size:10px!important;
+  line-height:1.15!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:.14em!important;
+}
+
+.status-badge{
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+.page-title .eyebrow,
+#debts .page-title .eyebrow{
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:.12em!important;
+}
+
+.page-title h2,
+#debts .page-title h2{
+  font-size:var(--bs-type-page)!important;
+  line-height:1.08!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:-.035em!important;
+}
+
+.section-head h2,
+#dashboard .section-head h2,
+#dashboard .v178-quick-head strong,
+#dashboard .v177-attention-head strong{
+  font-size:var(--bs-type-section)!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:-.02em!important;
+}
+
+.section-head .link-btn,
+#dashboard .section-head .link-btn,
+#dashboard .v178-quick-head small,
+#dashboard .v177-attention-head small{
+  font-size:var(--bs-type-meta)!important;
+  line-height:1.3!important;
+  font-weight:var(--bs-weight-medium)!important;
+}
+
+/* Butonlar, filtreler ve formlar */
+.primary,
+.secondary,
+.danger-btn,
+.link-btn,
+.small,
+#debts #addDebtBtn,
+#payments .page-title .primary,
+#incomes .page-title .primary{
+  font-size:var(--bs-type-control)!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+label{
+  font-size:var(--bs-type-body)!important;
+  line-height:1.35!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+input,
+select,
+textarea,
+#debts .debt-toolbar input,
+#debts .debt-toolbar select,
+#debts #debtSearch,
+#incomes .toolbar.debt-toolbar select,
+#calendar select,
+.bs-calendar-sort-copy select{
+  font-size:var(--bs-type-control)!important;
+  line-height:1.3!important;
+  font-weight:var(--bs-weight-medium)!important;
+}
+
+/* Ana özet KPI kartları */
+.summary-card span,
+#dashboard .summary-card span,
+.bs-summary-label{
+  font-size:13px!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-semibold)!important;
+  letter-spacing:0!important;
+}
+
+.summary-card strong,
+#dashboard .summary-card strong{
+  font-size:var(--bs-type-kpi)!important;
+  line-height:1.1!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:-.03em!important;
+}
+
+.summary-card small,
+#dashboard .summary-card small{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.35!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+/* Hızlı işlemler ve nakit akışı */
+#dashboard .v178-quick-label{
+  font-size:14px!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+#dashboard .v177-balance-main span{
+  font-size:12px!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:.1em!important;
+}
+
+#dashboard .v177-balance-main strong{
+  font-size:30px!important;
+  line-height:1.05!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:-.04em!important;
+}
+
+#dashboard .v177-balance-main small{
+  font-size:var(--bs-type-meta)!important;
+  line-height:1.4!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+#dashboard .v177-balance-status{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+#dashboard .v179-progress-head span,
+#dashboard .v179-progress-foot span,
+#dashboard .v179-progress-foot small{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.3!important;
+  font-weight:var(--bs-weight-medium)!important;
+}
+
+#dashboard .v179-progress-head strong,
+#dashboard .v179-progress-foot strong{
+  font-size:14px!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+#dashboard .v177-flow-card span,
+#dashboard .v177-attention-copy span{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+#dashboard .v177-flow-card strong,
+#dashboard .v177-attention-number{
+  font-size:18px!important;
+  line-height:1.15!important;
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+#dashboard .v177-flow-card small,
+#dashboard .v177-attention-copy small{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.35!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+#dashboard .v177-attention-copy strong{
+  font-size:14px!important;
+  line-height:1.3!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+/* Üçlü KPI standartları */
+#debts #v175DebtKpis .v175-quick-card span,
+#payments #v176PaymentKpis .v175-quick-card span,
+#calendar #v175CalendarKpis .v175-quick-card span,
+#incomes #incomeOwnerKpis .income-owner-kpi span{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-semibold)!important;
+  letter-spacing:.025em!important;
+}
+
+#debts #v175DebtKpis .v175-quick-card strong,
+#payments #v176PaymentKpis .v175-quick-card strong,
+#calendar #v175CalendarKpis .v175-quick-card strong{
+  font-size:20px!important;
+  line-height:1.08!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:-.03em!important;
+}
+
+#debts #v175DebtKpis .v175-quick-card small,
+#payments #v176PaymentKpis .v175-quick-card small,
+#calendar #v175CalendarKpis .v175-quick-card small{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+/* Ortak liste kartları */
+.list-card .main>strong,
+#dashboard #upcomingMini .list-card .main>strong,
+#dashboard #recentPayments .list-card .main>strong,
+#debts #debtList .list-card .main>strong,
+#payments #paymentList .main>strong,
+#incomes #incomeList .main>strong,
+#calendar .list-card .main>strong{
+  font-size:var(--bs-type-card-title)!important;
+  line-height:1.28!important;
+  font-weight:var(--bs-weight-semibold)!important;
+  letter-spacing:-.015em!important;
+}
+
+.list-card small,
+#dashboard #upcomingMini .list-card small,
+#dashboard #recentPayments .list-card small,
+#debts #debtList .list-card small,
+#payments #paymentList .main small,
+#incomes #incomeList .main small,
+#calendar .list-card .main small{
+  font-size:var(--bs-type-meta)!important;
+  line-height:1.4!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+.amount,
+#dashboard #upcomingMini .list-card .amount,
+#dashboard #recentPayments .list-card .amount,
+#debts #debtList .amount,
+#payments #paymentList .amount,
+#incomes #incomeList .amount,
+#calendar .list-card .amount{
+  font-size:var(--bs-type-amount)!important;
+  line-height:1.15!important;
+  font-weight:var(--bs-weight-bold)!important;
+  letter-spacing:-.02em!important;
+}
+
+.amount small,
+#debts #debtList .amount small,
+#payments #paymentList .amount small,
+#debts #debtList .amount .bs-v2598-remaining-label{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.3!important;
+  font-weight:var(--bs-weight-medium)!important;
+}
+
+/* Gelir ekranı */
+#incomes .kpi span{
+  font-size:13px!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+#incomes .kpi strong{
+  font-size:var(--bs-type-kpi)!important;
+  line-height:1.08!important;
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+#incomes .kpi small{
+  font-size:var(--bs-type-meta)!important;
+  line-height:1.35!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+#incomes #incomeOwnerKpis .income-owner-kpi strong{
+  font-size:18px!important;
+  line-height:1.1!important;
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+#incomes #incomeList .income-distribution{
+  font-size:var(--bs-type-meta)!important;
+  line-height:1.35!important;
+  font-weight:var(--bs-weight-medium)!important;
+}
+
+#incomes #incomeList .income-share-note{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+/* Takvim, durumlar ve rozetler */
+#calendar .v175-calendar-group strong{
+  font-size:var(--bs-type-card-title)!important;
+  line-height:1.25!important;
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+#calendar .v175-calendar-group small{
+  font-size:var(--bs-type-meta)!important;
+  line-height:1.3!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+.badge,
+.chip,
+.pill,
+.tag,
+#payments #paymentList .badge.green,
+#payments #paymentList .badge.orange,
+#calendar .badge.red,
+#calendar .badge.orange,
+#calendar .bs-calendar-pay,
+.app-shell #debts #debtList .bs-v2598-pill{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+.app-shell #debts #debtList .bs-v2598-debt-status{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.3!important;
+}
+
+.bs-calendar-sort-copy small{
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+/* Alt navigasyon */
+.app-shell > .bottom-nav .nav-btn small{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.15!important;
+  font-weight:var(--bs-weight-semibold)!important;
+}
+
+.app-shell > .bottom-nav .nav-btn.active small{
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+/* Rapor ve yardımcı metinler */
+#dashboard #v244MonthlyReport .v244-report-eyebrow{
+  font-size:var(--bs-type-label)!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+#dashboard #v244MonthlyReport .v244-report-title{
+  font-size:20px!important;
+  line-height:1.2!important;
+  font-weight:var(--bs-weight-bold)!important;
+}
+
+#dashboard #v244MonthlyReport .v244-report-copy,
+#dashboard #v244MonthlyReport p,
+.muted,
+.panel .muted,
+.auth-banner span,
+.setting-head .muted,
+.cloud-summary{
+  font-size:var(--bs-type-meta)!important;
+  line-height:1.45!important;
+  font-weight:var(--bs-weight-regular)!important;
+}
+
+@media(max-width:520px){
+  input,
+  select,
+  textarea,
+  #recordDialog input,
+  #recordDialog select,
+  #recordDialog textarea{
+    font-size:16px!important;
+  }
+}
+
