@@ -31,7 +31,6 @@ const ASSETS=[
   './v241-payment-modal-scroll-lock.js?v=241',
   './v242-payment-save-ui.js?v=242',
   './v244-monthly-report.js?v=244',
-  './v245-report-print-fix.js?v=245',
   './v246-direct-pdf-report.js?v=246',
   './manifest.webmanifest?v=257',
   './bs-budget-app-icon-v256.svg?v=257',
