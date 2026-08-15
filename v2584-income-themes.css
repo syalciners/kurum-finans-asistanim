@@ -1,0 +1,59 @@
+/* BS OFİS BÜTÇE V2.5.8.4 - Gelir tema renkleri
+   Özel Ders = turuncu; Maaş = gelir sahibinin rengi.
+   Tahsilat/liste kartlarına üst şerit eklenmez. */
+
+/* Özel Ders Geliri özet kartı: turuncu tema */
+#incomes .kpi-grid .kpi:nth-child(2){
+  background:linear-gradient(180deg,#FFFFFF 0%,#FFFBEB 100%)!important;
+  border-color:#FDE68A!important;
+}
+#incomes .kpi-grid .kpi:nth-child(2)::before{
+  background:#F59E0B!important;
+}
+#incomes .kpi-grid .kpi:nth-child(2) span,
+#incomes .kpi-grid .kpi:nth-child(2) small{
+  color:#92400E!important;
+}
+#incomes .kpi-grid .kpi:nth-child(2) strong{
+  color:#B45309!important;
+}
+
+/* Özel Ders kayıtları: turuncu tema, üst şerit YOK */
+#incomes #incomeList .list-card.income-theme-lesson{
+  border-left-color:#F59E0B!important;
+  background:linear-gradient(90deg,#FFFBEB 0%,#FFFFFF 18%)!important;
+}
+#incomes #incomeList .list-card.income-theme-lesson .amount{
+  color:#B45309!important;
+}
+#incomes #incomeList .list-card.income-theme-lesson .income-distribution,
+#incomes #incomeList .list-card.income-theme-lesson .income-share-note{
+  color:#92400E!important;
+}
+
+/* Maaş kayıtları: Başak = pembe */
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-basak{
+  border-left-color:#EC4899!important;
+  background:linear-gradient(90deg,#FDF2F8 0%,#FFFFFF 18%)!important;
+}
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-basak .amount{
+  color:#BE185D!important;
+}
+
+/* Maaş kayıtları: Süleyman = mavi */
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-suleyman{
+  border-left-color:#2563EB!important;
+  background:linear-gradient(90deg,#EFF6FF 0%,#FFFFFF 18%)!important;
+}
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-suleyman .amount{
+  color:#1D4ED8!important;
+}
+
+/* Maaş kayıtları: Kurum = turkuaz */
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-kurum{
+  border-left-color:#14B8A6!important;
+  background:linear-gradient(90deg,#ECFDF9 0%,#FFFFFF 18%)!important;
+}
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-kurum .amount{
+  color:#0F8F83!important;
+}
