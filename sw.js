@@ -1,8 +1,8 @@
-// V259.6 Ödemeler dönem kontrolünü üst KPI kartlarında birleştir build
-const CACHE='bs-ofis-butce-v2596-odeme-donem-sadelestirme-20260815';
+// V259.7 Borçlar aylık operasyon görünümü build
+const CACHE='bs-ofis-butce-v2597-borc-aylik-operasyon-20260815';
 const ASSETS=[
-  './?v=2596',
-  './index.html?v=2596',
+  './?v=2597',
+  './index.html?v=2597',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2593',
@@ -39,6 +39,7 @@ const ASSETS=[
   './schedule-editor.js?v=232',
   './payment-editor-v240.js?v=240',
   './v2595-atomic-payment-create.js?v=2595',
+  './v2597-debt-monthly-view.js?v=2597',
   './v230-mobile-dialog.js?v=2571',
   './v234-shell-lock.js?v=257',
   './v241-payment-modal-scroll-lock.js?v=241',
@@ -83,6 +84,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2596') || caches.match('./index.html?v=2596')))
+        .then(response => response || caches.match('./?v=2597') || caches.match('./index.html?v=2597')))
   );
 });
