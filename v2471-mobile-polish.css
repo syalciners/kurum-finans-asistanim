@@ -10,6 +10,9 @@
 /* V250 Odemeler polish - yalniz gorsel katman */
 @import url('./v250-payments-polish.css?v=250');
 
+/* V251 Gelirler polish - yalniz gorsel katman */
+@import url('./v251-incomes-polish.css?v=251');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
