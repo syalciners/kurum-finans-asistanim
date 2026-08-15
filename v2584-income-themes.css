@@ -1,10 +1,10 @@
-/* BS OFİS BÜTÇE V2.6.0.5 - Gelir renk hiyerarşisi
+/* BS OFİS BÜTÇE V2.6.0.6 - Gelir renk hiyerarşisi
    Tek renk = tek anlam:
-   - Süleyman: yalnız sol mavi şerit
-   - Başak: yalnız sol pembe şerit
-   - Kurum: renkli sol şerit yok
-   - Özel Ders: yalnız gelir türü turuncu
-   - Tutar: daima koyu siyah */
+   - Süleyman: yalnız sahiplik vurgusu mavi
+   - Başak: yalnız sahiplik vurgusu pembe
+   - Kurum: nötr
+   - Özel Ders: yalnız tür vurgusu turuncu
+   - Tüm tutarlar: koyu siyah */
 
 :root{
   --bs-income-owner-suleyman:#2563EB;
@@ -15,7 +15,13 @@
   --bs-income-border:#E2E8F0;
 }
 
-/* Özel Ders Geliri özet kartı: beyaz kart + turuncu kimlik. */
+/* Gelir üst KPI rakamları da tek nötr renkte kalır. */
+#incomes .kpi-grid .kpi strong,
+#incomes #incomeOwnerKpis .income-owner-kpi strong{
+  color:var(--bs-income-amount)!important;
+}
+
+/* Özel Ders Geliri özet kartı: beyaz kart + yalnız turuncu tür kimliği. */
 #incomes .kpi-grid .kpi:nth-child(2){
   background:#FFFFFF!important;
   border-color:var(--bs-income-border)!important;
@@ -27,7 +33,7 @@
   color:#9A3412!important;
 }
 #incomes .kpi-grid .kpi:nth-child(2) strong{
-  color:var(--bs-income-lesson-text)!important;
+  color:var(--bs-income-amount)!important;
 }
 #incomes .kpi-grid .kpi:nth-child(2) small{
   color:#64748B!important;
