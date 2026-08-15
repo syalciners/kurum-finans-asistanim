@@ -16,6 +16,9 @@
 /* V252 Takvim polish - yalniz gorsel katman */
 @import url('./v252-calendar-polish.css?v=252');
 
+/* V253 Marka banner / uygulama kimligi - yalniz gorsel katman */
+@import url('./v253-branding.css?v=253');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
