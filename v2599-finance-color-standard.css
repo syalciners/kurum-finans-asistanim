@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.9.9 - Finans renk ve yazı standardı
+/* BS OFİS BÜTÇE V2.6.0.0 - Nihai finans renk ve yazı standardı
    Kart biçimlerini değiştirmez. Sol şerit sahibi, tutar finansal durumu anlatır.
    Başak = pembe, Süleyman = mavi, Kurum = amber.
    Borç: normal = koyu, gecikmiş = kırmızı, ödenmiş = yeşil.
@@ -20,25 +20,21 @@
   background:#FFFFFF!important;
 }
 
-/* Normal açık borç tutarı */
 #debts #debtList .list-card .amount,
 #debts #debtList .list-card .amount .bs-v2598-remaining{
   color:#172033!important;
 }
 
-/* Gecikmiş borç tutarı */
 #debts #debtList .list-card:has(.bs-v2598-pill.overdue) .amount,
 #debts #debtList .list-card:has(.bs-v2598-pill.overdue) .amount .bs-v2598-remaining{
   color:#DC2626!important;
 }
 
-/* Ödenmiş / kapanmış borç tutarı */
 #debts #debtList .list-card.v179-debt-closed .amount,
 #debts #debtList .list-card.v179-debt-closed .amount .bs-v2598-remaining{
   color:#15803D!important;
 }
 
-/* Yardımcı metinler okunabilirlik tabanı */
 #debts #debtList .list-card small,
 #debts #debtList .bs-v2598-pill,
 #debts #debtList .amount .bs-v2598-remaining-label{
@@ -50,39 +46,114 @@
 }
 
 /* ---------------------------------------------------------
-   GELİRLER — sahip yalnız sol şerit, tüm tutarlar yeşil
+   GELİRLER — sahip şeridi
    --------------------------------------------------------- */
 #incomes #incomeList .list-card.income-theme-owner-basak,
-#incomes #incomeList .income-bs-card.income-theme-owner-basak{
+#incomes #incomeList .income-bs-card.income-theme-owner-basak,
+#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-basak,
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-basak{
   border-left-color:#EC4899!important;
   background:#FFFFFF!important;
 }
 #incomes #incomeList .list-card.income-theme-owner-suleyman,
-#incomes #incomeList .income-bs-card.income-theme-owner-suleyman{
+#incomes #incomeList .income-bs-card.income-theme-owner-suleyman,
+#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-suleyman,
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-suleyman{
   border-left-color:#2563EB!important;
   background:#FFFFFF!important;
 }
 #incomes #incomeList .list-card.income-theme-owner-kurum,
-#incomes #incomeList .income-bs-card.income-theme-owner-kurum{
+#incomes #incomeList .income-bs-card.income-theme-owner-kurum,
+#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-kurum,
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-kurum{
   border-left-color:#F59E0B!important;
   background:#FFFFFF!important;
 }
 
-/* Özel ders turuncu tür teması sahip şeridini ezmesin. */
-#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-basak{
-  border-left-color:#EC4899!important;
+/* Çok sahipli otomatik tahsilat: kart ölçüsü değişmeden sol tarafta birleşik sahip şeridi. */
+#incomes #incomeList .list-card.income-theme-multi{
+  position:relative!important;
+  border-left-color:transparent!important;
+  background:#FFFFFF!important;
 }
-#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-suleyman{
-  border-left-color:#2563EB!important;
+#incomes #incomeList .list-card.income-theme-multi::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:4px;
+  pointer-events:none;
+  z-index:1;
 }
-#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-kurum{
-  border-left-color:#F59E0B!important;
+#incomes #incomeList .income-theme-multi-basak-suleyman::before{
+  background:linear-gradient(180deg,#EC4899 0 50%,#2563EB 50% 100%)!important;
+}
+#incomes #incomeList .income-theme-multi-basak-kurum::before{
+  background:linear-gradient(180deg,#EC4899 0 50%,#F59E0B 50% 100%)!important;
+}
+#incomes #incomeList .income-theme-multi-suleyman-kurum::before{
+  background:linear-gradient(180deg,#2563EB 0 50%,#F59E0B 50% 100%)!important;
+}
+#incomes #incomeList .income-theme-multi-all::before{
+  background:linear-gradient(180deg,#EC4899 0 33.333%,#2563EB 33.333% 66.666%,#F59E0B 66.666% 100%)!important;
 }
 
-/* Tüm gelir tutarları pozitif finans semantiğiyle yeşil. */
+/* Sahip filtresi seçilince çok sahipli kart da seçili sahibin tek rengini kullanır. */
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Başak"].active) ~ #incomeList .list-card.income-theme-multi,
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Süleyman"].active) ~ #incomeList .list-card.income-theme-multi,
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Kurum Kasası"].active) ~ #incomeList .list-card.income-theme-multi{
+  border-left-color:transparent!important;
+}
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Başak"].active) ~ #incomeList .list-card.income-theme-multi::before{
+  background:#EC4899!important;
+}
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Süleyman"].active) ~ #incomeList .list-card.income-theme-multi::before{
+  background:#2563EB!important;
+}
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Kurum Kasası"].active) ~ #incomeList .list-card.income-theme-multi::before{
+  background:#F59E0B!important;
+}
+
+/* ---------------------------------------------------------
+   GELİRLER — TÜM tutarlar yeşil
+   Eski sahip/tür renk kurallarını eşit veya daha yüksek özgüllükle ezer.
+   --------------------------------------------------------- */
 #incomes #incomeList .list-card .amount,
-#incomes #incomeList .income-bs-card .amount{
+#incomes #incomeList .income-bs-card .amount,
+#incomes #incomeList .list-card.income-theme-lesson .amount,
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-basak .amount,
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-suleyman .amount,
+#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-kurum .amount{
   color:#15803D!important;
+}
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Başak"].active) ~ #incomeList .amount,
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Süleyman"].active) ~ #incomeList .amount,
+#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Kurum Kasası"].active) ~ #incomeList .amount{
+  color:#15803D!important;
+}
+
+/* Ana gelir KPI rakamları da finansal anlam olarak yeşil. */
+#incomes .kpi-grid .kpi:nth-child(1) strong,
+#incomes .kpi-grid .kpi:nth-child(2) strong{
+  color:#15803D!important;
+}
+
+/* Sahip KPI'larında şerit sahibin rengi, rakam ise her zaman yeşil. */
+#incomes #incomeOwnerKpis .income-owner-kpi strong,
+#incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi].active strong{
+  color:#15803D!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"]::before{
+  background:#F59E0B!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"].active{
+  background:linear-gradient(180deg,#FFFFFF 0%,#FFFBEB 100%)!important;
+  border-color:#FDE68A!important;
+  box-shadow:inset 0 3px 0 #F59E0B,0 2px 9px rgba(245,158,11,.08)!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"].active span{
+  color:#B45309!important;
 }
 
 #incomes #incomeList .list-card small,
