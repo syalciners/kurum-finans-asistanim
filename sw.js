@@ -1,8 +1,8 @@
-// V259.0 Ödemeler Geçen Ay turuncu KPI build
-const CACHE='bs-ofis-butce-v2590-payment-previous-orange-20260815';
+// V259.1 Manuel özel ders gelir girişini kapatma build
+const CACHE='bs-ofis-butce-v2591-manuel-ozel-ders-kapat-20260815';
 const ASSETS=[
-  './?v=2590',
-  './index.html?v=2590',
+  './?v=2591',
+  './index.html?v=2591',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2590',
@@ -81,6 +81,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2590') || caches.match('./index.html?v=2590')))
+        .then(response => response || caches.match('./?v=2591') || caches.match('./index.html?v=2591')))
   );
 });
