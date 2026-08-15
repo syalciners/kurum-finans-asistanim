@@ -91,6 +91,13 @@
   window.addEventListener('focus', refreshWhenVisible, { passive: true });
   document.addEventListener('visibilitychange', refreshWhenVisible, { passive: true });
 
+  // Modül, Supabase oturumu hazırlanmışsa ilk senkronu hemen tamamlar.
+  setTimeout(() => {
+    if (session?.access_token && typeof pullCloud === 'function') {
+      pullCloud().catch(error => console.warn(error));
+    }
+  }, 0);
+
   // Tanılama / kontrollü test için; normal kullanıcı akışı bu fonksiyonu doğrudan çağırmaz.
   window.bsEducationIncomeSyncV258 = syncEducationIncome;
 })();
