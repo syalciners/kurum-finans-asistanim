@@ -1,14 +1,15 @@
-// V258.5 Ödeme kartında borç sahibi build
-const CACHE='bs-ofis-butce-v2585-payment-owner-20260815';
+// V258.6 Ödeme kartlarında borç sahibi renkleri build
+const CACHE='bs-ofis-butce-v2586-payment-owner-colors-20260815';
 const ASSETS=[
-  './?v=2585',
-  './index.html?v=2585',
+  './?v=2586',
+  './index.html?v=2586',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2584',
+  './v2471-mobile-polish.css?v=2586',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v250-payments-polish.css?v=250',
+  './v2586-payment-owner-colors.css?v=2586',
   './v251-incomes-polish.css?v=251',
   './v2581-income-owner-colors.css?v=2581',
   './v2583-income-summary-stripes.css?v=2583',
@@ -19,7 +20,7 @@ const ASSETS=[
   './core-compat.js?v=257',
   './v258-education-income-sync.js?v=258',
   './v2584-income-themes.js?v=2584',
-  './v2585-payment-owner-label.js?v=2585',
+  './v2585-payment-owner-label.js?v=2586',
   './v17-ui.js?v=218',
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
@@ -77,6 +78,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2585') || caches.match('./index.html?v=2585')))
+        .then(response => response || caches.match('./?v=2586') || caches.match('./index.html?v=2586')))
   );
 });
