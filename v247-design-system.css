@@ -1,0 +1,385 @@
+/* BS OFIS BUTCE V2.4.7 - Ortak gorsel tasarim sistemi
+   Yalnizca sunum katmani. DOM, veri ve finans motorlarina dokunmaz. */
+
+:root{
+  --bs-navy:#1E3A8A;
+  --bs-blue:#2563EB;
+  --bs-teal:#14B8A6;
+  --bs-green:#22C55E;
+  --bs-orange:#F59E0B;
+  --bs-red:#EF4444;
+  --bs-bg:#F8FAFC;
+  --bs-card:#FFFFFF;
+  --bs-line:#E2E8F0;
+  --bs-muted:#64748B;
+  --bs-text:#0F172A;
+  --bs-blue-soft:#EFF6FF;
+  --bs-teal-soft:#ECFDF5;
+  --bs-green-soft:#F0FDF4;
+  --bs-orange-soft:#FFF7ED;
+  --bs-red-soft:#FEF2F2;
+  --bs-radius-sm:10px;
+  --bs-radius:14px;
+  --bs-radius-lg:18px;
+  --bs-shadow:0 6px 20px rgba(15,23,42,.055);
+  --bs-shadow-soft:0 2px 10px rgba(15,23,42,.035);
+
+  --bg:var(--bs-bg);
+  --card:var(--bs-card);
+  --ink:var(--bs-text);
+  --muted:var(--bs-muted);
+  --line:var(--bs-line);
+  --accent:var(--bs-blue);
+  --success:#15803D;
+  --orange:#D97706;
+  --danger:#DC2626;
+}
+
+html,body{
+  background:var(--bs-bg)!important;
+  color:var(--bs-text)!important;
+}
+
+body,
+button,input,select,textarea{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI",Roboto,Arial,sans-serif!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+.app-shell{
+  max-width:780px;
+}
+
+/* Marka / header */
+.app-shell > .topbar{
+  background:rgba(248,250,252,.94)!important;
+  border-color:var(--bs-line)!important;
+  box-shadow:0 6px 22px rgba(15,23,42,.055)!important;
+  backdrop-filter:blur(18px) saturate(150%);
+}
+.bs-brand-mark{
+  width:42px!important;
+  height:42px!important;
+  border-radius:12px;
+  filter:drop-shadow(0 4px 8px rgba(37,99,235,.12));
+}
+.bs-brand-copy .eyebrow{
+  margin-bottom:2px!important;
+  color:var(--bs-blue)!important;
+  font-size:8px!important;
+  line-height:1.1!important;
+  letter-spacing:.18em!important;
+  font-weight:850!important;
+}
+.bs-brand-copy h1{
+  color:var(--bs-text)!important;
+  font-size:16px!important;
+  line-height:1.15!important;
+  font-weight:820!important;
+  letter-spacing:-.025em;
+}
+.top-actions{gap:7px!important}
+.icon-btn{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--bs-line)!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:#52627A!important;
+  box-shadow:var(--bs-shadow-soft)!important;
+}
+.icon-btn svg{width:19px;height:19px}
+.top-actions .icon-btn.active{
+  background:var(--bs-blue-soft)!important;
+  border-color:#BFDBFE!important;
+  color:var(--bs-blue)!important;
+}
+.status-badge{
+  min-height:30px;
+  padding:6px 11px!important;
+  border:1px solid transparent;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+.status-badge.online{
+  color:#0F766E!important;
+  background:#ECFDF5!important;
+  border-color:#CCFBF1!important;
+}
+
+/* Sayfa basliklari */
+.page-title{
+  margin-top:9px!important;
+  margin-bottom:16px!important;
+}
+.page-title .eyebrow{
+  margin-bottom:5px!important;
+  color:#0F8F83!important;
+  font-size:9px!important;
+  font-weight:850!important;
+  letter-spacing:.13em!important;
+}
+.page-title h2{
+  color:var(--bs-text)!important;
+  font-size:26px!important;
+  line-height:1.05!important;
+  font-weight:830!important;
+  letter-spacing:-.035em;
+}
+.section-head h2{
+  color:var(--bs-text);
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:-.015em;
+}
+
+/* Ortak kart sistemi */
+.summary-card,
+.kpi,
+.list-card,
+.assistant-card,
+.panel,
+.empty,
+#v244MonthlyReport{
+  border-color:var(--bs-line)!important;
+  background:var(--bs-card)!important;
+  box-shadow:var(--bs-shadow-soft)!important;
+}
+.summary-card,
+.kpi,
+.assistant-card,
+.panel,
+#v244MonthlyReport{
+  border-radius:var(--bs-radius-lg)!important;
+}
+.list-card,.empty{
+  border-radius:var(--bs-radius)!important;
+}
+.summary-card{
+  min-height:102px;
+  padding:15px!important;
+}
+.summary-card span,
+.kpi span{
+  color:#6B7A90!important;
+  font-size:10px!important;
+  font-weight:780!important;
+  letter-spacing:.01em;
+}
+.summary-card strong{
+  margin-top:2px;
+  color:var(--bs-text);
+  font-size:22px!important;
+  line-height:1.15;
+  font-weight:850!important;
+  letter-spacing:-.025em;
+}
+.summary-card small,.kpi small{
+  color:#8793A6!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+}
+.summary-card.income{
+  border-color:#C7EEE7!important;
+  background:linear-gradient(180deg,#fff 0%,#FBFFFE 100%)!important;
+}
+.summary-card.income strong{color:#0F8F83!important}
+.summary-card.paid{
+  border-color:#D5E2FF!important;
+  background:linear-gradient(180deg,#fff 0%,#FBFDFF 100%)!important;
+}
+.summary-card.paid strong{color:var(--bs-blue)!important}
+.summary-card.remaining{
+  border-color:#FDE5BC!important;
+  background:linear-gradient(180deg,#fff 0%,#FFFCF7 100%)!important;
+}
+.summary-card.remaining strong{color:#D97706!important}
+
+.kpi{
+  min-height:84px;
+  padding:13px!important;
+}
+.kpi strong{
+  color:var(--bs-text)!important;
+  font-size:20px!important;
+  font-weight:850!important;
+  letter-spacing:-.02em;
+}
+
+.list{gap:9px!important}
+.list-card{
+  min-height:68px;
+  padding:13px 14px!important;
+  transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;
+}
+.list-card.clickable:hover{
+  border-color:#CBD5E1!important;
+  box-shadow:0 5px 16px rgba(15,23,42,.055)!important;
+}
+.list-card .main{gap:4px!important}
+.list-card .main>strong{
+  color:#172033;
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:-.012em;
+}
+.list-card small{
+  color:#738197!important;
+  font-size:10px!important;
+  line-height:1.35;
+}
+.amount{
+  color:#172033;
+  font-size:14px;
+  font-weight:850!important;
+  letter-spacing:-.015em;
+}
+
+/* Buton sistemi */
+.primary,.secondary,.danger-btn,.link-btn,.icon-btn{
+  transition:transform .12s ease,box-shadow .12s ease,background-color .12s ease,border-color .12s ease;
+}
+.primary{
+  border:1px solid #1D4ED8!important;
+  border-radius:10px!important;
+  background:var(--bs-blue)!important;
+  color:#fff!important;
+  box-shadow:0 4px 10px rgba(37,99,235,.18)!important;
+  font-weight:800!important;
+}
+.primary:hover{background:#1D4ED8!important}
+.primary:active,.secondary:active,.icon-btn:active{transform:translateY(1px)}
+.secondary{
+  border:1px solid #D8E4FF!important;
+  border-radius:10px!important;
+  background:#F6F9FF!important;
+  color:#244B91!important;
+  font-weight:760!important;
+}
+.danger-btn{
+  border:1px solid #FECACA!important;
+  border-radius:10px!important;
+  background:var(--bs-red-soft)!important;
+  color:#B91C1C!important;
+}
+.link-btn{
+  color:var(--bs-blue)!important;
+  font-weight:780!important;
+}
+.small{
+  min-height:34px;
+  padding:7px 11px!important;
+  font-size:11px!important;
+}
+
+/* Formlar ve filtreler */
+input,select,textarea{
+  border-color:#D8E0EA!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:var(--bs-text)!important;
+  box-shadow:none;
+}
+input::placeholder,textarea::placeholder{color:#9AA6B6}
+input:focus,select:focus,textarea:focus{
+  border-color:#93B4FF!important;
+  box-shadow:0 0 0 3px rgba(37,99,235,.10)!important;
+}
+.toolbar{gap:8px!important}
+
+/* Durum rozetleri */
+.badge{
+  border:1px solid transparent;
+  font-size:9px!important;
+  font-weight:820!important;
+}
+.badge.green{
+  background:var(--bs-green-soft)!important;
+  border-color:#DCFCE7!important;
+  color:#15803D!important;
+}
+.badge.orange{
+  background:var(--bs-orange-soft)!important;
+  border-color:#FFEDD5!important;
+  color:#C2410C!important;
+}
+.badge.red{
+  background:var(--bs-red-soft)!important;
+  border-color:#FEE2E2!important;
+  color:#DC2626!important;
+}
+
+/* Alt navigasyon */
+.app-shell > .bottom-nav{
+  background:rgba(255,255,255,.97)!important;
+  border-color:var(--bs-line)!important;
+  box-shadow:0 -4px 20px rgba(15,23,42,.07)!important;
+  backdrop-filter:blur(18px) saturate(150%);
+}
+.nav-btn{
+  min-height:48px;
+  border-radius:12px;
+  color:#66758C!important;
+  transition:background-color .12s ease,color .12s ease;
+}
+.nav-btn span{font-size:19px!important}
+.nav-btn small{
+  font-size:9px!important;
+  font-weight:720!important;
+}
+.nav-btn.active{
+  background:#F3F6FF!important;
+  color:var(--bs-blue)!important;
+}
+.nav-btn.active small{font-weight:830!important}
+
+/* Dialoglar: yalniz gorsel */
+dialog{
+  border-radius:20px!important;
+  box-shadow:0 24px 70px rgba(15,23,42,.24)!important;
+}
+dialog::backdrop{
+  background:rgba(15,23,42,.38)!important;
+  backdrop-filter:blur(4px)!important;
+}
+.dialog-head h3{
+  color:var(--bs-text);
+  font-size:18px;
+  font-weight:830;
+  letter-spacing:-.02em;
+}
+
+/* Rapor kartini genel dile uydur */
+#v244MonthlyReport{
+  padding:14px!important;
+}
+#v244MonthlyReport .v244-report-eyebrow{
+  color:#0F8F83!important;
+}
+#v244MonthlyReport .v244-report-title{
+  color:var(--bs-text)!important;
+  font-weight:820!important;
+}
+#v244MonthlyReport button{
+  background:var(--bs-blue)!important;
+  border-radius:10px!important;
+  box-shadow:0 4px 10px rgba(37,99,235,.16)!important;
+}
+
+@media(max-width:520px){
+  .app-shell{padding-left:12px!important;padding-right:12px!important}
+  .bs-brand-mark{width:38px!important;height:38px!important;border-radius:11px}
+  .bs-brand-copy h1{font-size:14px!important}
+  .page-title h2{font-size:24px!important}
+  .summary-grid{gap:8px!important}
+  .summary-card{min-height:96px;padding:13px!important}
+  .summary-card strong{font-size:20px!important}
+  .list-card{padding:12px 13px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .list-card,.primary,.secondary,.danger-btn,.link-btn,.icon-btn,.nav-btn{transition:none!important}
+}
