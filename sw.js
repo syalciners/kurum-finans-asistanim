@@ -1,8 +1,8 @@
-// V259.8 Borç kartlarında operasyon durumu ve gerçek kalan tutar build
-const CACHE='bs-ofis-butce-v2598-borc-kart-durum-20260815';
+// V260.3 TEST - Finans tipografi standardı
+const CACHE='bs-ofis-butce-v2603-tipografi-test-20260815';
 const ASSETS=[
-  './?v=2598',
-  './index.html?v=2598',
+  './?v=2603-test',
+  './index.html?v=2603-test',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2593',
@@ -18,6 +18,7 @@ const ASSETS=[
   './v252-calendar-polish.css?v=252',
   './v2588-selectable-kpi-standard.css?v=2590',
   './v257-foundation.css?v=2574',
+  './v2603-finance-typography.css?v=2603',
   './app.js?v=257',
   './core-compat.js?v=257',
   './v258-education-income-sync.js?v=258',
@@ -85,6 +86,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2598') || caches.match('./index.html?v=2598')))
+        .then(response => response || caches.match('./?v=2603-test') || caches.match('./index.html?v=2603-test')))
   );
 });
