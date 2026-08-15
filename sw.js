@@ -1,4 +1,4 @@
-const CACHE='bs-ofis-butce-ui248-dashboard-polish-20260815';
+const CACHE='bs-ofis-butce-ui249-debts-polish-20260815';
 const ASSETS=[
   './?v=240',
   './index.html?v=240',
@@ -6,6 +6,7 @@ const ASSETS=[
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2471',
   './v248-dashboard-polish.css?v=248',
+  './v249-debts-polish.css?v=249',
   './app.js?v=176',
   './core-compat.js?v=240',
   './v17-ui.js?v=218',
