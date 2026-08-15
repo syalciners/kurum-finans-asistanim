@@ -1,7 +1,7 @@
-const CACHE='bs-ofis-butce-ui252-calendar-polish-20260815';
+const CACHE='bs-ofis-butce-ui253-branding-20260815';
 const ASSETS=[
-  './?v=240',
-  './index.html?v=240',
+  './?v=253',
+  './index.html?v=253',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2471',
@@ -10,6 +10,7 @@ const ASSETS=[
   './v250-payments-polish.css?v=250',
   './v251-incomes-polish.css?v=251',
   './v252-calendar-polish.css?v=252',
+  './v253-branding.css?v=253',
   './app.js?v=176',
   './core-compat.js?v=240',
   './v17-ui.js?v=218',
@@ -33,9 +34,10 @@ const ASSETS=[
   './v244-monthly-report.js?v=244',
   './v245-report-print-fix.js?v=245',
   './v246-direct-pdf-report.js?v=246',
-  './manifest.webmanifest?v=240',
+  './manifest.webmanifest?v=253',
+  './bs-budget-app-icon-v253.svg?v=253',
+  './bs-budget-logo-v194.svg?v=194',
   './bs-budget-mark-v194.svg?v=195',
-  './bs-budget-logo-v194.svg',
   './bs-budget-mark.svg?v=194',
   './bs-budget-logo.svg?v=194'
 ];
@@ -68,6 +70,6 @@ self.addEventListener('fetch',e=>{
         caches.open(CACHE).then(c=>c.put(e.request,copy));
         return r;
       })
-      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=240')||caches.match('./index.html?v=240')))
+      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=253')||caches.match('./index.html?v=253')))
   );
 });
