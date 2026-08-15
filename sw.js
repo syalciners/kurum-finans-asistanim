@@ -1,11 +1,11 @@
-// V259.8 Borç kartlarında operasyon durumu ve gerçek kalan tutar build
-const CACHE='bs-ofis-butce-v2598-borc-kart-durum-20260815';
+// V259.9 Finans renk ve yazı standardı build
+const CACHE='bs-ofis-butce-v2599-renk-standardi-20260815';
 const ASSETS=[
-  './?v=2598',
-  './index.html?v=2598',
+  './?v=2599',
+  './index.html?v=2599',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2593',
+  './v2471-mobile-polish.css?v=2599',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v2587-debt-owner-colors.css?v=2587',
@@ -18,10 +18,11 @@ const ASSETS=[
   './v252-calendar-polish.css?v=252',
   './v2588-selectable-kpi-standard.css?v=2590',
   './v257-foundation.css?v=2574',
+  './v2599-finance-color-standard.css?v=2599',
   './app.js?v=257',
   './core-compat.js?v=257',
   './v258-education-income-sync.js?v=258',
-  './v2584-income-themes.js?v=2584',
+  './v2584-income-themes.js?v=2599',
   './v2592-income-other-description.js?v=2592',
   './v2585-payment-owner-label.js?v=2586',
   './v2587-debt-owner-colors.js?v=2587',
@@ -85,6 +86,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2598') || caches.match('./index.html?v=2598')))
+        .then(response => response || caches.match('./?v=2599') || caches.match('./index.html?v=2599')))
   );
 });
