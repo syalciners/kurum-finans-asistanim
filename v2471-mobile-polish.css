@@ -22,6 +22,9 @@
 /* V254 Mobil header + okunabilirlik - yalniz gorsel katman */
 @import url('./v254-mobile-readability.css?v=254');
 
+/* V255 Header ikon netligi + kompakt alt nav - yalniz gorsel katman */
+@import url('./v255-icon-nav-polish.css?v=255');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
