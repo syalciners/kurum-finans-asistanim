@@ -4,6 +4,9 @@
 /* V248 Ozet son polish - yalniz gorsel katman */
 @import url('./v248-dashboard-polish.css?v=248');
 
+/* V249 Borclar polish - yalniz gorsel katman */
+@import url('./v249-debts-polish.css?v=249');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
