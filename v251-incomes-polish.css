@@ -1,4 +1,4 @@
-/* BS OFIS BUTCE V2.6.0.7 - Gelirler ekrani nötr temel gorsel katmani
+/* BS OFIS BUTCE V2.6.1.0 - Gelirler ekrani nötr temel gorsel katmani
    Yalnizca sunum katmani. Gelir dagitimi, PaymentID gruplama ve BS Ofis entegrasyonunu degistirmez.
    Bu dosya semantik renk vermez; sahiplik ve gelir türü renkleri v2581/v2583/v2584 katmanlarinda uygulanir. */
 
@@ -89,17 +89,23 @@
   color:#0F172A!important;
 }
 
-/* Filtreler */
+/* Filtreler: kisi ve gelir türü üst KPI kartlariyla yönetilir; yalnız ay görünür. */
 #incomes .toolbar.debt-toolbar{
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:7px!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:0!important;
   margin-bottom:12px!important;
 }
-#incomes .toolbar.debt-toolbar select{
+#incomes #incomeOwnerFilter,
+#incomes #incomeTypeFilter{
+  display:none!important;
+}
+#incomes .toolbar.debt-toolbar #incomeMonth{
+  grid-column:1!important;
+  width:100%!important;
   min-width:0!important;
-  min-height:40px!important;
-  padding:8px 28px 8px 10px!important;
-  border-radius:11px!important;
+  min-height:44px!important;
+  padding:9px 34px 9px 12px!important;
+  border-radius:12px!important;
   color:#475569!important;
   font-size:10px!important;
   font-weight:740!important;
@@ -147,25 +153,6 @@
   font-weight:870!important;
   letter-spacing:-.025em!important;
 }
-#incomes #incomeList .income-distribution{
-  margin-top:2px!important;
-  color:#718096!important;
-  font-size:8.5px!important;
-  line-height:1.3!important;
-}
-#incomes #incomeList .income-share-note{
-  width:max-content!important;
-  max-width:100%!important;
-  margin-top:3px!important;
-  padding:3px 7px!important;
-  border-radius:999px!important;
-  background:#F8FAFC!important;
-  color:#64748B!important;
-  border:1px solid #E2E8F0!important;
-  font-size:8px!important;
-  font-weight:820!important;
-  line-height:1.15!important;
-}
 
 #incomes #incomeList .empty{
   padding:22px 16px!important;
@@ -185,12 +172,6 @@
   }
   #incomes #incomeOwnerKpis .income-owner-kpi strong{
     font-size:14px!important;
-  }
-  #incomes .toolbar.debt-toolbar{
-    grid-template-columns:1fr 1fr!important;
-  }
-  #incomes .toolbar.debt-toolbar #incomeMonth{
-    grid-column:1/-1!important;
   }
   #incomes #incomeList .list-card,
   #incomes #incomeList .income-bs-card{
