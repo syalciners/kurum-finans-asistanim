@@ -1,8 +1,8 @@
-// V259.4 Otomatik Eğitim gelirlerini istemci yazımından koruma build
-const CACHE='bs-ofis-butce-v2594-otomatik-gelir-push-koruma-20260815';
+// V259.5 Yeni ödeme + borç güncellemesini atomik kaydet build
+const CACHE='bs-ofis-butce-v2595-atomik-odeme-20260815';
 const ASSETS=[
-  './?v=2594',
-  './index.html?v=2594',
+  './?v=2595',
+  './index.html?v=2595',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2593',
@@ -38,6 +38,7 @@ const ASSETS=[
   './debt-balance.js?v=236',
   './schedule-editor.js?v=232',
   './payment-editor-v240.js?v=240',
+  './v2595-atomic-payment-create.js?v=2595',
   './v230-mobile-dialog.js?v=2571',
   './v234-shell-lock.js?v=257',
   './v241-payment-modal-scroll-lock.js?v=241',
@@ -82,6 +83,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2594') || caches.match('./index.html?v=2594')))
+        .then(response => response || caches.match('./?v=2595') || caches.match('./index.html?v=2595')))
   );
 });
