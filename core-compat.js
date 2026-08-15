@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.7.1 - Merkezi uyumluluk ve başlangıç katmanı */
+/* BS OFİS BÜTÇE V2.5.7.4 - Merkezi uyumluluk ve başlangıç katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -12,6 +12,12 @@
       ? String(appConfig.applicationName || '').trim()
       : '';
     return value || CURRENT_APP_NAME;
+  }
+
+  function currentOrgName(){
+    return typeof state === 'object' && state?.budget
+      ? String(state.budget.orgName || '').trim()
+      : '';
   }
 
   function migrateConfig(){
@@ -119,13 +125,18 @@
       }
 
       const name = currentAppName();
+      const orgName = currentOrgName();
       document.title = name;
 
       const appTitle = document.getElementById('appTitle');
       if(appTitle) appTitle.textContent = name;
 
       const eyebrow = document.getElementById('orgEyebrow');
-      if(eyebrow) eyebrow.textContent = 'YÖNETİMİ';
+      if(eyebrow){
+        eyebrow.textContent = orgName
+          ? orgName.toLocaleUpperCase('tr-TR')
+          : '';
+      }
     };
 
     wrapped.__bsV257Title = true;
@@ -222,7 +233,7 @@
       try{
         await loadScript(src,marker);
       }catch(error){
-        console.error('V257.1 opsiyonel modül yükleme hatası:',error);
+        console.error('V257.4 opsiyonel modül yükleme hatası:',error);
       }
     }
   }
@@ -232,6 +243,8 @@
   installTitleRenderer();
   installApplicationNameSaveFlow();
   installBrandAssets();
+
+  if(typeof renderTitles === 'function') renderTitles();
 
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded',loadOptionalModules,{once:true});
