@@ -1,6 +1,6 @@
-/* BS OFİS BÜTÇE V2.5.8.4 - Gelir kartı tema işaretleme
+/* BS OFİS BÜTÇE V2.6.0.5 - Gelir kartı tema işaretleme
    Yalnızca sunum katmanı.
-   Özel Ders = turuncu; Maaş = gelir sahibinin rengi. */
+   Gelir türü ve gelir sahibi birbirinden bağımsız işaretlenir. */
 (() => {
   if(window.__bsIncomeThemesV2584Loaded) return;
   window.__bsIncomeThemesV2584Loaded = true;
@@ -25,14 +25,12 @@
 
     if(type === 'Özel Ders'){
       card.classList.add('income-theme-lesson');
-      return;
+    }else if(type === 'Maaş'){
+      card.classList.add('income-theme-salary');
     }
 
-    if(type === 'Maaş'){
-      card.classList.add('income-theme-salary');
-      const cls = ownerClass(owner);
-      if(cls) card.classList.add(cls);
-    }
+    const cls = ownerClass(owner);
+    if(cls) card.classList.add(cls);
   }
 
   function applyIncomeThemes(){
