@@ -1,7 +1,7 @@
-const CACHE='bs-ofis-butce-v2571-mobile-viewport-fix-20260815';
+const CACHE='bs-ofis-butce-v2572-expense-ux-20260815';
 const ASSETS=[
-  './?v=2571',
-  './index.html?v=2571',
+  './?v=2572',
+  './index.html?v=2572',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=257',
@@ -70,6 +70,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2571') || caches.match('./index.html?v=2571')))
+        .then(response => response || caches.match('./?v=2572') || caches.match('./index.html?v=2572')))
   );
 });
