@@ -1,5 +1,5 @@
-/* BS OFIS BUTCE V2.5.8.1 - Gelir sahibi renk ayrimi
-   Yalnizca sunum katmani. Gelir, filtre ve dagitim davranisini degistirmez.
+/* BS OFIS BUTCE V2.6.0.5 - Gelir sahibi KPI renk ayrimi
+   Yalnizca sunum katmani. Liste kartlarinin rengi filtreye gore degismez.
    Basak = pembe, Suleyman = kurumsal mavi, Kurum = mevcut turkuaz. */
 
 /* BASAK — gül pembesi */
@@ -24,7 +24,7 @@
   color:#1D4ED8!important;
 }
 
-/* KURUM — mevcut turkuaz kimlik korunur */
+/* KURUM — üst KPI kimligi korunur; liste kartlari renksizdir. */
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"].active{
   background:linear-gradient(180deg,#FFFFFF 0%,#FBFFFE 100%)!important;
   border-color:#BCEAE3!important;
@@ -33,31 +33,4 @@
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"].active span,
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"].active strong{
   color:#0F8F83!important;
-}
-
-/* Secili gelir sahibinin liste vurgusu da ayni renk dilini kullanir. */
-#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Başak"].active) ~ #incomeList .list-card,
-#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Başak"].active) ~ #incomeList .income-bs-card{
-  border-left-color:#EC4899!important;
-}
-#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Başak"].active) ~ #incomeList .amount{
-  color:#BE185D!important;
-}
-#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Başak"].active) ~ #incomeList .income-share-note{
-  background:#FDF2F8!important;
-  border-color:#FBCFE8!important;
-  color:#BE185D!important;
-}
-
-#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Süleyman"].active) ~ #incomeList .list-card,
-#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Süleyman"].active) ~ #incomeList .income-bs-card{
-  border-left-color:#3B82F6!important;
-}
-#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Süleyman"].active) ~ #incomeList .amount{
-  color:#1D4ED8!important;
-}
-#incomes #incomeOwnerKpis:has(.income-owner-kpi[data-owner-kpi="Süleyman"].active) ~ #incomeList .income-share-note{
-  background:#EFF6FF!important;
-  border-color:#DBEAFE!important;
-  color:#1D4ED8!important;
 }
