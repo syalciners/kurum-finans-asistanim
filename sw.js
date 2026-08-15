@@ -1,7 +1,7 @@
-const CACHE='bs-ofis-butce-v257-cleanup-20260815';
+const CACHE='bs-ofis-butce-v2571-mobile-viewport-fix-20260815';
 const ASSETS=[
-  './?v=257',
-  './index.html?v=257',
+  './?v=2571',
+  './index.html?v=2571',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=257',
@@ -26,7 +26,7 @@ const ASSETS=[
   './debt-balance.js?v=236',
   './schedule-editor.js?v=232',
   './payment-editor-v240.js?v=240',
-  './v230-mobile-dialog.js?v=257',
+  './v230-mobile-dialog.js?v=2571',
   './v234-shell-lock.js?v=257',
   './v241-payment-modal-scroll-lock.js?v=241',
   './v242-payment-save-ui.js?v=242',
@@ -70,6 +70,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=257') || caches.match('./index.html?v=257')))
+        .then(response => response || caches.match('./?v=2571') || caches.match('./index.html?v=2571')))
   );
 });
