@@ -1,10 +1,10 @@
-const CACHE='bs-ofis-butce-ui2562-title-flow-20260815';
+const CACHE='bs-ofis-butce-ui2563-first-paint-cleanup-20260815';
 const ASSETS=[
-  './?v=2562',
-  './index.html?v=2562',
+  './?v=2563',
+  './index.html?v=2563',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2561',
+  './v2471-mobile-polish.css?v=2563',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v250-payments-polish.css?v=250',
@@ -14,7 +14,7 @@ const ASSETS=[
   './v254-mobile-readability.css?v=254',
   './v256-brand-freeze.css?v=2561',
   './app.js?v=176',
-  './core-compat.js?v=2562',
+  './core-compat.js?v=2563',
   './v17-ui.js?v=218',
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
@@ -36,8 +36,8 @@ const ASSETS=[
   './v244-monthly-report.js?v=244',
   './v245-report-print-fix.js?v=245',
   './v246-direct-pdf-report.js?v=246',
-  './manifest.webmanifest?v=2562',
-  './bs-budget-app-icon-v256.svg?v=2562',
+  './manifest.webmanifest?v=2563',
+  './bs-budget-app-icon-v256.svg?v=2563',
   './bs-budget-header-mark-v256.svg?v=2561',
   './bs-budget-horizontal-logo-v256.svg?v=2561',
   './bs-budget-horizontal-logo-v256-mono-dark.svg?v=2561',
@@ -78,6 +78,6 @@ self.addEventListener('fetch',e=>{
         caches.open(CACHE).then(c=>c.put(e.request,copy));
         return r;
       })
-      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=2562')||caches.match('./index.html?v=2562')))
+      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=2563')||caches.match('./index.html?v=2563')))
   );
 });
