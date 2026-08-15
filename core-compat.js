@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.4.7.1 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.5.3 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -152,10 +152,34 @@
     renderTitles = wrapped;
   }
 
+  function installBrandAssets(){
+    const iconHref = './bs-budget-app-icon-v253.svg?v=253';
+
+    const iconLinks = [
+      ['icon','image/svg+xml'],
+      ['apple-touch-icon','image/svg+xml'],
+      ['apple-touch-icon-precomposed','image/svg+xml']
+    ];
+
+    iconLinks.forEach(([rel,type]) => {
+      let link = document.querySelector(`link[rel="${rel}"]`);
+      if(!link){
+        link = document.createElement('link');
+        link.rel = rel;
+        document.head.appendChild(link);
+      }
+      link.href = iconHref;
+      link.type = type;
+    });
+
+    const manifest = document.querySelector('link[rel="manifest"]');
+    if(manifest) manifest.href = './manifest.webmanifest?v=253';
+  }
+
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=2471', {updateViaCache:'none'})
+      .register('./sw.js?v=253', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
@@ -245,6 +269,7 @@
   migrateConfig();
   installViewStateGuard();
   installSafeTitleRenderer();
+  installBrandAssets();
   refreshServiceWorker();
   loadDesignSystem();
   loadMobilePolish();
