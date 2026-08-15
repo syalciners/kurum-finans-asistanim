@@ -53,6 +53,27 @@
     }
   }
 
+  function applyExpenseUx(){
+    const netCashLabel = document.querySelector('#v177BalanceCard .v177-balance-main > span');
+    if(netCashLabel){
+      netCashLabel.textContent = 'BU AY NET NAKİT AKIŞI';
+    }
+
+    const expenseFlow = document.querySelector('[data-v177-flow="expenses"]');
+    if(expenseFlow){
+      expenseFlow.title = 'Harcamaları görüntüle';
+      expenseFlow.setAttribute('aria-label','Bu ayın harcamalarını görüntüle');
+    }
+
+    const expenseCount = document.querySelector('#v177ExpenseCount');
+    if(expenseCount){
+      const base = expenseCount.textContent
+        .replace(/\s*·\s*Aç\s*›?\s*$/u,'')
+        .trim();
+      expenseCount.textContent = `${base} · Aç ›`;
+    }
+  }
+
   function calendarGroupHtml(title,items){
     if(!items.length) return '';
     const total = items.reduce((sum,item) => sum + (+item.amount || 0),0);
@@ -130,6 +151,7 @@
     ensureCompatibilityMarker();
     upgradeSummaryCards();
     reorderDashboard();
+    applyExpenseUx();
     ensureCalendarSort();
     applyCalendarSort();
 
@@ -139,6 +161,7 @@
         original();
         upgradeSummaryCards();
         reorderDashboard();
+        applyExpenseUx();
       };
       wrapped.__bsV257UiWrapped = true;
       renderDashboard = wrapped;
