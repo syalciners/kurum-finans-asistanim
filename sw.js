@@ -1,8 +1,8 @@
-// V258.2 Gelir kartı üst renk şeritleri build
-const CACHE='bs-ofis-butce-v2582-income-stripes-20260815';
+// V258.3 Gelir özet kartları üst renk şeritleri build
+const CACHE='bs-ofis-butce-v2583-income-summary-stripes-20260815';
 const ASSETS=[
-  './?v=2582',
-  './index.html?v=2582',
+  './?v=2583',
+  './index.html?v=2583',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2574',
@@ -11,7 +11,7 @@ const ASSETS=[
   './v250-payments-polish.css?v=250',
   './v251-incomes-polish.css?v=251',
   './v2581-income-owner-colors.css?v=2581',
-  './v2582-income-card-stripes.css?v=2582',
+  './v2583-income-summary-stripes.css?v=2583',
   './v252-calendar-polish.css?v=252',
   './v257-foundation.css?v=2574',
   './app.js?v=257',
@@ -74,6 +74,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2582') || caches.match('./index.html?v=2582')))
+        .then(response => response || caches.match('./?v=2583') || caches.match('./index.html?v=2583')))
   );
 });
