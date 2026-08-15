@@ -1,11 +1,11 @@
-/* BS OFİS BÜTÇE V2.5.8.9 - Seçilebilir üst KPI kart standardı
+/* BS OFİS BÜTÇE V2.5.9.0 - Seçilebilir üst KPI kart standardı
    Yalnızca seçim görünümünü standardize eder.
    Gelirler ve Takvim zaten yeterince belirgin olduğundan değiştirilmez. */
 
 /* ---------------------------------------------------------
    ÖDEMELER
    Dönem kartlarında ayrı semantik üst şerit + kendi renginde seçili durum.
-   Bu Ay = mavi, Geçen Ay = gri/slate, Tümü = turkuaz.
+   Bu Ay = mavi, Geçen Ay = turuncu, Tümü = turkuaz.
    --------------------------------------------------------- */
 #payments #v176PaymentKpis .v175-quick-card{
   position:relative!important;
@@ -16,7 +16,7 @@
   border-top:3px solid #2563EB!important;
 }
 #payments #v176PaymentKpis [data-payment-quick="previous"]{
-  border-top:3px solid #94A3B8!important;
+  border-top:3px solid #F59E0B!important;
 }
 #payments #v176PaymentKpis [data-payment-quick="all"]{
   border-top:3px solid #14B8A6!important;
@@ -35,15 +35,15 @@
 }
 
 #payments #v176PaymentKpis [data-payment-quick="previous"].active{
-  border-color:#CBD5E1!important;
-  border-top-color:#94A3B8!important;
-  background:linear-gradient(180deg,#FFFFFF 0%,#F8FAFC 100%)!important;
-  box-shadow:0 0 0 2px rgba(100,116,139,.08),0 4px 12px rgba(100,116,139,.05)!important;
+  border-color:#F3C66E!important;
+  border-top-color:#F59E0B!important;
+  background:linear-gradient(180deg,#FFFDF8 0%,#FFF7E8 100%)!important;
+  box-shadow:0 0 0 2px rgba(245,158,11,.10),0 4px 12px rgba(245,158,11,.06)!important;
 }
 #payments #v176PaymentKpis [data-payment-quick="previous"].active span,
 #payments #v176PaymentKpis [data-payment-quick="previous"].active strong,
 #payments #v176PaymentKpis [data-payment-quick="previous"].active small{
-  color:#64748B!important;
+  color:#C97800!important;
 }
 
 #payments #v176PaymentKpis [data-payment-quick="all"].active{
