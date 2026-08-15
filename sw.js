@@ -1,8 +1,8 @@
-// V259.7 Borçlar aylık operasyon görünümü build
-const CACHE='bs-ofis-butce-v2597-borc-aylik-operasyon-20260815';
+// V259.8 Borç kartlarında operasyon durumu ve gerçek kalan tutar build
+const CACHE='bs-ofis-butce-v2598-borc-kart-durum-20260815';
 const ASSETS=[
-  './?v=2597',
-  './index.html?v=2597',
+  './?v=2598',
+  './index.html?v=2598',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2593',
@@ -40,6 +40,7 @@ const ASSETS=[
   './payment-editor-v240.js?v=240',
   './v2595-atomic-payment-create.js?v=2595',
   './v2597-debt-monthly-view.js?v=2597',
+  './v2598-debt-card-status.js?v=2598',
   './v230-mobile-dialog.js?v=2571',
   './v234-shell-lock.js?v=257',
   './v241-payment-modal-scroll-lock.js?v=241',
@@ -84,6 +85,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2597') || caches.match('./index.html?v=2597')))
+        .then(response => response || caches.match('./?v=2598') || caches.match('./index.html?v=2598')))
   );
 });
