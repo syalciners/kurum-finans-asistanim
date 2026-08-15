@@ -1,11 +1,11 @@
-/* BS OFİS BÜTÇE V2.6.0.1 - Temiz görsel yükleme zinciri
+/* BS OFİS BÜTÇE V2.6.0.2 - Premium renk ve okunabilir tipografi zinciri
    Dashboard ve Takvim kendi polish dosyalarını kullanır.
    Borçlar, Ödemeler ve Gelirler tek finance-design-system.css üzerinden yönetilir. */
 
 @import url('./v248-dashboard-polish.css?v=248');
 @import url('./v252-calendar-polish.css?v=252');
 @import url('./v257-foundation.css?v=2574');
-@import url('./finance-design-system.css?v=2601');
+@import url('./finance-design-system.css?v=2602');
 
 /* İlk boyamada yalnız final header mark görünür. */
 .app-shell > .topbar .bs-brand-mark{
