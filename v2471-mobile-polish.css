@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.9.3 - Görsel yükleme zinciri
+/* BS OFİS BÜTÇE V2.6.0.4 TEST - Görsel yükleme zinciri + nötr renk standardı
    Genel sistem V247, ekran polishleri V248-V252, ortak temel V257.4. */
 
 @import url('./v248-dashboard-polish.css?v=248');
@@ -30,6 +30,28 @@
   box-shadow:0 4px 20px rgba(15,23,42,.07)!important;
   backdrop-filter:blur(18px) saturate(150%)!important;
   -webkit-backdrop-filter:blur(18px) saturate(150%)!important;
+}
+
+/* V260.4 TEST: Yalnız nötr yardımcı metin renklerini iki seviyede standardize eder.
+   Durum, gelir, borç, kişi/sahip ve aktif navigasyon renklerine dokunmaz. */
+:root{
+  --bs-text-secondary:#64748B;
+  --bs-text-tertiary:#94A3B8;
+}
+
+.summary-card span,
+.kpi span,
+.list-card small,
+.icon-btn,
+.nav-btn{
+  color:var(--bs-text-secondary)!important;
+}
+
+.summary-card small,
+.kpi small,
+input::placeholder,
+textarea::placeholder{
+  color:var(--bs-text-tertiary)!important;
 }
 
 @media(max-width:520px){
