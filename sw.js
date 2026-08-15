@@ -1,10 +1,10 @@
-const CACHE='bs-ofis-butce-ui256-brand-freeze-20260815';
+const CACHE='bs-ofis-butce-ui2561-brand-cleanup-20260815';
 const ASSETS=[
-  './?v=256',
-  './index.html?v=256',
+  './?v=2561',
+  './index.html?v=2561',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2471',
+  './v2471-mobile-polish.css?v=2561',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v250-payments-polish.css?v=250',
@@ -12,8 +12,7 @@ const ASSETS=[
   './v252-calendar-polish.css?v=252',
   './v253-branding.css?v=253',
   './v254-mobile-readability.css?v=254',
-  './v255-icon-nav-polish.css?v=255',
-  './v256-brand-freeze.css?v=256',
+  './v256-brand-freeze.css?v=2561',
   './app.js?v=176',
   './core-compat.js?v=240',
   './v17-ui.js?v=218',
@@ -37,12 +36,12 @@ const ASSETS=[
   './v244-monthly-report.js?v=244',
   './v245-report-print-fix.js?v=245',
   './v246-direct-pdf-report.js?v=246',
-  './manifest.webmanifest?v=256',
-  './bs-budget-app-icon-v256.svg?v=256',
-  './bs-budget-header-mark-v256.svg?v=256',
-  './bs-budget-horizontal-logo-v256.svg?v=256',
-  './bs-budget-horizontal-logo-v256-mono-dark.svg?v=256',
-  './bs-budget-horizontal-logo-v256-mono-white.svg?v=256',
+  './manifest.webmanifest?v=2561',
+  './bs-budget-app-icon-v256.svg?v=2561',
+  './bs-budget-header-mark-v256.svg?v=2561',
+  './bs-budget-horizontal-logo-v256.svg?v=2561',
+  './bs-budget-horizontal-logo-v256-mono-dark.svg?v=2561',
+  './bs-budget-horizontal-logo-v256-mono-white.svg?v=2561',
   './bs-budget-app-icon-v253.svg?v=253',
   './bs-budget-header-mark-v255.svg?v=255',
   './bs-budget-logo-v194.svg?v=194',
@@ -79,6 +78,6 @@ self.addEventListener('fetch',e=>{
         caches.open(CACHE).then(c=>c.put(e.request,copy));
         return r;
       })
-      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=256')||caches.match('./index.html?v=256')))
+      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./?v=2561')||caches.match('./index.html?v=2561')))
   );
 });
