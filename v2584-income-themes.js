@@ -82,22 +82,8 @@
     renderIncomes = wrapped;
   }
 
-  function loadPaymentOwnerModule(){
-    if(window.__bsPaymentOwnerLabelV2585Loaded) return;
-    if(document.querySelector('script[data-bs-v2585-payment-owner="1"]')) return;
-
-    const script = document.createElement('script');
-    script.src = './v2585-payment-owner-label.js?v=2585';
-    script.dataset.bsV2585PaymentOwner = '1';
-    script.addEventListener('error',() => {
-      console.error('V258.5 ödeme borç sahibi modülü yüklenemedi.');
-    },{once:true});
-    document.body.appendChild(script);
-  }
-
   installRenderHook();
   applyIncomeThemes();
-  loadPaymentOwnerModule();
 
   window.bsApplyIncomeThemesV2584 = applyIncomeThemes;
 })();
