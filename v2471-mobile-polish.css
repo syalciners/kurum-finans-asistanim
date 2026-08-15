@@ -16,17 +16,14 @@
 /* V252 Takvim polish - yalniz gorsel katman */
 @import url('./v252-calendar-polish.css?v=252');
 
-/* V253 Marka banner / uygulama kimligi - yalniz gorsel katman */
+/* V253 temel marka/header yapisi - gorsel varliklari V256 aliaslarina yonlendirilmiştir */
 @import url('./v253-branding.css?v=253');
 
-/* V254 Mobil header + okunabilirlik - yalniz gorsel katman */
+/* V254 Mobil okunabilirlik - marka varligi V256.1 tarafindan kesin olarak override edilir */
 @import url('./v254-mobile-readability.css?v=254');
 
-/* V255 Header ikon netligi + kompakt alt nav - yalniz gorsel katman */
-@import url('./v255-icon-nav-polish.css?v=255');
-
-/* V256 Nihai premium marka kimligi - yalniz gorsel katman */
-@import url('./v256-brand-freeze.css?v=256');
+/* V256.1 Nihai premium marka kimligi + kompakt alt nav */
+@import url('./v256-brand-freeze.css?v=2561');
 
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
