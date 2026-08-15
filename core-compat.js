@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.8.7 - Merkezi uyumluluk ve başlangıç katmanı */
+/* BS OFİS BÜTÇE V2.5.9.1 - Merkezi uyumluluk ve başlangıç katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -193,6 +193,42 @@
     if(manifest) manifest.href = './manifest.webmanifest?v=257';
   }
 
+  function installManualSpecialLessonGuard(){
+    const form = document.getElementById('incomeForm');
+    const typeSelect = form?.querySelector('[name="type"]');
+
+    const specialOption = typeSelect?.querySelector('option[value="Özel Ders"]');
+    if(specialOption) specialOption.remove();
+    if(typeSelect && typeSelect.value === 'Özel Ders') typeSelect.value = 'Maaş';
+
+    const studentWrap = document.getElementById('incomeStudentWrap');
+    if(studentWrap){
+      studentWrap.classList.add('hidden');
+      studentWrap.setAttribute('aria-hidden','true');
+    }
+
+    // Eski öğrenci listesi ayarı veri uyumluluğu için korunur, kullanıcı arayüzünden kaldırılır.
+    const legacyIncomeSettings = document.getElementById('incomeStudents')?.closest('.panel');
+    if(legacyIncomeSettings){
+      legacyIncomeSettings.classList.add('hidden');
+      legacyIncomeSettings.setAttribute('aria-hidden','true');
+    }
+
+    if(form && !form.__bsV2591ManualLessonGuard){
+      form.addEventListener('submit',event => {
+        const type = form.querySelector('[name="type"]')?.value || '';
+        if(type !== 'Özel Ders') return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if(typeof toast === 'function'){
+          toast('Özel ders gelirleri Eğitim Yönetimi’nden otomatik aktarılır.');
+        }
+      },true);
+      form.__bsV2591ManualLessonGuard = true;
+    }
+  }
+
   function loadScript(src,marker){
     return new Promise((resolve,reject) => {
       if(marker && window[marker]) return resolve();
@@ -237,7 +273,7 @@
       try{
         await loadScript(src,marker);
       }catch(error){
-        console.error('V258.7 opsiyonel modül yükleme hatası:',error);
+        console.error('V259.1 opsiyonel modül yükleme hatası:',error);
       }
     }
   }
@@ -247,6 +283,7 @@
   installTitleRenderer();
   installApplicationNameSaveFlow();
   installBrandAssets();
+  installManualSpecialLessonGuard();
 
   if(typeof renderTitles === 'function') renderTitles();
 
