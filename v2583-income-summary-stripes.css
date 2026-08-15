@@ -1,1 +1,49 @@
-/* placeholder */
+/* BS OFIS BUTCE V2.5.8.3 - Gelir ozet kartlari ust renk seritleri
+   Yalnizca sunum katmani. Tahsilat/liste kartlari renklenmez.
+   Secili Ay Toplami = turkuaz, Ozel Ders Geliri = mavi,
+   Basak = pembe, Suleyman = mavi, Kurum = turkuaz. */
+
+/* Ustteki iki ana KPI karti */
+#incomes .kpi-grid .kpi{
+  position:relative!important;
+  overflow:hidden!important;
+}
+#incomes .kpi-grid .kpi::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:4px;
+  pointer-events:none;
+}
+#incomes .kpi-grid .kpi:nth-child(1)::before{
+  background:#14B8A6!important;
+}
+#incomes .kpi-grid .kpi:nth-child(2)::before{
+  background:#2563EB!important;
+}
+
+/* Gelir sahibi ozet kartlari */
+#incomes #incomeOwnerKpis .income-owner-kpi{
+  position:relative!important;
+  overflow:hidden!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:4px;
+  pointer-events:none;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Başak"]::before{
+  background:#EC4899!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Süleyman"]::before{
+  background:#2563EB!important;
+}
+#incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"]::before{
+  background:#14B8A6!important;
+}
