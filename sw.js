@@ -1,9 +1,10 @@
-const CACHE='bs-ofis-butce-ui247-design-system-20260815';
+const CACHE='bs-ofis-butce-ui2471-mobile-polish-20260815';
 const ASSETS=[
   './?v=240',
   './index.html?v=240',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
+  './v2471-mobile-polish.css?v=2471',
   './app.js?v=176',
   './core-compat.js?v=240',
   './v17-ui.js?v=218',
