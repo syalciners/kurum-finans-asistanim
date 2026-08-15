@@ -1,4 +1,4 @@
-// V258.3 Gelir özet kartları üst renk şeritleri build
+// V258.3 final - Gelir özet kartları üst renk şeritleri build
 const CACHE='bs-ofis-butce-v2583-income-summary-stripes-20260815';
 const ASSETS=[
   './?v=2583',
