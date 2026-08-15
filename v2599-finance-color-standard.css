@@ -1,0 +1,91 @@
+/* BS OFİS BÜTÇE V2.5.9.9 - Finans renk ve yazı standardı
+   Kart biçimlerini değiştirmez. Sol şerit sahibi, tutar finansal durumu anlatır.
+   Başak = pembe, Süleyman = mavi, Kurum = amber.
+   Borç: normal = koyu, gecikmiş = kırmızı, ödenmiş = yeşil.
+   Gelir: tüm tutarlar = yeşil. */
+
+/* ---------------------------------------------------------
+   BORÇLAR — sahip yalnız sol şerit
+   --------------------------------------------------------- */
+#debts #debtList .list-card.debt-owner-basak{
+  border-left-color:#EC4899!important;
+  background:#FFFFFF!important;
+}
+#debts #debtList .list-card.debt-owner-suleyman{
+  border-left-color:#2563EB!important;
+  background:#FFFFFF!important;
+}
+#debts #debtList .list-card.debt-owner-kurum{
+  border-left-color:#F59E0B!important;
+  background:#FFFFFF!important;
+}
+
+/* Normal açık borç tutarı */
+#debts #debtList .list-card .amount,
+#debts #debtList .list-card .amount .bs-v2598-remaining{
+  color:#172033!important;
+}
+
+/* Gecikmiş borç tutarı */
+#debts #debtList .list-card:has(.bs-v2598-pill.overdue) .amount,
+#debts #debtList .list-card:has(.bs-v2598-pill.overdue) .amount .bs-v2598-remaining{
+  color:#DC2626!important;
+}
+
+/* Ödenmiş / kapanmış borç tutarı */
+#debts #debtList .list-card.v179-debt-closed .amount,
+#debts #debtList .list-card.v179-debt-closed .amount .bs-v2598-remaining{
+  color:#15803D!important;
+}
+
+/* Yardımcı metinler okunabilirlik tabanı */
+#debts #debtList .list-card small,
+#debts #debtList .bs-v2598-pill,
+#debts #debtList .amount .bs-v2598-remaining-label{
+  font-size:10px!important;
+}
+#debts #v175DebtKpis .v175-quick-card span,
+#debts #v175DebtKpis .v175-quick-card small{
+  font-size:10px!important;
+}
+
+/* ---------------------------------------------------------
+   GELİRLER — sahip yalnız sol şerit, tüm tutarlar yeşil
+   --------------------------------------------------------- */
+#incomes #incomeList .list-card.income-theme-owner-basak,
+#incomes #incomeList .income-bs-card.income-theme-owner-basak{
+  border-left-color:#EC4899!important;
+  background:#FFFFFF!important;
+}
+#incomes #incomeList .list-card.income-theme-owner-suleyman,
+#incomes #incomeList .income-bs-card.income-theme-owner-suleyman{
+  border-left-color:#2563EB!important;
+  background:#FFFFFF!important;
+}
+#incomes #incomeList .list-card.income-theme-owner-kurum,
+#incomes #incomeList .income-bs-card.income-theme-owner-kurum{
+  border-left-color:#F59E0B!important;
+  background:#FFFFFF!important;
+}
+
+/* Özel ders turuncu tür teması sahip şeridini ezmesin. */
+#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-basak{
+  border-left-color:#EC4899!important;
+}
+#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-suleyman{
+  border-left-color:#2563EB!important;
+}
+#incomes #incomeList .list-card.income-theme-lesson.income-theme-owner-kurum{
+  border-left-color:#F59E0B!important;
+}
+
+/* Tüm gelir tutarları pozitif finans semantiğiyle yeşil. */
+#incomes #incomeList .list-card .amount,
+#incomes #incomeList .income-bs-card .amount{
+  color:#15803D!important;
+}
+
+#incomes #incomeList .list-card small,
+#incomes #incomeList .income-bs-card small{
+  font-size:10px!important;
+}
