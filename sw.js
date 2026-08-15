@@ -1,11 +1,11 @@
-// V258.7 Borç kartlarında borç sahibi renkleri build
-const CACHE='bs-ofis-butce-v2587-debt-owner-colors-20260815';
+// V258.8 Seçilebilir üst KPI standardı build
+const CACHE='bs-ofis-butce-v2588-selectable-kpi-20260815';
 const ASSETS=[
-  './?v=2587',
-  './index.html?v=2587',
+  './?v=2588',
+  './index.html?v=2588',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2587',
+  './v2471-mobile-polish.css?v=2588',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v2587-debt-owner-colors.css?v=2587',
@@ -16,6 +16,7 @@ const ASSETS=[
   './v2583-income-summary-stripes.css?v=2583',
   './v2584-income-themes.css?v=2584',
   './v252-calendar-polish.css?v=252',
+  './v2588-selectable-kpi-standard.css?v=2588',
   './v257-foundation.css?v=2574',
   './app.js?v=257',
   './core-compat.js?v=257',
@@ -80,6 +81,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2587') || caches.match('./index.html?v=2587')))
+        .then(response => response || caches.match('./?v=2588') || caches.match('./index.html?v=2588')))
   );
 });
