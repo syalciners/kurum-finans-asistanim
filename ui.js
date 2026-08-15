@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.8.2 - Sade arayüz davranış katmanı
+/* BS OFİS BÜTÇE V2.5.7 - Sade arayüz davranış katmanı
    Marka, tipografi ve görsel stiller CSS dosyalarında yönetilir. */
 (() => {
   if(window.__bsCurrentUiLoaded) return;
@@ -10,13 +10,6 @@
     paid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m8.2 12.1 2.4 2.4 5.3-5.4"/></svg>',
     remaining:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10M7 20h10M8 4c0 4 8 4 8 8s-8 4-8 8"/></svg>',
     sort:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12M4 12h8M4 17h4"/><path d="m17 15 3 3 3-3"/></svg>'
-  };
-
-  const INCOME_OWNER_ORDER = ['Başak','Süleyman','Kurum Kasası'];
-  const INCOME_OWNER_COLORS = {
-    'Başak':'#EC4899',
-    'Süleyman':'#2563EB',
-    'Kurum Kasası':'#14B8A6'
   };
 
   // payment-plan.js eski sürümlerde bu işaretin varlığını hazır olma sinyali olarak kullanıyor.
@@ -79,58 +72,6 @@
         .trim();
       expenseCount.textContent = `${base} · Aç ›`;
     }
-  }
-
-  function incomeStripeBackground(owners){
-    const colors = INCOME_OWNER_ORDER
-      .filter(owner => owners.includes(owner))
-      .map(owner => INCOME_OWNER_COLORS[owner]);
-
-    if(!colors.length) return '#14B8A6';
-    if(colors.length === 1) return colors[0];
-
-    const size = 100 / colors.length;
-    const stops = [];
-    colors.forEach((color,index) => {
-      const start = (index * size).toFixed(2);
-      const end = ((index + 1) * size).toFixed(2);
-      stops.push(`${color} ${start}%`,`${color} ${end}%`);
-    });
-    return `linear-gradient(90deg,${stops.join(',')})`;
-  }
-
-  function applyIncomeCardStripes(){
-    if(typeof state !== 'object' || !Array.isArray(state?.incomes) || typeof normalizeIncome !== 'function') return;
-
-    const rows = state.incomes.map(normalizeIncome);
-    const byId = new Map(rows.map(row => [String(row.id),row]));
-    const ownersBySource = new Map();
-
-    rows.forEach(row => {
-      if(!row.sourceRecordId || !row.owner) return;
-      const key = String(row.sourceRecordId);
-      if(!ownersBySource.has(key)) ownersBySource.set(key,new Set());
-      ownersBySource.get(key).add(row.owner);
-    });
-
-    document.querySelectorAll('#incomeList .list-card').forEach(card => {
-      let owners = [];
-      const paymentId = card.dataset.bsPayment;
-      const incomeId = card.dataset.income;
-
-      if(paymentId){
-        owners = [...(ownersBySource.get(String(paymentId)) || [])];
-      }else if(incomeId){
-        const row = byId.get(String(incomeId));
-        if(row?.owner) owners = [row.owner];
-      }
-
-      const ordered = INCOME_OWNER_ORDER.filter(owner => owners.includes(owner));
-      if(!ordered.length) return;
-
-      card.dataset.incomeStripeOwners = ordered.join('|');
-      card.style.setProperty('--income-card-stripe',incomeStripeBackground(ordered));
-    });
   }
 
   function calendarGroupHtml(title,items){
@@ -211,7 +152,6 @@
     upgradeSummaryCards();
     reorderDashboard();
     applyExpenseUx();
-    applyIncomeCardStripes();
     ensureCalendarSort();
     applyCalendarSort();
 
@@ -225,16 +165,6 @@
       };
       wrapped.__bsV257UiWrapped = true;
       renderDashboard = wrapped;
-    }
-
-    if(typeof renderIncomes === 'function' && !renderIncomes.__bsV2582UiWrapped){
-      const original = renderIncomes;
-      const wrapped = function(){
-        original();
-        applyIncomeCardStripes();
-      };
-      wrapped.__bsV2582UiWrapped = true;
-      renderIncomes = wrapped;
     }
 
     if(typeof renderCalendar === 'function' && !renderCalendar.__bsV257UiWrapped){
