@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.6.3 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.5.7 - Merkezi uyumluluk ve başlangıç katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -24,17 +24,17 @@
       }
     }
 
-    if(typeof mergeAppConfig === 'function' && !mergeAppConfig.__bsCoreCompatWrapped){
-      const originalMergeAppConfig = mergeAppConfig;
+    if(typeof mergeAppConfig === 'function' && !mergeAppConfig.__bsV257Wrapped){
+      const original = mergeAppConfig;
       const wrapped = function(raw={}){
-        const cfg = originalMergeAppConfig(raw);
+        const cfg = original(raw);
         cfg.schemaVersion = SCHEMA_VERSION;
         if(!cfg.applicationName || cfg.applicationName === LEGACY_APP_NAME){
           cfg.applicationName = CURRENT_APP_NAME;
         }
         return cfg;
       };
-      wrapped.__bsCoreCompatWrapped = true;
+      wrapped.__bsV257Wrapped = true;
       mergeAppConfig = wrapped;
     }
 
@@ -55,32 +55,32 @@
   }
 
   function installViewStateGuard(){
-    if(typeof renderBottomNav === 'function' && !renderBottomNav.__bsPreserveActiveView){
-      const originalRenderBottomNav = renderBottomNav;
+    if(typeof renderBottomNav === 'function' && !renderBottomNav.__bsV257ViewGuard){
+      const original = renderBottomNav;
       const wrapped = function(){
         const before = activeView;
         const target = document.getElementById(before);
         const validBefore = !!target?.classList?.contains('view');
 
-        originalRenderBottomNav();
+        original();
 
         if(validBefore && before && activeView !== before){
           activeView = before;
           document.querySelectorAll('.view').forEach(view => {
-            view.classList.toggle('active', view.id === before);
+            view.classList.toggle('active',view.id === before);
           });
           document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.view === before);
+            btn.classList.toggle('active',btn.dataset.view === before);
           });
-          document.querySelector('#settingsShortcut')?.classList.toggle('active', before === 'settings');
+          document.querySelector('#settingsShortcut')?.classList.toggle('active',before === 'settings');
         }
       };
-      wrapped.__bsPreserveActiveView = true;
+      wrapped.__bsV257ViewGuard = true;
       renderBottomNav = wrapped;
     }
 
-    if(typeof openView === 'function' && !openView.__bsAllowHiddenView){
-      const originalOpenView = openView;
+    if(typeof openView === 'function' && !openView.__bsV257HiddenView){
+      const original = openView;
       const wrapped = function(view){
         const target = document.getElementById(view);
         const item = typeof menuItem === 'function' ? menuItem(view) : null;
@@ -92,78 +92,49 @@
         );
 
         if(!hiddenValidView){
-          return originalOpenView(view);
+          return original(view);
         }
 
         activeView = view;
-        document.querySelectorAll('.view').forEach(v => {
-          v.classList.toggle('active', v.id === view);
+        document.querySelectorAll('.view').forEach(node => {
+          node.classList.toggle('active',node.id === view);
         });
         renderBottomNav();
-        window.scrollTo({top:0, behavior:'smooth'});
+        window.scrollTo({top:0,behavior:'smooth'});
       };
-      wrapped.__bsAllowHiddenView = true;
+      wrapped.__bsV257HiddenView = true;
       openView = wrapped;
     }
   }
 
-  function installSafeTitleRenderer(){
-    if(typeof renderTitles !== 'function' || renderTitles.__bsUiWrapped) return;
+  function installTitleRenderer(){
+    if(typeof renderTitles !== 'function' || renderTitles.__bsV257Title) return;
 
-    const originalRenderTitles = renderTitles;
-    const requiredIds = [
-      'appTitle','orgEyebrow','debtsPageTitle','incomesPageTitle',
-      'expensesPageTitle','calendarPageTitle','paymentsPageTitle','settingsPageTitle'
-    ];
-
-    function fallback(){
-      const name = currentAppName();
-      document.title = name;
-
-      const appTitle = document.getElementById('appTitle');
-      if(appTitle) appTitle.textContent = name;
-
-      const eyebrow = document.getElementById('orgEyebrow');
-      if(eyebrow) eyebrow.textContent = 'YÖNETİMİ';
-
-      const pairs = [
-        ['debts','debtsPageTitle'],
-        ['incomes','incomesPageTitle'],
-        ['expenses','expensesPageTitle'],
-        ['calendar','calendarPageTitle'],
-        ['payments','paymentsPageTitle'],
-        ['settings','settingsPageTitle']
-      ];
-
-      pairs.forEach(([view,id]) => {
-        const el = document.getElementById(id);
-        const item = typeof menuItem === 'function' ? menuItem(view) : null;
-        if(el && item) el.textContent = item.label;
-      });
-    }
-
+    const original = renderTitles;
     const wrapped = function(){
-      if(requiredIds.every(id => document.getElementById(id))){
-        originalRenderTitles();
-      }else{
-        fallback();
+      try{
+        original();
+      }catch(_error){
+        // Eksik opsiyonel başlık hedefi tüm render akışını durdurmamalı.
       }
 
       const name = currentAppName();
       document.title = name;
+
       const appTitle = document.getElementById('appTitle');
       if(appTitle) appTitle.textContent = name;
+
       const eyebrow = document.getElementById('orgEyebrow');
       if(eyebrow) eyebrow.textContent = 'YÖNETİMİ';
     };
 
-    wrapped.__bsUiWrapped = true;
+    wrapped.__bsV257Title = true;
     renderTitles = wrapped;
   }
 
   function installApplicationNameSaveFlow(){
     const button = document.getElementById('saveApplicationName');
-    if(!button || button.__bsV2562TitleFlow) return;
+    if(!button || button.__bsV257TitleSave) return;
 
     const original = button.onclick;
     button.onclick = async function(event){
@@ -171,36 +142,32 @@
         await original.call(this,event);
       }
 
-      if(typeof renderTitles === 'function'){
-        renderTitles();
-      }
+      if(typeof renderTitles === 'function') renderTitles();
+      if(typeof openView === 'function') openView('dashboard');
 
-      if(typeof openView === 'function'){
-        openView('dashboard');
-      }else{
-        activeView = 'dashboard';
-        document.querySelectorAll('.view').forEach(view => {
-          view.classList.toggle('active', view.id === 'dashboard');
-        });
-        if(typeof renderBottomNav === 'function') renderBottomNav();
-      }
-
-      window.scrollTo({top:0, behavior:'smooth'});
+      window.scrollTo({top:0,behavior:'smooth'});
     };
 
-    button.__bsV2562TitleFlow = true;
+    button.__bsV257TitleSave = true;
   }
 
   function installBrandAssets(){
-    const iconHref = './bs-budget-app-icon-v256.svg?v=2563';
+    const iconHref = './bs-budget-app-icon-v256.svg?v=257';
+    const headerHref = './bs-budget-header-mark-v256.svg?v=257';
 
-    const iconLinks = [
+    const mark = document.querySelector('.bs-brand-mark');
+    if(mark){
+      mark.src = headerHref;
+      mark.alt = 'BS Ofis';
+      mark.width = 44;
+      mark.height = 44;
+    }
+
+    [
       ['icon','image/svg+xml'],
       ['apple-touch-icon','image/svg+xml'],
       ['apple-touch-icon-precomposed','image/svg+xml']
-    ];
-
-    iconLinks.forEach(([rel,type]) => {
+    ].forEach(([rel,type]) => {
       let link = document.querySelector(`link[rel="${rel}"]`);
       if(!link){
         link = document.createElement('link');
@@ -212,84 +179,64 @@
     });
 
     const manifest = document.querySelector('link[rel="manifest"]');
-    if(manifest) manifest.href = './manifest.webmanifest?v=2563';
+    if(manifest) manifest.href = './manifest.webmanifest?v=257';
   }
 
-  function loadMobileDialogSafety(){
-    if(document.querySelector('script[data-bs-mobile-dialog-safety]')) return;
-    const script=document.createElement('script');
-    script.src='./v230-mobile-dialog.js?v=235';
-    script.dataset.bsMobileDialogSafety='1';
-    document.body.appendChild(script);
+  function loadScript(src,marker){
+    return new Promise((resolve,reject) => {
+      if(marker && window[marker]) return resolve();
+
+      const selector = `script[data-bs-v257-src="${src}"]`;
+      const existing = document.querySelector(selector);
+      if(existing){
+        if(existing.dataset.loaded === '1') return resolve();
+        existing.addEventListener('load',resolve,{once:true});
+        existing.addEventListener('error',reject,{once:true});
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = src;
+      script.dataset.bsV257Src = src;
+      script.addEventListener('load',() => {
+        script.dataset.loaded = '1';
+        resolve();
+      },{once:true});
+      script.addEventListener('error',() => reject(new Error(`${src} yüklenemedi`)),{once:true});
+      document.body.appendChild(script);
+    });
   }
 
-  function loadShellLock(){
-    if(document.querySelector('script[data-bs-shell-lock]')) return;
-    const script=document.createElement('script');
-    script.src='./v234-shell-lock.js?v=237';
-    script.dataset.bsShellLock='1';
-    document.body.appendChild(script);
-  }
+  async function loadOptionalModules(){
+    const modules = [
+      ['./v230-mobile-dialog.js?v=257','__bsV235MobileDialogLoaded'],
+      ['./v234-shell-lock.js?v=257','__bsV234ShellLockLoaded'],
+      ['./payment-editor-v240.js?v=240','__bsPaymentEditorV240Loaded'],
+      ['./v241-payment-modal-scroll-lock.js?v=241','__bsV241PaymentModalScrollLockLoaded'],
+      ['./v242-payment-save-ui.js?v=242','__bsV242PaymentSaveUiLoaded'],
+      ['./v244-monthly-report.js?v=244','__bsMonthlyReportV244Loaded'],
+      ['./v245-report-print-fix.js?v=245','__bsReportPrintFixV245Loaded'],
+      ['./v246-direct-pdf-report.js?v=246','__bsDirectPdfReportV246Loaded']
+    ];
 
-  function loadPaymentEditor(){
-    if(window.__bsPaymentEditorV240Loaded || document.querySelector('script[data-bs-payment-editor]')) return;
-    const script=document.createElement('script');
-    script.src='./payment-editor-v240.js?v=240';
-    script.dataset.bsPaymentEditor='1';
-    document.body.appendChild(script);
-  }
-
-  function loadPaymentModalScrollLock(){
-    if(window.__bsV241PaymentModalScrollLockLoaded || document.querySelector('script[data-bs-payment-modal-scroll-lock]')) return;
-    const script=document.createElement('script');
-    script.src='./v241-payment-modal-scroll-lock.js?v=241';
-    script.dataset.bsPaymentModalScrollLock='1';
-    document.body.appendChild(script);
-  }
-
-  function loadPaymentSaveUi(){
-    if(window.__bsV242PaymentSaveUiLoaded || document.querySelector('script[data-bs-payment-save-ui]')) return;
-    const script=document.createElement('script');
-    script.src='./v242-payment-save-ui.js?v=242';
-    script.dataset.bsPaymentSaveUi='1';
-    document.body.appendChild(script);
-  }
-
-  function loadMonthlyReport(){
-    if(window.__bsMonthlyReportV244Loaded || document.querySelector('script[data-bs-monthly-report]')) return;
-    const script=document.createElement('script');
-    script.src='./v244-monthly-report.js?v=244';
-    script.dataset.bsMonthlyReport='1';
-    document.body.appendChild(script);
-  }
-
-  function loadReportPrintFix(){
-    if(window.__bsReportPrintFixV245Loaded || document.querySelector('script[data-bs-report-print-fix]')) return;
-    const script=document.createElement('script');
-    script.src='./v245-report-print-fix.js?v=245';
-    script.dataset.bsReportPrintFix='1';
-    document.body.appendChild(script);
-  }
-
-  function loadDirectPdfReport(){
-    if(window.__bsDirectPdfReportV246Loaded || document.querySelector('script[data-bs-direct-pdf-report]')) return;
-    const script=document.createElement('script');
-    script.src='./v246-direct-pdf-report.js?v=246';
-    script.dataset.bsDirectPdfReport='1';
-    document.body.appendChild(script);
+    for(const [src,marker] of modules){
+      try{
+        await loadScript(src,marker);
+      }catch(error){
+        console.error('V257 opsiyonel modül yükleme hatası:',error);
+      }
+    }
   }
 
   migrateConfig();
   installViewStateGuard();
-  installSafeTitleRenderer();
+  installTitleRenderer();
   installApplicationNameSaveFlow();
   installBrandAssets();
-  setTimeout(loadMobileDialogSafety,0);
-  setTimeout(loadShellLock,0);
-  setTimeout(loadPaymentEditor,0);
-  setTimeout(loadPaymentModalScrollLock,0);
-  setTimeout(loadPaymentSaveUi,0);
-  setTimeout(loadMonthlyReport,0);
-  setTimeout(loadReportPrintFix,0);
-  setTimeout(loadDirectPdfReport,0);
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded',loadOptionalModules,{once:true});
+  }else{
+    loadOptionalModules();
+  }
 })();
