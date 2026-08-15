@@ -1,18 +1,18 @@
-const CACHE='bs-ofis-butce-v2573-shell-zoom-fix-20260815';
+const CACHE='bs-ofis-butce-v2574-header-settings-20260815';
 const ASSETS=[
-  './?v=2573',
-  './index.html?v=2573',
+  './?v=2574',
+  './index.html?v=2574',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=257',
+  './v2471-mobile-polish.css?v=2574',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v250-payments-polish.css?v=250',
   './v251-incomes-polish.css?v=251',
   './v252-calendar-polish.css?v=252',
-  './v257-foundation.css?v=2573',
+  './v257-foundation.css?v=2574',
   './app.js?v=257',
-  './core-compat.js?v=257',
+  './core-compat.js?v=2574',
   './v17-ui.js?v=218',
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
@@ -70,6 +70,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2573') || caches.match('./index.html?v=2573')))
+        .then(response => response || caches.match('./?v=2574') || caches.match('./index.html?v=2574')))
   );
 });
