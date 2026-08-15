@@ -13,6 +13,9 @@
 /* V251 Gelirler polish - yalniz gorsel katman */
 @import url('./v251-incomes-polish.css?v=251');
 
+/* V252 Takvim polish - yalniz gorsel katman */
+@import url('./v252-calendar-polish.css?v=252');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
