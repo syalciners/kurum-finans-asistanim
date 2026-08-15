@@ -1,0 +1,29 @@
+/* BS OFİS BÜTÇE V2.5.8.2 - Gelir kartı üst renk şeritleri
+   Yalnızca sunum katmanı. Kartın gerçek gelir sahibine göre renklenir.
+   Başak = pembe, Süleyman = mavi, Kurum = turkuaz; bölünmüş tahsilat = çok renkli. */
+
+#incomes #incomeList .list-card,
+#incomes #incomeList .income-bs-card{
+  position:relative!important;
+  overflow:hidden!important;
+}
+
+#incomes #incomeList .list-card::before,
+#incomes #incomeList .income-bs-card::before{
+  content:"";
+  position:absolute;
+  z-index:2;
+  top:0;
+  left:0;
+  right:0;
+  height:4px;
+  background:var(--income-card-stripe,#14B8A6);
+  pointer-events:none;
+}
+
+/* Şerit içerikten bağımsız, borç kartlarındaki üst vurgu kadar net ama sakin tutulur. */
+#incomes #incomeList .list-card > *,
+#incomes #incomeList .income-bs-card > *{
+  position:relative;
+  z-index:1;
+}
