@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.9.0 - Görsel yükleme zinciri
+/* BS OFİS BÜTÇE V2.5.9.3 - Görsel yükleme zinciri
    Genel sistem V247, ekran polishleri V248-V252, ortak temel V257.4. */
 
 @import url('./v248-dashboard-polish.css?v=248');
@@ -17,4 +17,24 @@
 /* İlk boyamada yalnız final header mark görünür. */
 .app-shell > .topbar .bs-brand-mark{
   content:url('./bs-budget-header-mark-v256.svg?v=257')!important;
+}
+
+/* V259.3: Üst bar ve alt sekme aynı floating bar standardında. */
+.app-shell > .topbar{
+  top:6px!important;
+  width:min(calc(100% - 18px),780px)!important;
+  max-width:780px!important;
+  border:1px solid var(--bs-line)!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.97)!important;
+  box-shadow:0 4px 20px rgba(15,23,42,.07)!important;
+  backdrop-filter:blur(18px) saturate(150%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(150%)!important;
+}
+
+@media(max-width:520px){
+  .app-shell > .topbar{
+    width:calc(100vw - 18px)!important;
+    max-width:calc(100vw - 18px)!important;
+  }
 }
