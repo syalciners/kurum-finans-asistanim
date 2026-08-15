@@ -1,15 +1,40 @@
-/* BS OFİS BÜTÇE V2.5.8 - Eğitim Supabase -> Finans gelir senkronu
+/* BS OFİS BÜTÇE V2.5.9.4 - Eğitim Supabase -> Finans gelir senkronu
    Kaynak: BS Eğitim Yönetimi Supabase tahsilatlar.
-   01.08.2026 öncesi Finans'a aktarılmaz. Dağıtım ve yazma sunucu tarafında doğrulanır. */
+   01.08.2026 öncesi Finans'a aktarılmaz. Dağıtım ve yazma sunucu tarafında doğrulanır.
+   V259.4: Eğitim kaynaklı otomatik gelirler istemci tarafından yeniden yazılamaz. */
 (() => {
   if (window.__bsEducationIncomeSyncV258Loaded) return;
   window.__bsEducationIncomeSyncV258Loaded = true;
 
   const ENDPOINT = 'https://igmtuouhdozkgwmdxlme.supabase.co/functions/v1/finans-gelir-sync-v18';
+  const EDUCATION_SOURCE = 'BS Eğitim Yönetimi / Supabase tahsilatlar';
   const MIN_INTERVAL_MS = 60 * 1000;
   let lastAttemptAt = 0;
   let inFlight = null;
   let lastControlToastAt = 0;
+
+  function installAutomaticIncomeWriteGuard() {
+    if (typeof cloudUpsertIncome !== 'function' || cloudUpsertIncome.__bsAutomaticIncomeWriteGuardV2594) return;
+
+    const originalCloudUpsertIncome = cloudUpsertIncome;
+    const guarded = async function (income) {
+      const normalized = typeof normalizeIncome === 'function'
+        ? normalizeIncome(income)
+        : income;
+
+      const serverOwned = normalized?.automatic === true
+        || String(normalized?.source || '').trim() === EDUCATION_SOURCE;
+
+      if (serverOwned) {
+        return { skipped: 'education-income-server-owned' };
+      }
+
+      return originalCloudUpsertIncome.apply(this, arguments);
+    };
+
+    guarded.__bsAutomaticIncomeWriteGuardV2594 = true;
+    cloudUpsertIncome = guarded;
+  }
 
   async function syncEducationIncome({ force = false, mode = 'sync', paymentId = null } = {}) {
     if (!session?.access_token) {
@@ -64,6 +89,8 @@
       inFlight = null;
     }
   }
+
+  installAutomaticIncomeWriteGuard();
 
   if (typeof pullCloud === 'function' && !pullCloud.__bsEducationIncomeSyncV258Wrapped) {
     const originalPullCloud = pullCloud;
