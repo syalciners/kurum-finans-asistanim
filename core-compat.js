@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.3 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.5.6.2 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -6,6 +6,13 @@
   const LEGACY_APP_NAME = 'Borç ve Gelir Asistanım';
   const CURRENT_APP_NAME = 'BS Ofis Bütçe';
   const SCHEMA_VERSION = 16;
+
+  function currentAppName(){
+    const value = typeof appConfig === 'object' && appConfig
+      ? String(appConfig.applicationName || '').trim()
+      : '';
+    return value || CURRENT_APP_NAME;
+  }
 
   function migrateConfig(){
     let changed = false;
@@ -110,10 +117,11 @@
     ];
 
     function fallback(){
-      document.title = CURRENT_APP_NAME;
+      const name = currentAppName();
+      document.title = name;
 
       const appTitle = document.getElementById('appTitle');
-      if(appTitle) appTitle.textContent = CURRENT_APP_NAME;
+      if(appTitle) appTitle.textContent = name;
 
       const eyebrow = document.getElementById('orgEyebrow');
       if(eyebrow) eyebrow.textContent = 'YÖNETİMİ';
@@ -141,9 +149,10 @@
         fallback();
       }
 
-      document.title = 'BS OFİS BÜTÇE';
+      const name = currentAppName();
+      document.title = name;
       const appTitle = document.getElementById('appTitle');
-      if(appTitle) appTitle.textContent = CURRENT_APP_NAME;
+      if(appTitle) appTitle.textContent = name;
       const eyebrow = document.getElementById('orgEyebrow');
       if(eyebrow) eyebrow.textContent = 'YÖNETİMİ';
     };
@@ -152,8 +161,38 @@
     renderTitles = wrapped;
   }
 
+  function installApplicationNameSaveFlow(){
+    const button = document.getElementById('saveApplicationName');
+    if(!button || button.__bsV2562TitleFlow) return;
+
+    const original = button.onclick;
+    button.onclick = async function(event){
+      if(typeof original === 'function'){
+        await original.call(this,event);
+      }
+
+      if(typeof renderTitles === 'function'){
+        renderTitles();
+      }
+
+      if(typeof openView === 'function'){
+        openView('dashboard');
+      }else{
+        activeView = 'dashboard';
+        document.querySelectorAll('.view').forEach(view => {
+          view.classList.toggle('active', view.id === 'dashboard');
+        });
+        if(typeof renderBottomNav === 'function') renderBottomNav();
+      }
+
+      window.scrollTo({top:0, behavior:'smooth'});
+    };
+
+    button.__bsV2562TitleFlow = true;
+  }
+
   function installBrandAssets(){
-    const iconHref = './bs-budget-app-icon-v253.svg?v=253';
+    const iconHref = './bs-budget-app-icon-v256.svg?v=2562';
 
     const iconLinks = [
       ['icon','image/svg+xml'],
@@ -173,13 +212,13 @@
     });
 
     const manifest = document.querySelector('link[rel="manifest"]');
-    if(manifest) manifest.href = './manifest.webmanifest?v=253';
+    if(manifest) manifest.href = './manifest.webmanifest?v=2562';
   }
 
   function refreshServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
-      .register('./sw.js?v=253', {updateViaCache:'none'})
+      .register('./sw.js?v=2562', {updateViaCache:'none'})
       .then(reg => reg.update())
       .catch(console.error);
   }
@@ -197,7 +236,7 @@
     if(document.querySelector('link[data-bs-mobile-polish]')) return;
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href='./v2471-mobile-polish.css?v=2471';
+    link.href='./v2471-mobile-polish.css?v=2561';
     link.dataset.bsMobilePolish='1';
     document.head.appendChild(link);
   }
@@ -269,6 +308,7 @@
   migrateConfig();
   installViewStateGuard();
   installSafeTitleRenderer();
+  installApplicationNameSaveFlow();
   installBrandAssets();
   refreshServiceWorker();
   loadDesignSystem();
