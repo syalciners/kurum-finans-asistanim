@@ -1,108 +1,40 @@
-/* BS OFİS BÜTÇE V2.3.7 - Sabit uygulama kabuğu ve modal işlem yükleyicisi */
+/* BS OFİS BÜTÇE V2.5.7 - Uygulama kabuğu ölçüm katmanı
+   Sabit header/nav stilleri v257-foundation.css içinde yüklenir. */
 (() => {
   if(window.__bsV234ShellLockLoaded) return;
-  window.__bsV234ShellLockLoaded=true;
-
-  function ensureStyles(){
-    if(document.querySelector('#bsV234ShellLockStyles')) return;
-    const style=document.createElement('style');
-    style.id='bsV234ShellLockStyles';
-    style.textContent=`
-      :root{
-        --bs-shell-top-space:88px;
-        --bs-shell-bottom-space:86px;
-      }
-
-      html,body{
-        max-width:100%;
-        overflow-x:hidden!important;
-      }
-
-      .app-shell{
-        padding-top:var(--bs-shell-top-space)!important;
-        padding-bottom:calc(var(--bs-shell-bottom-space) + 14px)!important;
-      }
-
-      .app-shell > .topbar{
-        position:fixed!important;
-        top:0!important;
-        left:50%!important;
-        right:auto!important;
-        transform:translateX(-50%)!important;
-        width:min(calc(100vw - 24px),780px)!important;
-        max-width:780px!important;
-        margin:0!important;
-        z-index:1000!important;
-        will-change:transform;
-      }
-
-      .app-shell > .bottom-nav{
-        position:fixed!important;
-        left:50%!important;
-        right:auto!important;
-        transform:translateX(-50%)!important;
-        bottom:max(8px,env(safe-area-inset-bottom))!important;
-        z-index:1000!important;
-        will-change:transform;
-      }
-
-      /* Sayfa başlıkları içerikle birlikte kayar; ayrıca sabitlenmez. */
-      .view > .page-title{
-        position:static!important;
-        top:auto!important;
-        z-index:auto!important;
-      }
-
-      @media(max-width:520px){
-        .app-shell > .topbar{
-          width:calc(100vw - 16px)!important;
-          max-width:calc(100vw - 16px)!important;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
+  window.__bsV234ShellLockLoaded = true;
 
   function measureBars(){
-    const topbar=document.querySelector('.app-shell > .topbar');
-    const bottom=document.querySelector('.app-shell > .bottom-nav');
-    const root=document.documentElement;
+    const topbar = document.querySelector('.app-shell > .topbar');
+    const bottom = document.querySelector('.app-shell > .bottom-nav');
+    const root = document.documentElement;
 
     if(topbar){
-      const h=Math.ceil(topbar.getBoundingClientRect().height);
-      root.style.setProperty('--bs-shell-top-space',`${Math.max(72,h+14)}px`);
+      const height = Math.ceil(topbar.getBoundingClientRect().height);
+      root.style.setProperty('--bs-shell-top-space',`${Math.max(72,height + 14)}px`);
     }
+
     if(bottom){
-      const h=Math.ceil(bottom.getBoundingClientRect().height);
-      root.style.setProperty('--bs-shell-bottom-space',`${Math.max(78,h+16)}px`);
+      const height = Math.ceil(bottom.getBoundingClientRect().height);
+      root.style.setProperty('--bs-shell-bottom-space',`${Math.max(70,height + 12)}px`);
     }
   }
 
-  function loadModalFooter(){
-    if(window.__bsV237ModalFooterLoaded || document.querySelector('script[data-bs-modal-footer]')) return;
-    const script=document.createElement('script');
-    script.src='./v237-modal-footer.js?v=237';
-    script.dataset.bsModalFooter='1';
-    document.body.appendChild(script);
-  }
-
-  let raf=0;
+  let raf = 0;
   function scheduleMeasure(){
     cancelAnimationFrame(raf);
-    raf=requestAnimationFrame(()=>{
+    raf = requestAnimationFrame(() => {
       measureBars();
       requestAnimationFrame(measureBars);
     });
   }
 
-  ensureStyles();
   scheduleMeasure();
-  loadModalFooter();
   window.addEventListener('load',scheduleMeasure,{once:true});
   window.addEventListener('resize',scheduleMeasure,{passive:true});
   window.addEventListener('orientationchange',scheduleMeasure,{passive:true});
 
   if(document.fonts?.ready){
-    document.fonts.ready.then(scheduleMeasure).catch(()=>{});
+    document.fonts.ready.then(scheduleMeasure).catch(() => {});
   }
 })();
