@@ -1,48 +1,53 @@
-/* BS OFİS BÜTÇE V2.5.8.6 - Ödeme kartlarında borç sahibi renkleri
+/* BS OFİS BÜTÇE V2.6.0.8 - Ödeme kartlarında borç sahibi renkleri
    Yalnızca Ödemeler ekranının sunum katmanı.
+   Sahiplik rengi yalnız sol şeritte kullanılır; kart zemini ve tutar nötr kalır.
    Başak = pembe, Süleyman = mavi, Kurum = turkuaz. */
 
-/* Başak */
+:root{
+  --bs-payment-owner-basak:#EC4899;
+  --bs-payment-owner-suleyman:#2563EB;
+  --bs-payment-owner-kurum:#14B8A6;
+  --bs-payment-amount:#0F172A;
+}
+
+/* Tüm ödeme tutarları tek nötr renkte. */
+#payments #paymentList .list-card .amount,
+#payments #paymentList .v179-payment-card .amount{
+  color:var(--bs-payment-amount)!important;
+}
+
+/* Başak: yalnız sol pembe şerit. */
 #payments #paymentList .list-card.payment-owner-basak,
 #payments #paymentList .v179-payment-card.payment-owner-basak{
-  border-left-color:#EC4899!important;
-  background:linear-gradient(90deg,#FDF2F8 0%,#FFFFFF 18%)!important;
-}
-#payments #paymentList .list-card.payment-owner-basak .amount,
-#payments #paymentList .v179-payment-card.payment-owner-basak .amount{
-  color:#BE185D!important;
+  border-left-width:3px!important;
+  border-left-color:var(--bs-payment-owner-basak)!important;
+  background:#FFFFFF!important;
 }
 #payments #paymentList .list-card.payment-owner-basak:hover,
 #payments #paymentList .v179-payment-card.payment-owner-basak:hover{
-  border-left-color:#DB2777!important;
+  border-left-color:var(--bs-payment-owner-basak)!important;
 }
 
-/* Süleyman */
+/* Süleyman: yalnız sol mavi şerit. */
 #payments #paymentList .list-card.payment-owner-suleyman,
 #payments #paymentList .v179-payment-card.payment-owner-suleyman{
-  border-left-color:#2563EB!important;
-  background:linear-gradient(90deg,#EFF6FF 0%,#FFFFFF 18%)!important;
-}
-#payments #paymentList .list-card.payment-owner-suleyman .amount,
-#payments #paymentList .v179-payment-card.payment-owner-suleyman .amount{
-  color:#1D4ED8!important;
+  border-left-width:3px!important;
+  border-left-color:var(--bs-payment-owner-suleyman)!important;
+  background:#FFFFFF!important;
 }
 #payments #paymentList .list-card.payment-owner-suleyman:hover,
 #payments #paymentList .v179-payment-card.payment-owner-suleyman:hover{
-  border-left-color:#1D4ED8!important;
+  border-left-color:var(--bs-payment-owner-suleyman)!important;
 }
 
-/* Kurum */
+/* Kurum: yalnız sol turkuaz şerit; eski kayıt uyumluluğu için korunur. */
 #payments #paymentList .list-card.payment-owner-kurum,
 #payments #paymentList .v179-payment-card.payment-owner-kurum{
-  border-left-color:#14B8A6!important;
-  background:linear-gradient(90deg,#ECFDF9 0%,#FFFFFF 18%)!important;
-}
-#payments #paymentList .list-card.payment-owner-kurum .amount,
-#payments #paymentList .v179-payment-card.payment-owner-kurum .amount{
-  color:#0F8F83!important;
+  border-left-width:3px!important;
+  border-left-color:var(--bs-payment-owner-kurum)!important;
+  background:#FFFFFF!important;
 }
 #payments #paymentList .list-card.payment-owner-kurum:hover,
 #payments #paymentList .v179-payment-card.payment-owner-kurum:hover{
-  border-left-color:#0F8F83!important;
+  border-left-color:var(--bs-payment-owner-kurum)!important;
 }
