@@ -1,5 +1,6 @@
 /* BS OFIS BUTCE V2.5.3 - Marka / banner polish
-   Yalnizca marka sunumu. Finans motorlari, veri akisi ve ekran davranisi degismez. */
+   Yalnizca marka sunumu. Finans motorlari, veri akisi ve ekran davranisi degismez.
+   Final marka paketi: banner + PWA ikon + cache zinciri birlikte sabitlenmistir. */
 
 /* Header'da tasarim tablosundaki yatay BS Ofis Butce Yonetimi logosunu kullan. */
 .app-shell > .topbar > div:first-child{
