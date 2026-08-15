@@ -25,6 +25,9 @@
 /* V255 Header ikon netligi + kompakt alt nav - yalniz gorsel katman */
 @import url('./v255-icon-nav-polish.css?v=255');
 
+/* V256 Nihai premium marka kimligi - yalniz gorsel katman */
+@import url('./v256-brand-freeze.css?v=256');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
