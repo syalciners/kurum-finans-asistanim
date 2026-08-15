@@ -1,9 +1,23 @@
-/* BS OFİS BÜTÇE V2.5.8.5 - Ödeme kartında borç sahibi
+/* BS OFİS BÜTÇE V2.5.8.6 - Ödeme kartında borç sahibi ve sahibi rengi
    Yalnızca Ödemeler ekranının sunum katmanı.
    Ödeme/borç hesaplama ve kayıt davranışını değiştirmez. */
 (() => {
-  if(window.__bsPaymentOwnerLabelV2585Loaded) return;
+  if(window.__bsPaymentOwnerLabelV2586Loaded) return;
+  window.__bsPaymentOwnerLabelV2586Loaded = true;
   window.__bsPaymentOwnerLabelV2585Loaded = true;
+
+  const OWNER_CLASSES = [
+    'payment-owner-basak',
+    'payment-owner-suleyman',
+    'payment-owner-kurum'
+  ];
+
+  function ownerClass(owner){
+    if(owner === 'Başak') return 'payment-owner-basak';
+    if(owner === 'Süleyman') return 'payment-owner-suleyman';
+    if(owner === 'Kurum Kasası' || owner === 'Kurum') return 'payment-owner-kurum';
+    return '';
+  }
 
   function applyPaymentOwnerLabels(){
     if(
@@ -27,6 +41,10 @@
       const debt = debtById.get(String(payment.debtId || ''));
       const owner = String(debt?.custom?.debt_owner || '').trim();
       const detail = card.querySelector('.main small');
+
+      card.classList.remove(...OWNER_CLASSES);
+      const cls = ownerClass(owner);
+      if(cls) card.classList.add(cls);
       if(!detail) return;
 
       const parts = [
@@ -40,7 +58,7 @@
   }
 
   function installRenderHook(){
-    if(typeof renderPayments !== 'function' || renderPayments.__bsPaymentOwnerLabelV2585Wrapped) return;
+    if(typeof renderPayments !== 'function' || renderPayments.__bsPaymentOwnerLabelV2586Wrapped) return;
 
     const original = renderPayments;
     const wrapped = function(...args){
@@ -49,7 +67,7 @@
       return result;
     };
 
-    wrapped.__bsPaymentOwnerLabelV2585Wrapped = true;
+    wrapped.__bsPaymentOwnerLabelV2586Wrapped = true;
     renderPayments = wrapped;
   }
 
