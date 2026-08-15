@@ -1,8 +1,8 @@
-// V259.1 Manuel özel ders gelir girişini kapatma build
-const CACHE='bs-ofis-butce-v2591-manuel-ozel-ders-kapat-20260815';
+// V259.2 Diğer gelir türü ve açıklama alanı build
+const CACHE='bs-ofis-butce-v2592-gelir-diger-aciklama-20260815';
 const ASSETS=[
-  './?v=2591',
-  './index.html?v=2591',
+  './?v=2592',
+  './index.html?v=2592',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2590',
@@ -22,6 +22,7 @@ const ASSETS=[
   './core-compat.js?v=257',
   './v258-education-income-sync.js?v=258',
   './v2584-income-themes.js?v=2584',
+  './v2592-income-other-description.js?v=2592',
   './v2585-payment-owner-label.js?v=2586',
   './v2587-debt-owner-colors.js?v=2587',
   './v17-ui.js?v=218',
@@ -81,6 +82,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2591') || caches.match('./index.html?v=2591')))
+        .then(response => response || caches.match('./?v=2592') || caches.match('./index.html?v=2592')))
   );
 });
