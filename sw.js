@@ -1,16 +1,15 @@
-// V260.1 Premium finans tasarim sistemi build
-const CACHE='bs-ofis-butce-v2601-premium-design-20260815b';
+// V260.2 Premium renk ve okunabilir tipografi build
+const CACHE='bs-ofis-butce-v2602-renk-tipografi-20260815';
 const ASSETS=[
-  './?v=2601',
-  './index.html?v=2601',
+  './?v=2602',
+  './index.html?v=2602',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=257',
-  './v2471-mobile-polish.css?v=2601',
+  './v2471-mobile-polish.css?v=2602',
   './v248-dashboard-polish.css?v=248',
   './v252-calendar-polish.css?v=252',
   './v257-foundation.css?v=2574',
-  './finance-design-system.css?v=2601',
+  './finance-design-system.css?v=2602',
   './app.js?v=257',
   './core-compat.js?v=257',
   './v258-education-income-sync.js?v=258',
@@ -78,6 +77,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2601') || caches.match('./index.html?v=2601')))
+        .then(response => response || caches.match('./?v=2602') || caches.match('./index.html?v=2602')))
   );
 });
