@@ -1,11 +1,11 @@
-// V259.2 Diğer gelir türü ve açıklama alanı build
-const CACHE='bs-ofis-butce-v2592-gelir-diger-aciklama-20260815';
+// V259.3 Üst bar ve alt sekme ortak floating bar standardı build
+const CACHE='bs-ofis-butce-v2593-ustbar-sekme-standardi-20260815';
 const ASSETS=[
-  './?v=2592',
-  './index.html?v=2592',
+  './?v=2593',
+  './index.html?v=2593',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2590',
+  './v2471-mobile-polish.css?v=2593',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v2587-debt-owner-colors.css?v=2587',
@@ -82,6 +82,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2592') || caches.match('./index.html?v=2592')))
+        .then(response => response || caches.match('./?v=2593') || caches.match('./index.html?v=2593')))
   );
 });
