@@ -19,6 +19,9 @@
 /* V253 Marka banner / uygulama kimligi - yalniz gorsel katman */
 @import url('./v253-branding.css?v=253');
 
+/* V254 Mobil header + okunabilirlik - yalniz gorsel katman */
+@import url('./v254-mobile-readability.css?v=254');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
