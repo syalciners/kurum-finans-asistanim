@@ -1,15 +1,15 @@
-// V259.5 Yeni ödeme + borç güncellemesini atomik kaydet build
-const CACHE='bs-ofis-butce-v2595-atomik-odeme-20260815';
+// V259.6 Ödemeler dönem kontrolünü üst KPI kartlarında birleştir build
+const CACHE='bs-ofis-butce-v2596-odeme-donem-sadelestirme-20260815';
 const ASSETS=[
-  './?v=2595',
-  './index.html?v=2595',
+  './?v=2596',
+  './index.html?v=2596',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2593',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v2587-debt-owner-colors.css?v=2587',
-  './v250-payments-polish.css?v=250',
+  './v250-payments-polish.css?v=2596',
   './v2586-payment-owner-colors.css?v=2586',
   './v251-incomes-polish.css?v=251',
   './v2581-income-owner-colors.css?v=2581',
@@ -83,6 +83,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2595') || caches.match('./index.html?v=2595')))
+        .then(response => response || caches.match('./?v=2596') || caches.match('./index.html?v=2596')))
   );
 });
