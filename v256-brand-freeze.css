@@ -1,0 +1,25 @@
+/* BS OFIS BUTCE V2.5.6 - Nihai marka kimligi sabitleme
+   Yalnizca marka sunumu. Finans motorlari, veri akisi ve ekran davranisi degismez. */
+
+/* Mobil header: kare app icon degil, 40-44 px icin optimize edilmiş sade header mark. */
+@media(max-width:520px){
+  .app-shell > .topbar .bs-brand-mark{
+    content:url('./bs-budget-header-mark-v256.svg?v=256')!important;
+    width:44px!important;
+    height:44px!important;
+    flex:0 0 44px!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    object-fit:contain!important;
+  }
+}
+
+@media(max-width:380px){
+  .app-shell > .topbar .bs-brand-mark{
+    width:40px!important;
+    height:40px!important;
+    flex-basis:40px!important;
+  }
+}
+
+/* Genis ekran/tablet banner'ı V253 yapısını korur; arka plandaki legacy dosya V256 yatay logoya yönlendirilmiştir. */
