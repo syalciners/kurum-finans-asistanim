@@ -1,6 +1,7 @@
-/* BS OFİS BÜTÇE V2.6.0.5 - Gelir kartı tema işaretleme
+/* BS OFİS BÜTÇE V2.6.1.0 - Gelir kartı tema ve pay dağılımı sunumu
    Yalnızca sunum katmanı.
-   Gelir türü ve gelir sahibi birbirinden bağımsız işaretlenir. */
+   Gelir türü ve gelir sahibi birbirinden bağımsız işaretlenir.
+   Bölünmüş tahsilatlarda sahip payları küçük renk göstergeleriyle sunulur. */
 (() => {
   if(window.__bsIncomeThemesV2584Loaded) return;
   window.__bsIncomeThemesV2584Loaded = true;
@@ -12,6 +13,12 @@
     'income-theme-owner-suleyman',
     'income-theme-owner-kurum'
   ];
+
+  const OWNER_META = {
+    'Başak': {label:'Başak',className:'basak',order:0},
+    'Süleyman': {label:'Süleyman',className:'suleyman',order:1},
+    'Kurum Kasası': {label:'Kurum',className:'kurum',order:2}
+  };
 
   function ownerClass(owner){
     if(owner === 'Başak') return 'income-theme-owner-basak';
@@ -31,6 +38,60 @@
 
     const cls = ownerClass(owner);
     if(cls) card.classList.add(cls);
+  }
+
+  function splitShares(group){
+    const totals = new Map();
+
+    group.forEach(row => {
+      const owner = String(row?.owner || '').trim();
+      const amount = Number(row?.amount) || 0;
+      if(!owner || amount <= 0) return;
+      totals.set(owner,(totals.get(owner) || 0) + amount);
+    });
+
+    return [...totals.entries()]
+      .map(([owner,amount]) => ({
+        owner,
+        amount,
+        ...(OWNER_META[owner] || {label:owner,className:'neutral',order:99})
+      }))
+      .sort((a,b) => a.order - b.order || a.label.localeCompare(b.label,'tr'));
+  }
+
+  function renderSplitShareNote(card,group){
+    const note = card.querySelector('.income-distribution, .income-share-note');
+    if(!note) return;
+
+    const shares = splitShares(group);
+
+    // Tek sahipli tahsilatta sol şerit + kart tutarı yeterli; tekrar eden pay satırı kaldırılır.
+    if(shares.length < 2){
+      note.remove();
+      return;
+    }
+
+    note.className = 'income-split-shares';
+    note.textContent = '';
+    note.setAttribute(
+      'aria-label',
+      `Dağılım: ${shares.map(share => `${share.label} ${money(share.amount)}`).join(', ')}`
+    );
+
+    shares.forEach(share => {
+      const chip = document.createElement('span');
+      chip.className = `income-share-chip income-share-${share.className}`;
+
+      const dot = document.createElement('span');
+      dot.className = 'income-share-dot';
+      dot.setAttribute('aria-hidden','true');
+
+      const text = document.createElement('span');
+      text.textContent = `${share.label} ${money(share.amount)}`;
+
+      chip.append(dot,text);
+      note.appendChild(chip);
+    });
   }
 
   function applyIncomeThemes(){
@@ -54,8 +115,11 @@
       if(paymentId){
         const group = bySource.get(String(paymentId)) || [];
         const sample = group[0];
-        const owners = [...new Set(group.map(row => row.owner).filter(Boolean))];
+        const shares = splitShares(group);
+        const owners = shares.map(share => share.owner);
+
         applyCardTheme(card,sample?.type || '',owners.length === 1 ? owners[0] : '');
+        renderSplitShareNote(card,group);
         return;
       }
 
