@@ -1,16 +1,15 @@
-/* BS OFİS BÜTÇE V2.6.0.6 - Gelir renk hiyerarşisi
+/* BS OFİS BÜTÇE V2.6.0.9 - Gelir renk hiyerarşisi
    Tek renk = tek anlam:
    - Süleyman: yalnız sahiplik vurgusu mavi
    - Başak: yalnız sahiplik vurgusu pembe
-   - Kurum: nötr
-   - Özel Ders: yalnız tür vurgusu turuncu
-   - Tüm tutarlar: koyu siyah */
+   - Kurum: liste kartında nötr
+   - Özel Ders: yalnız KPI/tür kimliği turuncu
+   - Liste başlıkları ve tüm tutarlar: koyu siyah */
 
 :root{
   --bs-income-owner-suleyman:#2563EB;
   --bs-income-owner-basak:#EC4899;
   --bs-income-lesson:#F59E0B;
-  --bs-income-lesson-text:#C2410C;
   --bs-income-amount:#0F172A;
   --bs-income-border:#E2E8F0;
 }
@@ -45,14 +44,14 @@
   color:var(--bs-income-amount)!important;
 }
 
-/* Özel Ders: kart zemini ve tutar değişmez; yalnız tür başlığı turuncudur. */
+/* Özel Ders: kart zemini, öğrenci/kayıt başlığı ve tutar nötr kalır. */
 #incomes #incomeList .list-card.income-theme-lesson,
 #incomes #incomeList .income-bs-card.income-theme-lesson{
   background:#FFFFFF!important;
 }
 #incomes #incomeList .list-card.income-theme-lesson .main>strong,
 #incomes #incomeList .income-bs-card.income-theme-lesson .main>strong{
-  color:var(--bs-income-lesson-text)!important;
+  color:var(--bs-income-amount)!important;
 }
 #incomes #incomeList .list-card.income-theme-lesson .income-distribution,
 #incomes #incomeList .list-card.income-theme-lesson .income-share-note,
