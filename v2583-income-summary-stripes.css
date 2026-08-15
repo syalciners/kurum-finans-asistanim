@@ -1,10 +1,10 @@
-/* BS OFIS BUTCE V2.6.0.6 - Gelir KPI semantik üst şeritleri
+/* BS OFIS BUTCE V2.6.0.9 - Gelir KPI semantik üst şeritleri
    Tek renk = tek anlam:
-   - Seçili Ay Toplam: nötr
+   - Seçili Ay Toplam: sarı
    - Özel Ders Geliri: turuncu
    - Başak: pembe
    - Süleyman: mavi
-   - Kurum: nötr */
+   - Kurum: yeşil */
 
 /* Ustteki iki ana KPI karti */
 #incomes .kpi-grid .kpi{
@@ -21,7 +21,7 @@
   pointer-events:none;
 }
 #incomes .kpi-grid .kpi:nth-child(1)::before{
-  background:transparent!important;
+  background:#EAB308!important;
 }
 #incomes .kpi-grid .kpi:nth-child(2)::before{
   background:#F59E0B!important;
@@ -48,5 +48,5 @@
   background:#2563EB!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"]::before{
-  background:transparent!important;
+  background:#22C55E!important;
 }
