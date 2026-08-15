@@ -3,7 +3,7 @@
 
 @media(max-width:520px){
   /* Header: glow'lu PWA ikon yerine küçük boyutta keskin marka işareti. */
-  .app-shell > .topbar .bs-brand-mark{
+  body .app-shell > .topbar .bs-brand-mark{
     content:url('./bs-budget-header-mark-v255.svg?v=255')!important;
     width:44px!important;
     height:44px!important;
@@ -14,11 +14,11 @@
   }
 
   /* Alt menü: iOS güvenli alanı korunur, görünür beyaz blok kısalır. */
-  .app-shell{
+  body .app-shell{
     padding-bottom:calc(94px + env(safe-area-inset-bottom))!important;
   }
 
-  .app-shell > .bottom-nav{
+  body .app-shell > .bottom-nav{
     width:calc(100% - 18px)!important;
     bottom:6px!important;
     min-height:58px!important;
@@ -28,7 +28,7 @@
     align-items:flex-start!important;
   }
 
-  .app-shell > .bottom-nav .nav-btn{
+  body .app-shell > .bottom-nav .nav-btn{
     min-height:48px!important;
     height:48px!important;
     padding:3px 3px!important;
@@ -36,29 +36,29 @@
     border-radius:15px!important;
   }
 
-  .app-shell > .bottom-nav .nav-btn span{
+  body .app-shell > .bottom-nav .nav-btn span{
     line-height:1!important;
   }
 
-  .app-shell > .bottom-nav .nav-btn small{
+  body .app-shell > .bottom-nav .nav-btn small{
     font-size:10.5px!important;
     line-height:1.08!important;
   }
 
-  .app-shell > .bottom-nav .nav-btn svg{
+  body .app-shell > .bottom-nav .nav-btn svg{
     width:24px!important;
     height:24px!important;
   }
 }
 
 @media(max-width:380px){
-  .app-shell > .topbar .bs-brand-mark{
+  body .app-shell > .topbar .bs-brand-mark{
     width:40px!important;
     height:40px!important;
     flex-basis:40px!important;
   }
 
-  .app-shell{
+  body .app-shell{
     padding-bottom:calc(90px + env(safe-area-inset-bottom))!important;
   }
 }
