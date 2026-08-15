@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.3.5 - Mobil dialog, yatay taşma ve sabit modal başlıkları */
+/* BS OFİS BÜTÇE V2.5.7.1 - Mobil dialog ve viewport yatay kayma koruması */
 (() => {
   if(window.__bsV235MobileDialogLoaded) return;
   window.__bsV235MobileDialogLoaded=true;
@@ -8,7 +8,16 @@
     const style=document.createElement('style');
     style.id='bsV235MobileDialogStyles';
     style.textContent=`
-      html,body{max-width:100%;overflow-x:hidden!important}
+      html,body{
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden!important;
+        overscroll-behavior-x:none;
+      }
+      .app-shell,#main,.view{
+        max-width:100%;
+        min-width:0;
+      }
 
       /* Detay başlığı: içerik kayarken başlık + kapatma sabit kalır. */
       #detailDialog .dialog-form{position:relative!important}
@@ -183,6 +192,41 @@
     });
   }
 
+  function resetPageHorizontal(){
+    const scrolling=document.scrollingElement;
+    const y=window.scrollY || scrolling?.scrollTop || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const targets=[
+      scrolling,
+      document.documentElement,
+      document.body,
+      document.querySelector('.app-shell'),
+      document.querySelector('#main')
+    ];
+
+    targets.forEach(el=>{
+      if(el && el.scrollLeft!==0) el.scrollLeft=0;
+    });
+
+    if(window.scrollX!==0 || window.pageXOffset!==0){
+      window.scrollTo(0,y);
+    }
+  }
+
+  function resetAllHorizontal(){
+    resetRecordHorizontal();
+    resetPageHorizontal();
+  }
+
+  function scheduleViewportReset(){
+    resetAllHorizontal();
+    requestAnimationFrame(()=>{
+      resetAllHorizontal();
+      requestAnimationFrame(resetAllHorizontal);
+    });
+    setTimeout(resetAllHorizontal,80);
+    setTimeout(resetAllHorizontal,220);
+  }
+
   ensureStyles();
 
   if(typeof showDetail==='function' && !showDetail.__bsV235SafeDialog){
@@ -210,6 +254,8 @@
           resetRecordHorizontal();
           requestAnimationFrame(resetRecordHorizontal);
         });
+      }else{
+        scheduleViewportReset();
       }
     });
     openObserver.observe(recordDialog,{attributes:true,attributeFilter:['open']});
@@ -217,6 +263,12 @@
     recordDialog.addEventListener('scroll',()=>{
       if(recordDialog.scrollLeft) recordDialog.scrollLeft=0;
     },{passive:true});
+
+    recordDialog.addEventListener('close',()=>{
+      const active=document.activeElement;
+      if(active && recordDialog.contains(active) && typeof active.blur==='function') active.blur();
+      scheduleViewportReset();
+    });
   }
 
   document.querySelector('#recordForm')?.addEventListener('scroll',e=>{
@@ -229,9 +281,13 @@
     }
   },true);
 
-  window.addEventListener('resize',resetRecordHorizontal,{passive:true});
-  window.visualViewport?.addEventListener('resize',resetRecordHorizontal,{passive:true});
+  window.addEventListener('resize',resetAllHorizontal,{passive:true});
+  window.addEventListener('orientationchange',scheduleViewportReset,{passive:true});
+  window.visualViewport?.addEventListener('resize',resetAllHorizontal,{passive:true});
+  window.visualViewport?.addEventListener('scroll',()=>{
+    if(!recordDialog?.open) resetPageHorizontal();
+  },{passive:true});
 
   ensureBottomClose();
-  resetRecordHorizontal();
+  scheduleViewportReset();
 })();
