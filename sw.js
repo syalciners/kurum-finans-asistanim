@@ -1,11 +1,11 @@
-// V260.3.1 - Finans tipografi canlı önbelleği
-const CACHE='bs-ofis-butce-v26031-finans-tipografi-20260816';
+// V260.4 - Nötr renk standardı canlı önbelleği
+const CACHE='bs-ofis-butce-v2604-renk-20260816';
 const ASSETS=[
-  './?v=26031',
-  './index.html?v=26031',
+  './?v=2604',
+  './index.html?v=2604',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2593',
+  './v2471-mobile-polish.css?v=2604',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v2587-debt-owner-colors.css?v=2587',
@@ -86,6 +86,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=26031') || caches.match('./index.html?v=26031')))
+        .then(response => response || caches.match('./?v=2604') || caches.match('./index.html?v=2604')))
   );
 });
