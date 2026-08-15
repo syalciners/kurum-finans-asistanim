@@ -1,11 +1,11 @@
-// V260.8 - Ödemeler premium renk standardı canlı önbelleği
-const CACHE='bs-ofis-butce-v2608-odemeler-renk-20260816';
+// V260.9 - Gelir son dokunuşları canlı önbelleği
+const CACHE='bs-ofis-butce-v2609-gelir-son-20260816';
 const ASSETS=[
-  './?v=2608',
-  './index.html?v=2608',
+  './?v=2609',
+  './index.html?v=2609',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2608',
+  './v2471-mobile-polish.css?v=2609',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v2587-debt-owner-colors.css?v=2587',
@@ -13,8 +13,8 @@ const ASSETS=[
   './v2586-payment-owner-colors.css?v=2608',
   './v251-incomes-polish.css?v=2607',
   './v2581-income-owner-colors.css?v=2606',
-  './v2583-income-summary-stripes.css?v=2606',
-  './v2584-income-themes.css?v=2606',
+  './v2583-income-summary-stripes.css?v=2609',
+  './v2584-income-themes.css?v=2609',
   './v252-calendar-polish.css?v=252',
   './v2588-selectable-kpi-standard.css?v=2608',
   './v257-foundation.css?v=2574',
@@ -86,6 +86,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2608') || caches.match('./index.html?v=2608')))
+        .then(response => response || caches.match('./?v=2609') || caches.match('./index.html?v=2609')))
   );
 });
