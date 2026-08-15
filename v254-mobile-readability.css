@@ -83,6 +83,7 @@ textarea{
   .app-shell > .topbar .bs-brand-mark{
     position:static!important;
     display:block!important;
+    content:url('./bs-budget-app-icon-v253.svg?v=253')!important;
     width:44px!important;
     height:44px!important;
     flex:0 0 44px!important;
