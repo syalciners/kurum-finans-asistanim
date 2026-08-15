@@ -1,0 +1,65 @@
+/* BS OFIS BUTCE V2.4.7.1 - Mobil oran ve sabit navigasyon polish
+   Yalnizca sunum katmani; veri, DOM davranisi ve finans motorlarina dokunmaz. */
+
+/* Sabit alt navigasyonun icerigi ortmesini engelle */
+.app-shell{
+  padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
+}
+
+.app-shell > .bottom-nav{
+  height:auto!important;
+  min-height:68px!important;
+  max-height:calc(78px + env(safe-area-inset-bottom))!important;
+  align-items:flex-start!important;
+  padding:6px max(8px,env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom))!important;
+}
+
+.app-shell > .bottom-nav .nav-btn{
+  min-height:52px!important;
+  height:52px!important;
+  padding:4px 4px!important;
+  align-content:center!important;
+  gap:3px!important;
+}
+.app-shell > .bottom-nav .nav-btn span{
+  line-height:1!important;
+}
+.app-shell > .bottom-nav .nav-btn small{
+  line-height:1.12!important;
+}
+
+/* Marka bari hedef mockup oranina yaklastir */
+.app-shell > .topbar{
+  min-height:72px!important;
+}
+
+@media(max-width:520px){
+  .app-shell{
+    padding-bottom:calc(112px + env(safe-area-inset-bottom))!important;
+  }
+
+  .app-shell > .topbar{
+    min-height:68px!important;
+    padding-top:11px!important;
+    padding-bottom:10px!important;
+    margin-bottom:13px!important;
+  }
+
+  .app-shell > .topbar .bs-brand-mark{
+    width:38px!important;
+    height:38px!important;
+  }
+
+  .app-shell > .bottom-nav{
+    width:calc(100% - 18px)!important;
+    bottom:7px!important;
+    min-height:66px!important;
+    max-height:calc(76px + env(safe-area-inset-bottom))!important;
+    border-radius:18px!important;
+  }
+
+  .app-shell > .bottom-nav .nav-btn{
+    min-height:50px!important;
+    height:50px!important;
+  }
+}
