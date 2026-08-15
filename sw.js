@@ -1,20 +1,20 @@
-// V260.5 - Gelir renk hiyerarsisi canlı önbelleği
-const CACHE='bs-ofis-butce-v2605-gelir-renk-20260816';
+// V260.6 - Gelir KPI premium renk standardı canlı önbelleği
+const CACHE='bs-ofis-butce-v2606-gelir-kpi-20260816';
 const ASSETS=[
-  './?v=2605',
-  './index.html?v=2605',
+  './?v=2606',
+  './index.html?v=2606',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
-  './v2471-mobile-polish.css?v=2604',
+  './v2471-mobile-polish.css?v=2606',
   './v248-dashboard-polish.css?v=248',
   './v249-debts-polish.css?v=249',
   './v2587-debt-owner-colors.css?v=2587',
   './v250-payments-polish.css?v=2596',
   './v2586-payment-owner-colors.css?v=2586',
   './v251-incomes-polish.css?v=251',
-  './v2581-income-owner-colors.css?v=2581',
-  './v2583-income-summary-stripes.css?v=2583',
-  './v2584-income-themes.css?v=2584',
+  './v2581-income-owner-colors.css?v=2606',
+  './v2583-income-summary-stripes.css?v=2606',
+  './v2584-income-themes.css?v=2606',
   './v252-calendar-polish.css?v=252',
   './v2588-selectable-kpi-standard.css?v=2590',
   './v257-foundation.css?v=2574',
@@ -86,6 +86,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2605') || caches.match('./index.html?v=2605')))
+        .then(response => response || caches.match('./?v=2606') || caches.match('./index.html?v=2606')))
   );
 });
