@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.7 - Tek temel mobil/marka katmanı
+/* BS OFİS BÜTÇE V2.5.7.3 - Tek temel mobil/marka katmanı
    Final header, okunabilirlik, sabit uygulama kabuğu ve ortak dinamik UI yapıları. */
 
 :root{
@@ -9,6 +9,8 @@
 html,body{
   max-width:100%;
   overflow-x:hidden!important;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
 }
 
 body{
@@ -20,10 +22,35 @@ button,input,select,textarea{
   font-size:14px!important;
 }
 
-/* Uygulama kabuğu: ilk boyamada final konumlar hazır olsun. */
+/* Uygulama kabuğu tek kaynak: her cihazda ortalı ve en fazla 780 px. */
 .app-shell{
+  width:100%!important;
+  max-width:780px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  overflow-x:hidden!important;
   padding-top:var(--bs-shell-top-space)!important;
   padding-bottom:calc(var(--bs-shell-bottom-space) + 16px + env(safe-area-inset-bottom))!important;
+}
+
+.app-shell > main,
+.app-shell .view{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+
+.app-shell .summary-grid,
+.app-shell .kpi-grid,
+.app-shell .v175-quick-grid,
+.app-shell .v177-flow-grid,
+.app-shell .v178-quick-grid,
+.app-shell .toolbar,
+.app-shell .list,
+.app-shell #v203ExpenseCategorySummary{
+  max-width:100%!important;
+  min-width:0!important;
 }
 
 .app-shell > .topbar{
@@ -290,6 +317,21 @@ button,input,select,textarea{
 }
 
 @media(max-width:520px){
+  /* iOS Safari 16 px altı form yazılarında otomatik zoom yapar. */
+  input,select,textarea,
+  #recordDialog input,
+  #recordDialog select,
+  #recordDialog textarea{
+    font-size:16px!important;
+  }
+
+  .app-shell{
+    width:100%!important;
+    max-width:100%!important;
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+
   .app-shell > .topbar{
     width:calc(100vw - 16px)!important;
     max-width:calc(100vw - 16px)!important;
