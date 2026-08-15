@@ -1,8 +1,8 @@
-// V258 Eğitim Supabase gelir senkron build
-const CACHE='bs-ofis-butce-v258-egitim-gelir-20260815';
+// V258.1 Gelir sahibi renkleri build
+const CACHE='bs-ofis-butce-v2581-owner-colors-20260815';
 const ASSETS=[
-  './?v=258',
-  './index.html?v=258',
+  './?v=2581',
+  './index.html?v=2581',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2574',
@@ -10,6 +10,7 @@ const ASSETS=[
   './v249-debts-polish.css?v=249',
   './v250-payments-polish.css?v=250',
   './v251-incomes-polish.css?v=251',
+  './v2581-income-owner-colors.css?v=2581',
   './v252-calendar-polish.css?v=252',
   './v257-foundation.css?v=2574',
   './app.js?v=257',
@@ -72,6 +73,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=258') || caches.match('./index.html?v=258')))
+        .then(response => response || caches.match('./?v=2581') || caches.match('./index.html?v=2581')))
   );
 });
