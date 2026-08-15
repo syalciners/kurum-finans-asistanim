@@ -1,59 +1,94 @@
-/* BS OFİS BÜTÇE V2.5.8.4 - Gelir tema renkleri
-   Özel Ders = turuncu; Maaş = gelir sahibinin rengi.
-   Tahsilat/liste kartlarına üst şerit eklenmez. */
+/* BS OFİS BÜTÇE V2.6.0.5 - Gelir renk hiyerarşisi
+   Tek renk = tek anlam:
+   - Süleyman: yalnız sol mavi şerit
+   - Başak: yalnız sol pembe şerit
+   - Kurum: renkli sol şerit yok
+   - Özel Ders: yalnız gelir türü turuncu
+   - Tutar: daima koyu siyah */
 
-/* Özel Ders Geliri özet kartı: turuncu tema */
+:root{
+  --bs-income-owner-suleyman:#2563EB;
+  --bs-income-owner-basak:#EC4899;
+  --bs-income-lesson:#F59E0B;
+  --bs-income-lesson-text:#C2410C;
+  --bs-income-amount:#0F172A;
+  --bs-income-border:#E2E8F0;
+}
+
+/* Özel Ders Geliri özet kartı: beyaz kart + turuncu kimlik. */
 #incomes .kpi-grid .kpi:nth-child(2){
-  background:linear-gradient(180deg,#FFFFFF 0%,#FFFBEB 100%)!important;
-  border-color:#FDE68A!important;
+  background:#FFFFFF!important;
+  border-color:var(--bs-income-border)!important;
 }
 #incomes .kpi-grid .kpi:nth-child(2)::before{
-  background:#F59E0B!important;
+  background:var(--bs-income-lesson)!important;
 }
-#incomes .kpi-grid .kpi:nth-child(2) span,
-#incomes .kpi-grid .kpi:nth-child(2) small{
-  color:#92400E!important;
+#incomes .kpi-grid .kpi:nth-child(2) span{
+  color:#9A3412!important;
 }
 #incomes .kpi-grid .kpi:nth-child(2) strong{
-  color:#B45309!important;
+  color:var(--bs-income-lesson-text)!important;
+}
+#incomes .kpi-grid .kpi:nth-child(2) small{
+  color:#64748B!important;
 }
 
-/* Özel Ders kayıtları: turuncu tema, üst şerit YOK */
-#incomes #incomeList .list-card.income-theme-lesson{
-  border-left-color:#F59E0B!important;
-  background:linear-gradient(90deg,#FFFBEB 0%,#FFFFFF 18%)!important;
+/* Tüm gelir kayıtlarında tutar nötr ve tek renktir. */
+#incomes #incomeList .list-card .amount,
+#incomes #incomeList .income-bs-card .amount{
+  color:var(--bs-income-amount)!important;
 }
-#incomes #incomeList .list-card.income-theme-lesson .amount{
-  color:#B45309!important;
+
+/* Özel Ders: kart zemini ve tutar değişmez; yalnız tür başlığı turuncudur. */
+#incomes #incomeList .list-card.income-theme-lesson,
+#incomes #incomeList .income-bs-card.income-theme-lesson{
+  background:#FFFFFF!important;
+}
+#incomes #incomeList .list-card.income-theme-lesson .main>strong,
+#incomes #incomeList .income-bs-card.income-theme-lesson .main>strong{
+  color:var(--bs-income-lesson-text)!important;
 }
 #incomes #incomeList .list-card.income-theme-lesson .income-distribution,
-#incomes #incomeList .list-card.income-theme-lesson .income-share-note{
-  color:#92400E!important;
+#incomes #incomeList .list-card.income-theme-lesson .income-share-note,
+#incomes #incomeList .income-bs-card.income-theme-lesson .income-distribution,
+#incomes #incomeList .income-bs-card.income-theme-lesson .income-share-note{
+  color:#64748B!important;
 }
 
-/* Maaş kayıtları: Başak = pembe */
-#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-basak{
-  border-left-color:#EC4899!important;
-  background:linear-gradient(90deg,#FDF2F8 0%,#FFFFFF 18%)!important;
-}
-#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-basak .amount{
-  color:#BE185D!important;
-}
-
-/* Maaş kayıtları: Süleyman = mavi */
-#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-suleyman{
-  border-left-color:#2563EB!important;
-  background:linear-gradient(90deg,#EFF6FF 0%,#FFFFFF 18%)!important;
-}
-#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-suleyman .amount{
-  color:#1D4ED8!important;
+/* Başak: yalnız sol pembe şerit. */
+#incomes #incomeList .list-card.income-theme-owner-basak,
+#incomes #incomeList .income-bs-card.income-theme-owner-basak{
+  border-left-width:3px!important;
+  border-left-color:var(--bs-income-owner-basak)!important;
+  background:#FFFFFF!important;
 }
 
-/* Maaş kayıtları: Kurum = turkuaz */
-#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-kurum{
-  border-left-color:#14B8A6!important;
-  background:linear-gradient(90deg,#ECFDF9 0%,#FFFFFF 18%)!important;
+/* Süleyman: yalnız sol mavi şerit. */
+#incomes #incomeList .list-card.income-theme-owner-suleyman,
+#incomes #incomeList .income-bs-card.income-theme-owner-suleyman{
+  border-left-width:3px!important;
+  border-left-color:var(--bs-income-owner-suleyman)!important;
+  background:#FFFFFF!important;
 }
-#incomes #incomeList .list-card.income-theme-salary.income-theme-owner-kurum .amount{
-  color:#0F8F83!important;
+
+/* Kurum: standart gri çerçeve, renkli sol şerit yok. */
+#incomes #incomeList .list-card.income-theme-owner-kurum,
+#incomes #incomeList .income-bs-card.income-theme-owner-kurum{
+  border-left-width:1px!important;
+  border-left-color:var(--bs-income-border)!important;
+  background:#FFFFFF!important;
+}
+
+/* Hover durumunda da sahiplik şeridi değişmez. */
+#incomes #incomeList .list-card.income-theme-owner-basak:hover,
+#incomes #incomeList .income-bs-card.income-theme-owner-basak:hover{
+  border-left-color:var(--bs-income-owner-basak)!important;
+}
+#incomes #incomeList .list-card.income-theme-owner-suleyman:hover,
+#incomes #incomeList .income-bs-card.income-theme-owner-suleyman:hover{
+  border-left-color:var(--bs-income-owner-suleyman)!important;
+}
+#incomes #incomeList .list-card.income-theme-owner-kurum:hover,
+#incomes #incomeList .income-bs-card.income-theme-owner-kurum:hover{
+  border-left-color:#CBD5E1!important;
 }
