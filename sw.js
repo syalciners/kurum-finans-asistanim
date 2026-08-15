@@ -1,4 +1,4 @@
-const CACHE='bs-ofis-butce-ui251-incomes-polish-20260815';
+const CACHE='bs-ofis-butce-ui252-calendar-polish-20260815';
 const ASSETS=[
   './?v=240',
   './index.html?v=240',
@@ -9,6 +9,7 @@ const ASSETS=[
   './v249-debts-polish.css?v=249',
   './v250-payments-polish.css?v=250',
   './v251-incomes-polish.css?v=251',
+  './v252-calendar-polish.css?v=252',
   './app.js?v=176',
   './core-compat.js?v=240',
   './v17-ui.js?v=218',
