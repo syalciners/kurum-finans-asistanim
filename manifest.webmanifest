@@ -1,21 +1,21 @@
 {
-  "id": "./?brand=2561",
+  "id": "./?brand=2562",
   "name": "BS OFİS BÜTÇE YÖNETİMİ",
   "short_name": "BS Bütçe",
-  "start_url": "./?v=2561",
+  "start_url": "./?v=2562",
   "scope": "./",
   "display": "standalone",
   "background_color": "#F8FAFC",
   "theme_color": "#F8FAFC",
   "icons": [
     {
-      "src": "bs-budget-app-icon-v256.svg?v=2561",
+      "src": "bs-budget-app-icon-v256.svg?v=2562",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "bs-budget-app-icon-v256.svg?v=2561",
+      "src": "bs-budget-app-icon-v256.svg?v=2562",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
