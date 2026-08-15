@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.6.2 - Merkezi çekirdek uyumluluk katmanı */
+/* BS OFİS BÜTÇE V2.5.6.3 - Merkezi çekirdek uyumluluk katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -192,7 +192,7 @@
   }
 
   function installBrandAssets(){
-    const iconHref = './bs-budget-app-icon-v256.svg?v=2562';
+    const iconHref = './bs-budget-app-icon-v256.svg?v=2563';
 
     const iconLinks = [
       ['icon','image/svg+xml'],
@@ -212,33 +212,7 @@
     });
 
     const manifest = document.querySelector('link[rel="manifest"]');
-    if(manifest) manifest.href = './manifest.webmanifest?v=2562';
-  }
-
-  function refreshServiceWorker(){
-    if(!('serviceWorker' in navigator)) return;
-    navigator.serviceWorker
-      .register('./sw.js?v=2562', {updateViaCache:'none'})
-      .then(reg => reg.update())
-      .catch(console.error);
-  }
-
-  function loadDesignSystem(){
-    if(document.querySelector('link[data-bs-design-system]')) return;
-    const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href='./v247-design-system.css?v=247';
-    link.dataset.bsDesignSystem='1';
-    document.head.appendChild(link);
-  }
-
-  function loadMobilePolish(){
-    if(document.querySelector('link[data-bs-mobile-polish]')) return;
-    const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href='./v2471-mobile-polish.css?v=2561';
-    link.dataset.bsMobilePolish='1';
-    document.head.appendChild(link);
+    if(manifest) manifest.href = './manifest.webmanifest?v=2563';
   }
 
   function loadMobileDialogSafety(){
@@ -310,9 +284,6 @@
   installSafeTitleRenderer();
   installApplicationNameSaveFlow();
   installBrandAssets();
-  refreshServiceWorker();
-  loadDesignSystem();
-  loadMobilePolish();
   setTimeout(loadMobileDialogSafety,0);
   setTimeout(loadShellLock,0);
   setTimeout(loadPaymentEditor,0);
