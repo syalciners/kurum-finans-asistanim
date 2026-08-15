@@ -119,4 +119,11 @@
   }
 
   if(typeof renderDebts === 'function') renderDebts();
+
+  if(!window.__bsDebtCardStatusV2598Loaded && !document.querySelector('script[data-bs-v2598-debt-card]')){
+    const script = document.createElement('script');
+    script.src = './v2598-debt-card-status.js?v=2598';
+    script.dataset.bsV2598DebtCard = '1';
+    document.body.appendChild(script);
+  }
 })();
