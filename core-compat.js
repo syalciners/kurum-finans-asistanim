@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.7 - Merkezi uyumluluk ve başlangıç katmanı */
+/* BS OFİS BÜTÇE V2.5.7.1 - Merkezi uyumluluk ve başlangıç katmanı */
 (() => {
   if(window.__bsCoreCompatLoaded) return;
   window.__bsCoreCompatLoaded = true;
@@ -209,7 +209,7 @@
 
   async function loadOptionalModules(){
     const modules = [
-      ['./v230-mobile-dialog.js?v=257','__bsV235MobileDialogLoaded'],
+      ['./v230-mobile-dialog.js?v=2571','__bsV235MobileDialogLoaded'],
       ['./v234-shell-lock.js?v=257','__bsV234ShellLockLoaded'],
       ['./payment-editor-v240.js?v=240','__bsPaymentEditorV240Loaded'],
       ['./v241-payment-modal-scroll-lock.js?v=241','__bsV241PaymentModalScrollLockLoaded'],
@@ -222,7 +222,7 @@
       try{
         await loadScript(src,marker);
       }catch(error){
-        console.error('V257 opsiyonel modül yükleme hatası:',error);
+        console.error('V257.1 opsiyonel modül yükleme hatası:',error);
       }
     }
   }
