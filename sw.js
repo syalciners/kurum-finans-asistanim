@@ -1,7 +1,7 @@
-const CACHE='bs-ofis-butce-v2572-expense-ux-20260815';
+const CACHE='bs-ofis-butce-v2573-shell-zoom-fix-20260815';
 const ASSETS=[
-  './?v=2572',
-  './index.html?v=2572',
+  './?v=2573',
+  './index.html?v=2573',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=257',
@@ -10,7 +10,7 @@ const ASSETS=[
   './v250-payments-polish.css?v=250',
   './v251-incomes-polish.css?v=251',
   './v252-calendar-polish.css?v=252',
-  './v257-foundation.css?v=257',
+  './v257-foundation.css?v=2573',
   './app.js?v=257',
   './core-compat.js?v=257',
   './v17-ui.js?v=218',
@@ -70,6 +70,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2572') || caches.match('./index.html?v=2572')))
+        .then(response => response || caches.match('./?v=2573') || caches.match('./index.html?v=2573')))
   );
 });
