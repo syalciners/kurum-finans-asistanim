@@ -7,6 +7,9 @@
 /* V249 Borclar polish - yalniz gorsel katman */
 @import url('./v249-debts-polish.css?v=249');
 
+/* V250 Odemeler polish - yalniz gorsel katman */
+@import url('./v250-payments-polish.css?v=250');
+
 /* Sabit alt navigasyonun icerigi ortmesini engelle */
 .app-shell{
   padding-bottom:calc(116px + env(safe-area-inset-bottom))!important;
