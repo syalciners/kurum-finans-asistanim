@@ -1,6 +1,6 @@
-/* BS OFİS BÜTÇE V2.5.9.9 - Gelir kartı tema işaretleme
+/* BS OFİS BÜTÇE V2.6.0.0 - Gelir kartı sahip işaretleme
    Yalnızca sunum katmanı.
-   V259.9: Gelir türünden bağımsız olarak tek sahibi olan her gelir kartına sahip sınıfı eklenir. */
+   Tek sahipli kartlarda sahibin rengi, çok sahipli otomatik tahsilatlarda birleşik sahip şeridi kullanılır. */
 (() => {
   if(window.__bsIncomeThemesV2584Loaded) return;
   window.__bsIncomeThemesV2584Loaded = true;
@@ -10,8 +10,15 @@
     'income-theme-salary',
     'income-theme-owner-basak',
     'income-theme-owner-suleyman',
-    'income-theme-owner-kurum'
+    'income-theme-owner-kurum',
+    'income-theme-multi',
+    'income-theme-multi-basak-suleyman',
+    'income-theme-multi-basak-kurum',
+    'income-theme-multi-suleyman-kurum',
+    'income-theme-multi-all'
   ];
+
+  const OWNER_ORDER = ['Başak','Süleyman','Kurum Kasası'];
 
   function ownerClass(owner){
     if(owner === 'Başak') return 'income-theme-owner-basak';
@@ -20,14 +27,39 @@
     return '';
   }
 
-  function applyCardTheme(card,type,owner){
+  function multiOwnerClass(owners){
+    const set = new Set(owners);
+    if(set.size < 2) return '';
+    if(set.size >= 3) return 'income-theme-multi-all';
+    if(set.has('Başak') && set.has('Süleyman')) return 'income-theme-multi-basak-suleyman';
+    if(set.has('Başak') && set.has('Kurum Kasası')) return 'income-theme-multi-basak-kurum';
+    if(set.has('Süleyman') && set.has('Kurum Kasası')) return 'income-theme-multi-suleyman-kurum';
+    return '';
+  }
+
+  function applyCardTheme(card,type,ownerInput){
     card.classList.remove(...THEME_CLASSES);
 
     if(type === 'Özel Ders') card.classList.add('income-theme-lesson');
     if(type === 'Maaş') card.classList.add('income-theme-salary');
 
-    const cls = ownerClass(owner);
-    if(cls) card.classList.add(cls);
+    const owners = [...new Set(
+      (Array.isArray(ownerInput) ? ownerInput : [ownerInput])
+        .map(x => String(x || '').trim())
+        .filter(x => OWNER_ORDER.includes(x))
+    )];
+
+    if(owners.length === 1){
+      const cls = ownerClass(owners[0]);
+      if(cls) card.classList.add(cls);
+      return;
+    }
+
+    if(owners.length > 1){
+      card.classList.add('income-theme-multi');
+      const cls = multiOwnerClass(owners);
+      if(cls) card.classList.add(cls);
+    }
   }
 
   function applyIncomeThemes(){
@@ -52,7 +84,7 @@
         const group = bySource.get(String(paymentId)) || [];
         const sample = group[0];
         const owners = [...new Set(group.map(row => row.owner).filter(Boolean))];
-        applyCardTheme(card,sample?.type || '',owners.length === 1 ? owners[0] : '');
+        applyCardTheme(card,sample?.type || '',owners);
         return;
       }
 
