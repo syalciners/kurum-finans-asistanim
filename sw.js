@@ -1,8 +1,8 @@
-// V261.2.1 - Özet açılış stabilizasyonu yayın önbelleği
-const CACHE='bs-ofis-butce-v26121-ozet-acilis-stabil-20260816';
+// V261.2.2 - Bulut başlangıç kurtarma canlı önbelleği
+const CACHE='bs-ofis-butce-v26122-bulut-baslangic-kurtarma-20260816';
 const ASSETS=[
-  './?v=26121',
-  './index.html?v=26121',
+  './?v=26122',
+  './index.html?v=26122',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2610',
@@ -45,6 +45,7 @@ const ASSETS=[
   './v2598-debt-card-status.js?v=2598',
   './v230-mobile-dialog.js?v=2571',
   './v234-shell-lock.js?v=257',
+  './v26122-cloud-bootstrap.js?v=26122',
   './v241-payment-modal-scroll-lock.js?v=241',
   './v242-payment-save-ui.js?v=242',
   './v244-monthly-report.js?v=2612',
@@ -87,6 +88,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=26121') || caches.match('./index.html?v=26121')))
+        .then(response => response || caches.match('./?v=26122') || caches.match('./index.html?v=26122')))
   );
 });
