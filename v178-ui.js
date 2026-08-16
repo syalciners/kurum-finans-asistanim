@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.6.1.2 - Hızlı işlemler + Özet açılış stabilizasyonu */
+/* BS OFİS BÜTÇE V2.6.1.3 - Hızlı işlemler + Özet açılış stabilizasyonu + startup gate */
 (() => {
   function ensureV178Styles(){
     if(document.querySelector('#v178Styles')) return;
@@ -280,12 +280,68 @@
     document.body.appendChild(script);
   }
 
+  function startStartupGateV2613(){
+    const root = document.documentElement;
+    if(root.classList.contains('bs-startup-ready')) return;
+
+    const started = performance.now();
+    const NO_SESSION_GRACE_MS = 1200;
+    const MAX_WAIT_MS = 4000;
+    let timer = 0;
+
+    const modernUiReady = () => !!(
+      document.querySelector('#v178QuickActions') &&
+      document.querySelector('#v177DashboardPanel') &&
+      document.querySelector('#v179DebtProgress') &&
+      document.querySelector('#v244MonthlyReport') &&
+      window.__bsCurrentUiReady === true &&
+      window.__bsDirectPdfReportV246Loaded === true
+    );
+
+    const cloudReady = () => {
+      const configured = typeof cloud === 'object' && !!cloud?.url && !!cloud?.key;
+      if(!configured) return true;
+
+      const badge = document.querySelector('#syncBadge')?.textContent?.trim() || '';
+      const elapsed = performance.now() - started;
+
+      if(badge === 'Bulut') return true;
+      if(badge === 'Giriş yok' && elapsed >= NO_SESSION_GRACE_MS) return true;
+      return elapsed >= MAX_WAIT_MS;
+    };
+
+    const reveal = reason => {
+      clearTimeout(timer);
+      root.classList.add('bs-startup-ready');
+      root.dataset.bsStartupReady = reason;
+    };
+
+    const check = () => {
+      const elapsed = performance.now() - started;
+
+      if(modernUiReady() && cloudReady()){
+        reveal('ready');
+        return;
+      }
+
+      if(elapsed >= MAX_WAIT_MS && document.querySelector('#dashboard')){
+        reveal('fallback');
+        return;
+      }
+
+      timer = setTimeout(check,50);
+    };
+
+    check();
+  }
+
   ensureV178Styles();
   ensureQuickActions();
   stabilizeDashboardV2612();
   observeDashboardV2612();
   preloadReportModulesV2612();
   loadCashFlowDetailV2611();
+  startStartupGateV2613();
 
   const originalRenderDashboardV178 = renderDashboard;
   renderDashboard = function(){
