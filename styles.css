@@ -31,7 +31,7 @@ html:not(.bs-startup-ready) body{
 html:not(.bs-startup-ready) .app-shell,
 html:not(.bs-startup-ready) .toast,
 html:not(.bs-startup-ready) dialog{
-  visibility:hidden!important;
+  visibility:hidden;
 }
 html:not(.bs-startup-ready) body::before{
   content:"BS OFİS BÜTÇE\A Veriler hazırlanıyor…";
