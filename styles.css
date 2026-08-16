@@ -25,9 +25,6 @@ dialog{width:min(620px,calc(100% - 24px));padding:0;border:0;border-radius:20px;
 @keyframes bs-startup-shell-fallback{
   to{visibility:visible}
 }
-html:not(.bs-startup-ready) body{
-  overflow:hidden;
-}
 html:not(.bs-startup-ready) .app-shell,
 html:not(.bs-startup-ready) .toast,
 html:not(.bs-startup-ready) dialog{
@@ -50,6 +47,7 @@ html:not(.bs-startup-ready) body::before{
   line-height:1.65;
   font-weight:800;
   letter-spacing:.01em;
+  touch-action:none;
   animation:bs-startup-gate-fallback .15s linear 8s forwards;
 }
 html:not(.bs-startup-ready) .app-shell{
