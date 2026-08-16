@@ -8,7 +8,7 @@
   background:linear-gradient(90deg,#FDF2F8 0%,#FFFFFF 18%)!important;
 }
 #debts #debtList .list-card.debt-owner-basak .amount{
-  color:#BE185D!important;
+  color:#0F172A!important;
 }
 #debts #debtList .list-card.debt-owner-basak:hover{
   border-left-color:#DB2777!important;
@@ -20,7 +20,7 @@
   background:linear-gradient(90deg,#EFF6FF 0%,#FFFFFF 18%)!important;
 }
 #debts #debtList .list-card.debt-owner-suleyman .amount{
-  color:#1D4ED8!important;
+  color:#0F172A!important;
 }
 #debts #debtList .list-card.debt-owner-suleyman:hover{
   border-left-color:#1D4ED8!important;
@@ -32,7 +32,7 @@
   background:linear-gradient(90deg,#ECFDF9 0%,#FFFFFF 18%)!important;
 }
 #debts #debtList .list-card.debt-owner-kurum .amount{
-  color:#0F8F83!important;
+  color:#0F172A!important;
 }
 #debts #debtList .list-card.debt-owner-kurum:hover{
   border-left-color:#0F8F83!important;
