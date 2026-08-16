@@ -383,3 +383,76 @@ dialog::backdrop{
 @media(prefers-reduced-motion:reduce){
   .list-card,.primary,.secondary,.danger-btn,.link-btn,.icon-btn,.nav-btn{transition:none!important}
 }
+
+/* BS OFIS BUTCE V2.6.1.4 - Markali startup ekrani
+   Mevcut startup gate mantigi korunur; yalnizca ilk boyama sunumu degisir. */
+html:not(.bs-startup-ready) body::before{
+  content:""!important;
+  background:
+    radial-gradient(circle at 50% 44%,rgba(37,99,235,.055),transparent 34%),
+    #F8FAFC!important;
+  color:transparent!important;
+}
+html:not(.bs-startup-ready) body::after{
+  content:"";
+  position:fixed;
+  left:50%;
+  top:calc(50% - 94px);
+  z-index:2147483647;
+  width:92px;
+  height:92px;
+  transform:translate(-50%,-50%);
+  border-radius:23px;
+  background:url("bs-budget-app-icon-v256.svg?v=257") center/contain no-repeat;
+  filter:drop-shadow(0 12px 24px rgba(11,31,58,.14));
+  pointer-events:none;
+  animation:bs-startup-gate-fallback .15s linear 8s forwards;
+}
+html:not(.bs-startup-ready)::before{
+  content:"BS Ofis";
+  position:fixed;
+  left:50%;
+  top:calc(50% + 5px);
+  z-index:2147483647;
+  transform:translate(-50%,-50%);
+  color:#0B1F3A;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
+  font-size:22px;
+  line-height:1.15;
+  font-weight:800;
+  letter-spacing:-.025em;
+  white-space:nowrap;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  pointer-events:none;
+  animation:bs-startup-gate-fallback .15s linear 8s forwards;
+}
+html:not(.bs-startup-ready)::after{
+  content:"Veriler hazırlanıyor…";
+  position:fixed;
+  left:50%;
+  top:calc(50% + 38px);
+  z-index:2147483647;
+  transform:translate(-50%,-50%);
+  color:#64748B;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:500;
+  letter-spacing:.005em;
+  white-space:nowrap;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  pointer-events:none;
+  animation:bs-startup-gate-fallback .15s linear 8s forwards;
+}
+@media(max-width:420px){
+  html:not(.bs-startup-ready) body::after{
+    width:86px;
+    height:86px;
+    top:calc(50% - 90px);
+    border-radius:22px;
+  }
+  html:not(.bs-startup-ready)::before{font-size:21px}
+  html:not(.bs-startup-ready)::after{font-size:12.5px}
+}
