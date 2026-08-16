@@ -16,6 +16,11 @@
   color:var(--bs-payment-amount)!important;
 }
 
+/* Kısmi ödeme tutarı turuncu. */
+#payments #paymentList .v179-payment-card:has(.badge.orange) .amount{
+  color:#F59E0B!important;
+}
+
 /* Başak: yalnız sol pembe şerit. */
 #payments #paymentList .list-card.payment-owner-basak,
 #payments #paymentList .v179-payment-card.payment-owner-basak{
