@@ -1,16 +1,16 @@
 /* BS OFİS BÜTÇE V2.6.0.8 - Ödeme kartlarında borç sahibi renkleri
    Yalnızca Ödemeler ekranının sunum katmanı.
-   Sahiplik rengi yalnız sol şeritte kullanılır; kart zemini ve tutar nötr kalır.
+   Sahiplik rengi yalnız sol şeritte kullanılır; ödeme tutarı mavi gösterilir.
    Başak = pembe, Süleyman = mavi, Kurum = turkuaz. */
 
 :root{
   --bs-payment-owner-basak:#EC4899;
   --bs-payment-owner-suleyman:#2563EB;
   --bs-payment-owner-kurum:#14B8A6;
-  --bs-payment-amount:#0F172A;
+  --bs-payment-amount:#2563EB;
 }
 
-/* Tüm ödeme tutarları tek nötr renkte. */
+/* Tüm ödeme tutarları tek mavi renkte. */
 #payments #paymentList .list-card .amount,
 #payments #paymentList .v179-payment-card .amount{
   color:var(--bs-payment-amount)!important;
