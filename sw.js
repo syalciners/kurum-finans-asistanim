@@ -1,8 +1,8 @@
-// V261.2.2 - Bulut başlangıç kurtarma canlı önbelleği
-const CACHE='bs-ofis-butce-v26122-bulut-baslangic-kurtarma-20260816';
+// V261.3 - Sağlıklı açılış / startup gate canlı önbelleği
+const CACHE='bs-ofis-butce-v2613-startup-gate-20260816';
 const ASSETS=[
-  './?v=26122',
-  './index.html?v=26122',
+  './?v=2613',
+  './index.html?v=2613',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2610',
@@ -30,7 +30,7 @@ const ASSETS=[
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
   './v177-ui.js?v=214',
-  './v178-ui.js?v=2612',
+  './v178-ui.js?v=214',
   './v2611-cash-flow-detail.js?v=2611',
   './v179-ui.js?v=179',
   './ui.js?v=257',
@@ -88,6 +88,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=26122') || caches.match('./index.html?v=26122')))
+        .then(response => response || caches.match('./?v=2613') || caches.match('./index.html?v=2613')))
   );
 });
