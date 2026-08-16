@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V1.7.8 - Hızlı işlemler */
+/* BS OFİS BÜTÇE V2.6.1.1 - Hızlı işlemler + net nakit detay yükleyicisi */
 (() => {
   function ensureV178Styles(){
     if(document.querySelector('#v178Styles')) return;
@@ -186,8 +186,18 @@
     });
   }
 
+  function loadCashFlowDetailV2611(){
+    if(window.__bsCashFlowDetailV2611Loaded || document.querySelector('script[data-v2611-cash-flow]')) return;
+    const script = document.createElement('script');
+    script.src = './v2611-cash-flow-detail.js?v=2611';
+    script.dataset.v2611CashFlow = '1';
+    script.addEventListener('error',()=>console.error('V261.1 nakit akışı detay modülü yüklenemedi.'),{once:true});
+    document.body.appendChild(script);
+  }
+
   ensureV178Styles();
   ensureQuickActions();
+  loadCashFlowDetailV2611();
 
   const originalRenderDashboardV178 = renderDashboard;
   renderDashboard = function(){
