@@ -4,7 +4,7 @@
    - Başak: yalnız sahiplik vurgusu pembe
    - Kurum: liste kartında nötr; dağılım göstergesinde yeşil
    - Özel Ders: yalnız KPI/tür kimliği turuncu
-   - Liste başlıkları ve tüm tutarlar: koyu siyah */
+   - Liste başlıkları koyu siyah; liste tutarları yeşil */
 
 :root{
   --bs-income-owner-suleyman:#2563EB;
@@ -39,10 +39,10 @@
   color:#64748B!important;
 }
 
-/* Tüm gelir kayıtlarında tutar nötr ve tek renktir. */
+/* Tüm gelir kayıtlarında tutar yeşildir. */
 #incomes #incomeList .list-card .amount,
 #incomes #incomeList .income-bs-card .amount{
-  color:var(--bs-income-amount)!important;
+  color:#22C55E!important;
 }
 
 /* Özel Ders: kart zemini, öğrenci/kayıt başlığı ve tutar nötr kalır. */
