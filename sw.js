@@ -1,5 +1,5 @@
-// V261.3 - Sağlıklı açılış / startup gate canlı önbelleği
-const CACHE='bs-ofis-butce-v2613-startup-gate-20260816';
+// V261.3.1 - Sağlıklı açılış / startup gate canlı önbelleği
+const CACHE='bs-ofis-butce-v26131-startup-gate-20260816';
 const ASSETS=[
   './?v=2613',
   './index.html?v=2613',
