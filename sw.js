@@ -1,8 +1,8 @@
-// V261.1 - Gerçekleşen net nakit akışı detay paneli canlı önbelleği
-const CACHE='bs-ofis-butce-v2611-nakit-akisi-detay-20260816';
+// V261.2 - Özet açılış stabilizasyonu canlı önbelleği
+const CACHE='bs-ofis-butce-v2612-ozet-acilis-stabil-20260816';
 const ASSETS=[
-  './?v=2611',
-  './index.html?v=2611',
+  './?v=2612',
+  './index.html?v=2612',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2610',
@@ -30,7 +30,7 @@ const ASSETS=[
   './v175-ui.js?v=175',
   './v176-ui.js?v=218',
   './v177-ui.js?v=214',
-  './v178-ui.js?v=214',
+  './v178-ui.js?v=2612',
   './v2611-cash-flow-detail.js?v=2611',
   './v179-ui.js?v=179',
   './ui.js?v=257',
@@ -47,8 +47,8 @@ const ASSETS=[
   './v234-shell-lock.js?v=257',
   './v241-payment-modal-scroll-lock.js?v=241',
   './v242-payment-save-ui.js?v=242',
-  './v244-monthly-report.js?v=244',
-  './v246-direct-pdf-report.js?v=246',
+  './v244-monthly-report.js?v=2612',
+  './v246-direct-pdf-report.js?v=2612',
   './manifest.webmanifest?v=257',
   './bs-budget-app-icon-v256.svg?v=257',
   './bs-budget-header-mark-v256.svg?v=257',
@@ -87,6 +87,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2611') || caches.match('./index.html?v=2611')))
+        .then(response => response || caches.match('./?v=2612') || caches.match('./index.html?v=2612')))
   );
 });
