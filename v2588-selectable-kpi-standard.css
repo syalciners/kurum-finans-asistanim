@@ -86,3 +86,30 @@
 #debts #v175DebtKpis [data-debt-quick="overdue"].active small{
   color:#DC2626!important;
 }
+
+/* ---------------------------------------------------------
+   GELİRLER
+   Seçili Ay Toplam = sarı, Özel Ders Geliri = turuncu.
+   Mevcut filtre/active davranışı kullanılır; yalnız görünüm standardize edilir.
+   --------------------------------------------------------- */
+#incomes .kpi-grid [data-income-main-filter="all"].active{
+  border-color:#F3D65A!important;
+  background:linear-gradient(180deg,#FFFDF5 0%,#FEFCE8 100%)!important;
+  box-shadow:0 0 0 2px rgba(234,179,8,.10),0 4px 12px rgba(234,179,8,.06)!important;
+}
+#incomes .kpi-grid [data-income-main-filter="all"].active span,
+#incomes .kpi-grid [data-income-main-filter="all"].active strong,
+#incomes .kpi-grid [data-income-main-filter="all"].active small{
+  color:#A16207!important;
+}
+
+#incomes .kpi-grid [data-income-main-filter="lesson"].active{
+  border-color:#F6C76B!important;
+  background:linear-gradient(180deg,#FFFCF5 0%,#FFF7E8 100%)!important;
+  box-shadow:0 0 0 2px rgba(245,158,11,.10),0 4px 12px rgba(245,158,11,.06)!important;
+}
+#incomes .kpi-grid [data-income-main-filter="lesson"].active span,
+#incomes .kpi-grid [data-income-main-filter="lesson"].active strong,
+#incomes .kpi-grid [data-income-main-filter="lesson"].active small{
+  color:#C2410C!important;
+}
