@@ -1,8 +1,8 @@
-// V261.0 - Gelir filtre sadeleştirme ve pay dağılımı canlı önbelleği
-const CACHE='bs-ofis-butce-v2610-gelir-filtre-paylasim-20260816';
+// V261.1 - Gerçekleşen net nakit akışı detay paneli canlı önbelleği
+const CACHE='bs-ofis-butce-v2611-nakit-akisi-detay-20260816';
 const ASSETS=[
-  './?v=2610',
-  './index.html?v=2610',
+  './?v=2611',
+  './index.html?v=2611',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2610',
@@ -31,6 +31,7 @@ const ASSETS=[
   './v176-ui.js?v=218',
   './v177-ui.js?v=214',
   './v178-ui.js?v=214',
+  './v2611-cash-flow-detail.js?v=2611',
   './v179-ui.js?v=179',
   './ui.js?v=257',
   './payment-plan.js?v=200',
@@ -86,6 +87,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2610') || caches.match('./index.html?v=2610')))
+        .then(response => response || caches.match('./?v=2611') || caches.match('./index.html?v=2611')))
   );
 });
