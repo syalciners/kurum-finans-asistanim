@@ -4,7 +4,7 @@
 
 /* Başak */
 #debts #debtList .list-card.debt-owner-basak{
-  border-left-color:#EC4899!important;
+  border-left:3px solid #EC4899!important;
   background:#FFFFFF!important;
 }
 #debts #debtList .list-card.debt-owner-basak .amount{
@@ -16,7 +16,7 @@
 
 /* Süleyman */
 #debts #debtList .list-card.debt-owner-suleyman{
-  border-left-color:#2563EB!important;
+  border-left:3px solid #2563EB!important;
   background:#FFFFFF!important;
 }
 #debts #debtList .list-card.debt-owner-suleyman .amount{
@@ -28,7 +28,7 @@
 
 /* Kurum */
 #debts #debtList .list-card.debt-owner-kurum{
-  border-left-color:#14B8A6!important;
+  border-left:3px solid #14B8A6!important;
   background:#FFFFFF!important;
 }
 #debts #debtList .list-card.debt-owner-kurum .amount{
