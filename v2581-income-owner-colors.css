@@ -1,42 +1,42 @@
 /* BS OFIS BUTCE V2.6.0.6 - Gelir sahibi KPI secim standardi
    Liste kartlarinin rengi filtreye gore degismez.
-   KPI rakamlari nötr kalir; sahiplik rengi yalnız üst şerit ve seçili çerçevede kullanılır. */
+   Sahiplik rengi seçili KPI kartında kontrollü vurgu olarak kullanılır. */
 
-/* BASAK — pembe kimlik, nötr rakam */
+/* BASAK — pembe kimlik */
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Başak"].active{
-  background:#FFFFFF!important;
-  border-color:#F9A8D4!important;
-  box-shadow:0 0 0 2px rgba(236,72,153,.08),0 4px 12px rgba(15,23,42,.04)!important;
+  background:linear-gradient(180deg,#FFF9FC 0%,#FFF1F7 100%)!important;
+  border-color:#F5A5CD!important;
+  box-shadow:0 0 0 2px rgba(236,72,153,.10),0 4px 12px rgba(236,72,153,.06)!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Başak"].active span{
-  color:#64748B!important;
+  color:#DB2777!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Başak"].active strong{
-  color:#0F172A!important;
+  color:#DB2777!important;
 }
 
-/* SULEYMAN — mavi kimlik, nötr rakam */
+/* SULEYMAN — mavi kimlik */
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Süleyman"].active{
-  background:#FFFFFF!important;
-  border-color:#BFDBFE!important;
-  box-shadow:0 0 0 2px rgba(37,99,235,.08),0 4px 12px rgba(15,23,42,.04)!important;
+  background:linear-gradient(180deg,#F8FBFF 0%,#F2F7FF 100%)!important;
+  border-color:#9FBCFF!important;
+  box-shadow:0 0 0 2px rgba(37,99,235,.10),0 4px 12px rgba(37,99,235,.06)!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Süleyman"].active span{
-  color:#64748B!important;
+  color:#2563EB!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Süleyman"].active strong{
-  color:#0F172A!important;
+  color:#2563EB!important;
 }
 
-/* KURUM — tamamen nötr kimlik */
+/* KURUM — turkuaz kimlik */
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"].active{
-  background:#FFFFFF!important;
-  border-color:#CBD5E1!important;
-  box-shadow:0 0 0 2px rgba(15,23,42,.05),0 4px 12px rgba(15,23,42,.04)!important;
+  background:linear-gradient(180deg,#F7FFFD 0%,#EDFCF9 100%)!important;
+  border-color:#91DED3!important;
+  box-shadow:0 0 0 2px rgba(20,184,166,.10),0 4px 12px rgba(20,184,166,.06)!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"].active span{
-  color:#64748B!important;
+  color:#0F8F83!important;
 }
 #incomes #incomeOwnerKpis .income-owner-kpi[data-owner-kpi="Kurum Kasası"].active strong{
-  color:#0F172A!important;
+  color:#0F8F83!important;
 }
