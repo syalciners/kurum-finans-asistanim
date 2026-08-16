@@ -5,35 +5,35 @@
 /* Başak */
 #debts #debtList .list-card.debt-owner-basak{
   border-left-color:#EC4899!important;
-  background:linear-gradient(90deg,#FDF2F8 0%,#FFFFFF 18%)!important;
+  background:#FFFFFF!important;
 }
 #debts #debtList .list-card.debt-owner-basak .amount{
   color:#0F172A!important;
 }
 #debts #debtList .list-card.debt-owner-basak:hover{
-  border-left-color:#DB2777!important;
+  border-left-color:#EC4899!important;
 }
 
 /* Süleyman */
 #debts #debtList .list-card.debt-owner-suleyman{
   border-left-color:#2563EB!important;
-  background:linear-gradient(90deg,#EFF6FF 0%,#FFFFFF 18%)!important;
+  background:#FFFFFF!important;
 }
 #debts #debtList .list-card.debt-owner-suleyman .amount{
   color:#0F172A!important;
 }
 #debts #debtList .list-card.debt-owner-suleyman:hover{
-  border-left-color:#1D4ED8!important;
+  border-left-color:#2563EB!important;
 }
 
 /* Kurum */
 #debts #debtList .list-card.debt-owner-kurum{
   border-left-color:#14B8A6!important;
-  background:linear-gradient(90deg,#ECFDF9 0%,#FFFFFF 18%)!important;
+  background:#FFFFFF!important;
 }
 #debts #debtList .list-card.debt-owner-kurum .amount{
   color:#0F172A!important;
 }
 #debts #debtList .list-card.debt-owner-kurum:hover{
-  border-left-color:#0F8F83!important;
+  border-left-color:#14B8A6!important;
 }
