@@ -1,8 +1,8 @@
-// V261.2 - Özet açılış stabilizasyonu canlı önbelleği
-const CACHE='bs-ofis-butce-v2612-ozet-acilis-stabil-20260816';
+// V261.2.1 - Özet açılış stabilizasyonu yayın önbelleği
+const CACHE='bs-ofis-butce-v26121-ozet-acilis-stabil-20260816';
 const ASSETS=[
-  './?v=2612',
-  './index.html?v=2612',
+  './?v=26121',
+  './index.html?v=26121',
   './styles.css?v=219',
   './v247-design-system.css?v=247',
   './v2471-mobile-polish.css?v=2610',
@@ -87,6 +87,6 @@ self.addEventListener('fetch',event => {
         return response;
       })
       .catch(() => caches.match(event.request)
-        .then(response => response || caches.match('./?v=2612') || caches.match('./index.html?v=2612')))
+        .then(response => response || caches.match('./?v=26121') || caches.match('./index.html?v=26121')))
   );
 });
