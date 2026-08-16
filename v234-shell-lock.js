@@ -1,4 +1,4 @@
-/* BS OFİS BÜTÇE V2.5.7 - Uygulama kabuğu ölçüm katmanı
+/* BS OFİS BÜTÇE V2.6.1.2.2 - Uygulama kabuğu ölçüm + bulut kurtarma yükleyicisi
    Sabit header/nav stilleri v257-foundation.css içinde yüklenir. */
 (() => {
   if(window.__bsV234ShellLockLoaded) return;
@@ -29,7 +29,17 @@
     });
   }
 
+  function loadCloudBootstrap(){
+    if(window.__bsCloudBootstrapV26122Loaded || document.querySelector('script[data-v26122-cloud-bootstrap]')) return;
+    const script = document.createElement('script');
+    script.src = './v26122-cloud-bootstrap.js?v=26122';
+    script.dataset.v26122CloudBootstrap = '1';
+    script.addEventListener('error',()=>console.error('V261.2.2 bulut başlangıç kurtarma modülü yüklenemedi.'),{once:true});
+    document.body.appendChild(script);
+  }
+
   scheduleMeasure();
+  loadCloudBootstrap();
   window.addEventListener('load',scheduleMeasure,{once:true});
   window.addEventListener('resize',scheduleMeasure,{passive:true});
   window.addEventListener('orientationchange',scheduleMeasure,{passive:true});
