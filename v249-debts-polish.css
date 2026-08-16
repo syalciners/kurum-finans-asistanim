@@ -127,7 +127,7 @@
   border-radius:15px!important;
   border:1px solid #e2e8f0!important;
   background:#fff!important;
-  box-shadow:0 2px 8px rgba(15,23,42,.026)!important;
+  box-shadow:none!important;
   overflow:hidden!important;
 }
 #debts #debtList .list-card.v179-debt-active{
