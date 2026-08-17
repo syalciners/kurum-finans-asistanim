@@ -1,7 +1,7 @@
 /* BS OFİS BÜTÇE V2.1.8 - Ödemeler ve Harcamalar UX */
 (() => {
   let expenseQuickMode = 'all';
-  let paymentViewMode = 'payments';
+  let paymentViewMode = 'all';
 
   function ensureV176Styles(){
     if(document.querySelector('#v176Styles')) return;
@@ -307,6 +307,7 @@
     const apply = mode => {
       const period = document.querySelector('#paymentPeriodFilter');
       if(period) period.value = mode;
+      paymentViewMode = 'all';
       renderPayments();
     };
 
@@ -331,7 +332,7 @@
     const wrap = document.createElement('div');
     wrap.id = 'v176PaymentTypeKpis';
     wrap.innerHTML = `
-      <article class="v175-quick-card active" data-payment-view="payments" role="button" tabindex="0" aria-pressed="true">
+      <article class="v175-quick-card" data-payment-view="payments" role="button" tabindex="0" aria-pressed="false">
         <span>TAKSİTLER</span>
         <strong id="v176PaymentTypePaymentAmount">₺0</strong>
         <small id="v176PaymentTypePaymentCount">0 taksit ödemesi</small>
@@ -435,32 +436,51 @@
     ensurePaymentTypeCards();
 
     const period = document.querySelector('#paymentPeriodFilter')?.value || 'current';
-    const lists = paymentViewMode === 'expenses' ? paymentExpenseLists() : paymentLists();
-    const list = [...(lists[period] || [])]
-      .sort((a,b) => `${b.date}${b.createdAt}`.localeCompare(`${a.date}${a.createdAt}`));
+    const paymentList = paymentLists()[period] || [];
+    const expenseList = paymentExpenseLists()[period] || [];
+    let rows = [];
+
+    if(paymentViewMode === 'payments'){
+      rows = paymentList.map(item => ({kind:'payment',item}));
+    }else if(paymentViewMode === 'expenses'){
+      rows = expenseList.map(item => ({kind:'expense',item}));
+    }else{
+      rows = [
+        ...paymentList.map(item => ({kind:'payment',item})),
+        ...expenseList.map(item => ({kind:'expense',item}))
+      ];
+    }
+
+    rows.sort((a,b) => `${b.item.date}${b.item.createdAt}`.localeCompare(`${a.item.date}${a.item.createdAt}`));
 
     const listEl = document.querySelector('#paymentList');
     if(listEl){
-      if(paymentViewMode === 'expenses'){
-        listEl.innerHTML = list.length
-          ? list.map(expenseCard).join('')
-          : empty(
-              period === 'current'
-                ? 'Bu ay harcama kaydı yok.'
-                : period === 'previous'
-                  ? 'Geçen ay harcama kaydı yok.'
-                  : 'Henüz harcama kaydı yok.'
-            );
+      if(rows.length){
+        listEl.innerHTML = rows.map(row => row.kind === 'expense' ? expenseCard(row.item) : paymentCard(row.item)).join('');
+      }else if(paymentViewMode === 'expenses'){
+        listEl.innerHTML = empty(
+          period === 'current'
+            ? 'Bu ay harcama kaydı yok.'
+            : period === 'previous'
+              ? 'Geçen ay harcama kaydı yok.'
+              : 'Henüz harcama kaydı yok.'
+        );
+      }else if(paymentViewMode === 'payments'){
+        listEl.innerHTML = empty(
+          period === 'current'
+            ? 'Bu ay henüz ödeme kaydı yok.'
+            : period === 'previous'
+              ? 'Geçen ay ödeme kaydı yok.'
+              : 'Henüz borç ödemesi yok.'
+        );
       }else{
-        listEl.innerHTML = list.length
-          ? list.map(paymentCard).join('')
-          : empty(
-              period === 'current'
-                ? 'Bu ay henüz ödeme kaydı yok.'
-                : period === 'previous'
-                  ? 'Geçen ay ödeme kaydı yok.'
-                  : 'Henüz borç ödemesi yok.'
-            );
+        listEl.innerHTML = empty(
+          period === 'current'
+            ? 'Bu ay ödeme veya harcama kaydı yok.'
+            : period === 'previous'
+              ? 'Geçen ay ödeme veya harcama kaydı yok.'
+              : 'Henüz ödeme veya harcama kaydı yok.'
+        );
       }
     }
 
@@ -772,13 +792,16 @@
   const originalOpenViewV176 = openView;
   openView = function(view){
     const enteringPayments = view === 'payments' && activeView !== 'payments';
-    if(enteringPayments) paymentViewMode = 'payments';
+    if(enteringPayments) paymentViewMode = 'all';
     originalOpenViewV176(view);
     if(view === 'payments') renderPayments();
   };
 
   const paymentPeriod = document.querySelector('#paymentPeriodFilter');
-  if(paymentPeriod) paymentPeriod.onchange = renderPayments;
+  if(paymentPeriod) paymentPeriod.onchange = () => {
+    paymentViewMode = 'all';
+    renderPayments();
+  };
 
   const expenseSearch = document.querySelector('#expenseSearch');
   const expenseMonth = document.querySelector('#expenseMonth');
