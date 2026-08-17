@@ -38,6 +38,7 @@
     document.body.appendChild(script);
   }
 
+  measureBars();
   scheduleMeasure();
   loadCloudBootstrap();
   window.addEventListener('load',scheduleMeasure,{once:true});
