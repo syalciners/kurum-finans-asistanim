@@ -1,6 +1,7 @@
 /* BS OFİS BÜTÇE V2.1.8 - Ödemeler ve Harcamalar UX */
 (() => {
   let expenseQuickMode = 'all';
+  let paymentViewMode = 'payments';
 
   function ensureV176Styles(){
     if(document.querySelector('#v176Styles')) return;
@@ -8,6 +9,76 @@
     const style = document.createElement('style');
     style.id = 'v176Styles';
     style.textContent = `
+      #payments #v176PaymentTypeKpis{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px;
+        margin:0 0 14px;
+      }
+      #payments #v176PaymentTypeKpis .v175-quick-card{
+        min-height:76px!important;
+        padding:11px 12px!important;
+        border:1px solid #E2E8F0!important;
+        border-radius:15px!important;
+        background:#FFFFFF!important;
+        box-shadow:0 2px 9px rgba(15,23,42,.03)!important;
+        text-align:left!important;
+        align-content:center!important;
+        cursor:pointer;
+      }
+      #payments #v176PaymentTypeKpis .v175-quick-card span{
+        color:#64748B!important;
+        font-size:9px!important;
+        line-height:1.1!important;
+        font-weight:830!important;
+        letter-spacing:.035em!important;
+      }
+      #payments #v176PaymentTypeKpis .v175-quick-card strong{
+        margin-top:2px!important;
+        font-size:18px!important;
+        line-height:1.05!important;
+        font-weight:860!important;
+        letter-spacing:-.03em!important;
+      }
+      #payments #v176PaymentTypeKpis .v175-quick-card small{
+        margin-top:2px!important;
+        color:#94A3B8!important;
+        font-size:9px!important;
+        line-height:1.2!important;
+      }
+      #payments #v176PaymentTypeKpis [data-payment-view="payments"]{
+        border-top:3px solid #2563EB!important;
+      }
+      #payments #v176PaymentTypeKpis [data-payment-view="payments"] strong{
+        color:#2563EB!important;
+      }
+      #payments #v176PaymentTypeKpis [data-payment-view="expenses"]{
+        border-top:3px solid #EF4444!important;
+      }
+      #payments #v176PaymentTypeKpis [data-payment-view="expenses"] strong{
+        color:#DC2626!important;
+      }
+      #payments #v176PaymentTypeKpis [data-payment-view="payments"].active{
+        border-color:#9FBCFF!important;
+        border-top-color:#2563EB!important;
+        background:linear-gradient(180deg,#F8FBFF 0%,#F2F7FF 100%)!important;
+        box-shadow:0 0 0 2px rgba(37,99,235,.10),0 4px 12px rgba(37,99,235,.06)!important;
+      }
+      #payments #v176PaymentTypeKpis [data-payment-view="expenses"].active{
+        border-color:#F5A5AB!important;
+        border-top-color:#EF4444!important;
+        background:linear-gradient(180deg,#FFF9F9 0%,#FFF2F3 100%)!important;
+        box-shadow:0 0 0 2px rgba(239,68,68,.09),0 4px 12px rgba(239,68,68,.055)!important;
+      }
+      #payments #paymentList .list-card[data-expense],
+      #payments #paymentList .v179-expense-card[data-expense]{
+        border-left:3px solid #EF4444!important;
+      }
+      #payments #paymentList .list-card[data-expense] .amount,
+      #payments #paymentList .v179-expense-card[data-expense] .amount{
+        color:#DC2626!important;
+      }
+
       #expenses .toolbar.v176-expense-toolbar{
         grid-template-columns:minmax(120px,1fr) auto auto;
       }
@@ -162,6 +233,13 @@
       }
 
       @media(max-width:480px){
+        #payments #v176PaymentTypeKpis .v175-quick-card{
+          min-height:70px!important;
+          padding:10px!important;
+        }
+        #payments #v176PaymentTypeKpis .v175-quick-card strong{
+          font-size:16px!important;
+        }
         #expenses .toolbar.v176-expense-toolbar{
           grid-template-columns:1fr 1fr;
         }
@@ -187,6 +265,18 @@
     };
   }
 
+  function paymentExpenseLists(){
+    const current = monthKey();
+    const previous = previousMonthKey();
+    const all = state.expenses.map(normalizeExpense);
+
+    return {
+      current: all.filter(x => x.date?.startsWith(current)),
+      previous: all.filter(x => x.date?.startsWith(previous)),
+      all
+    };
+  }
+
   function ensurePaymentQuickCards(){
     const view = document.querySelector('#payments');
     const title = view?.querySelector('.page-title');
@@ -199,17 +289,17 @@
       <article class="v175-quick-card" data-payment-quick="current" role="button" tabindex="0">
         <span>BU AY</span>
         <strong id="v176PayCurrentAmount">₺0</strong>
-        <small id="v176PayCurrentCount">0 ödeme</small>
+        <small id="v176PayCurrentCount">0 işlem</small>
       </article>
       <article class="v175-quick-card" data-payment-quick="previous" role="button" tabindex="0">
         <span>GEÇEN AY</span>
         <strong id="v176PayPreviousAmount">₺0</strong>
-        <small id="v176PayPreviousCount">0 ödeme</small>
+        <small id="v176PayPreviousCount">0 işlem</small>
       </article>
       <article class="v175-quick-card" data-payment-quick="all" role="button" tabindex="0">
         <span>TÜMÜ</span>
         <strong id="v176PayAllAmount">₺0</strong>
-        <small id="v176PayAllCount">0 ödeme</small>
+        <small id="v176PayAllCount">0 işlem</small>
       </article>
     `;
     title.insertAdjacentElement('afterend', wrap);
@@ -233,9 +323,49 @@
     });
   }
 
+  function ensurePaymentTypeCards(){
+    ensurePaymentQuickCards();
+    const periodKpis = document.querySelector('#v176PaymentKpis');
+    if(!periodKpis || document.querySelector('#v176PaymentTypeKpis')) return;
+
+    const wrap = document.createElement('div');
+    wrap.id = 'v176PaymentTypeKpis';
+    wrap.innerHTML = `
+      <article class="v175-quick-card active" data-payment-view="payments" role="button" tabindex="0" aria-pressed="true">
+        <span>TAKSİTLER</span>
+        <strong id="v176PaymentTypePaymentAmount">₺0</strong>
+        <small id="v176PaymentTypePaymentCount">0 taksit ödemesi</small>
+      </article>
+      <article class="v175-quick-card" data-payment-view="expenses" role="button" tabindex="0" aria-pressed="false">
+        <span>HARCAMALAR</span>
+        <strong id="v176PaymentTypeExpenseAmount">₺0</strong>
+        <small id="v176PaymentTypeExpenseCount">0 harcama</small>
+      </article>
+    `;
+    periodKpis.insertAdjacentElement('afterend',wrap);
+
+    const activate = mode => {
+      paymentViewMode = mode === 'expenses' ? 'expenses' : 'payments';
+      renderPayments();
+    };
+
+    wrap.addEventListener('click',e=>{
+      const card=e.target.closest('[data-payment-view]');
+      if(card) activate(card.dataset.paymentView);
+    });
+
+    wrap.addEventListener('keydown',e=>{
+      const card=e.target.closest('[data-payment-view]');
+      if(!card || !['Enter',' '].includes(e.key)) return;
+      e.preventDefault();
+      activate(card.dataset.paymentView);
+    });
+  }
+
   function updatePaymentQuickCards(){
     ensurePaymentQuickCards();
-    const lists = paymentLists();
+    const payments = paymentLists();
+    const expenses = paymentExpenseLists();
     const period = document.querySelector('#paymentPeriodFilter')?.value || 'current';
 
     const data = [
@@ -245,11 +375,16 @@
     ];
 
     data.forEach(([key, amountSel, countSel]) => {
-      const list = lists[key];
+      const paymentList = payments[key];
+      const expenseList = expenses[key];
+      const total =
+        paymentList.reduce((s,p)=>s+(+p.amount||0),0) +
+        expenseList.reduce((s,x)=>s+(+x.amount||0),0);
+      const countValue = paymentList.length + expenseList.length;
       const amount = document.querySelector(amountSel);
       const count = document.querySelector(countSel);
-      if(amount) amount.textContent = money(list.reduce((s,p)=>s+(+p.amount||0),0));
-      if(count) count.textContent = `${list.length} ödeme`;
+      if(amount) amount.textContent = money(total);
+      if(count) count.textContent = `${countValue} işlem`;
     });
 
     document.querySelectorAll('[data-payment-quick]').forEach(card => {
@@ -259,36 +394,79 @@
     });
   }
 
+  function updatePaymentTypeCards(){
+    ensurePaymentTypeCards();
+    const period = document.querySelector('#paymentPeriodFilter')?.value || 'current';
+    const payments = paymentLists()[period] || [];
+    const expenses = paymentExpenseLists()[period] || [];
+
+    const paymentAmount = document.querySelector('#v176PaymentTypePaymentAmount');
+    const paymentCount = document.querySelector('#v176PaymentTypePaymentCount');
+    const expenseAmount = document.querySelector('#v176PaymentTypeExpenseAmount');
+    const expenseCount = document.querySelector('#v176PaymentTypeExpenseCount');
+
+    if(paymentAmount) paymentAmount.textContent = money(payments.reduce((s,p)=>s+(+p.amount||0),0));
+    if(paymentCount) paymentCount.textContent = `${payments.length} taksit ödemesi`;
+    if(expenseAmount) expenseAmount.textContent = money(expenses.reduce((s,x)=>s+(+x.amount||0),0));
+    if(expenseCount) expenseCount.textContent = `${expenses.length} harcama`;
+
+    document.querySelectorAll('[data-payment-view]').forEach(card=>{
+      const active = card.dataset.paymentView === paymentViewMode;
+      card.classList.toggle('active',active);
+      card.setAttribute('aria-pressed',active?'true':'false');
+    });
+  }
+
+  function updatePaymentAction(){
+    const button = document.querySelector('#addPaymentBtn');
+    if(!button) return;
+
+    if(paymentViewMode === 'expenses'){
+      button.textContent = '＋ Harcama';
+      button.onclick = () => openRecordDialog('expenses');
+    }else{
+      button.textContent = '＋ Ödeme';
+      button.onclick = () => openRecordDialog('payments');
+    }
+  }
+
   function renderPaymentsV176(){
     ensurePaymentQuickCards();
+    ensurePaymentTypeCards();
 
     const period = document.querySelector('#paymentPeriodFilter')?.value || 'current';
-    const current = monthKey();
-    const previous = previousMonthKey();
-
-    const list = state.payments
-      .map(normalizePayment)
-      .filter(p =>
-        period === 'all' ||
-        (period === 'current' && p.date?.startsWith(current)) ||
-        (period === 'previous' && p.date?.startsWith(previous))
-      )
+    const lists = paymentViewMode === 'expenses' ? paymentExpenseLists() : paymentLists();
+    const list = [...(lists[period] || [])]
       .sort((a,b) => `${b.date}${b.createdAt}`.localeCompare(`${a.date}${a.createdAt}`));
 
     const listEl = document.querySelector('#paymentList');
     if(listEl){
-      listEl.innerHTML = list.length
-        ? list.map(paymentCard).join('')
-        : empty(
-            period === 'current'
-              ? 'Bu ay henüz ödeme kaydı yok.'
-              : period === 'previous'
-                ? 'Geçen ay ödeme kaydı yok.'
-                : 'Henüz borç ödemesi yok.'
-          );
+      if(paymentViewMode === 'expenses'){
+        listEl.innerHTML = list.length
+          ? list.map(expenseCard).join('')
+          : empty(
+              period === 'current'
+                ? 'Bu ay harcama kaydı yok.'
+                : period === 'previous'
+                  ? 'Geçen ay harcama kaydı yok.'
+                  : 'Henüz harcama kaydı yok.'
+            );
+      }else{
+        listEl.innerHTML = list.length
+          ? list.map(paymentCard).join('')
+          : empty(
+              period === 'current'
+                ? 'Bu ay henüz ödeme kaydı yok.'
+                : period === 'previous'
+                  ? 'Geçen ay ödeme kaydı yok.'
+                  : 'Henüz borç ödemesi yok.'
+            );
+      }
     }
 
     updatePaymentQuickCards();
+    updatePaymentTypeCards();
+    updatePaymentAction();
   }
 
   function selectedExpenseMonthList(){
@@ -583,12 +761,21 @@
 
   ensureV176Styles();
   ensurePaymentQuickCards();
+  ensurePaymentTypeCards();
   ensureExpenseCategoryFilter();
   ensureExpenseQuickCards();
   ensureExpenseCategorySummary();
 
   renderPayments = renderPaymentsV176;
   renderExpenses = renderExpensesV176;
+
+  const originalOpenViewV176 = openView;
+  openView = function(view){
+    const enteringPayments = view === 'payments' && activeView !== 'payments';
+    if(enteringPayments) paymentViewMode = 'payments';
+    originalOpenViewV176(view);
+    if(view === 'payments') renderPayments();
+  };
 
   const paymentPeriod = document.querySelector('#paymentPeriodFilter');
   if(paymentPeriod) paymentPeriod.onchange = renderPayments;
