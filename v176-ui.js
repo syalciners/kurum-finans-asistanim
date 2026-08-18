@@ -56,7 +56,7 @@
         border-top:3px solid #EF4444!important;
       }
       #payments #v176PaymentTypeKpis [data-payment-view="expenses"] strong{
-        color:#DC2626!important;
+        color:#2563EB!important;
       }
       #payments #v176PaymentTypeKpis [data-payment-view="payments"].active{
         border-color:#9FBCFF!important;
@@ -76,7 +76,7 @@
       }
       #payments #paymentList .list-card[data-expense] .amount,
       #payments #paymentList .v179-expense-card[data-expense] .amount{
-        color:#DC2626!important;
+        color:#2563EB!important;
       }
 
       #expenses .toolbar.v176-expense-toolbar{
